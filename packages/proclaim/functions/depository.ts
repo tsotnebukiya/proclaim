@@ -4,7 +4,7 @@ import {
   readContract,
   type BaseTransactionOptions,
   type AbiParameterToPrimitiveType,
-} from "thirdweb";
+} from 'thirdweb';
 
 /**
  * Contract events
@@ -16,9 +16,9 @@ import {
 export type BankRegisteredEventFilters = Partial<{
   key: AbiParameterToPrimitiveType<{
     indexed: true;
-    internalType: "string";
-    name: "key";
-    type: "string";
+    internalType: 'string';
+    name: 'key';
+    type: 'string';
   }>;
 }>;
 
@@ -44,7 +44,7 @@ export type BankRegisteredEventFilters = Partial<{
 export function bankRegisteredEvent(filters: BankRegisteredEventFilters = {}) {
   return prepareEvent({
     signature:
-      "event BankRegistered(string indexed key, address ethAddress, address contractAddress, string publicKey)",
+      'event BankRegistered(string indexed key, address ethAddress, address contractAddress, string publicKey)',
     filters,
   });
 }
@@ -69,13 +69,13 @@ export async function admin(options: BaseTransactionOptions) {
   return readContract({
     contract: options.contract,
     method: [
-      "0xf851a440",
+      '0xf851a440',
       [],
       [
         {
-          internalType: "address",
-          name: "",
-          type: "address",
+          internalType: 'address',
+          name: '',
+          type: 'address',
         },
       ],
     ],
@@ -88,9 +88,9 @@ export async function admin(options: BaseTransactionOptions) {
  */
 export type AllKeysParams = {
   arg_0: AbiParameterToPrimitiveType<{
-    internalType: "uint256";
-    name: "";
-    type: "uint256";
+    internalType: 'uint256';
+    name: '';
+    type: 'uint256';
   }>;
 };
 
@@ -112,19 +112,19 @@ export async function allKeys(options: BaseTransactionOptions<AllKeysParams>) {
   return readContract({
     contract: options.contract,
     method: [
-      "0x3909ba41",
+      '0x3909ba41',
       [
         {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
         },
       ],
       [
         {
-          internalType: "string",
-          name: "",
-          type: "string",
+          internalType: 'string',
+          name: '',
+          type: 'string',
         },
       ],
     ],
@@ -137,9 +137,9 @@ export async function allKeys(options: BaseTransactionOptions<AllKeysParams>) {
  */
 export type BankRegistryParams = {
   arg_0: AbiParameterToPrimitiveType<{
-    internalType: "string";
-    name: "";
-    type: "string";
+    internalType: 'string';
+    name: '';
+    type: 'string';
   }>;
 };
 
@@ -158,44 +158,44 @@ export type BankRegistryParams = {
  * ```
  */
 export async function bankRegistry(
-  options: BaseTransactionOptions<BankRegistryParams>,
+  options: BaseTransactionOptions<BankRegistryParams>
 ) {
   return readContract({
     contract: options.contract,
     method: [
-      "0xd42b0133",
+      '0xd42b0133',
       [
         {
-          internalType: "string",
-          name: "",
-          type: "string",
+          internalType: 'string',
+          name: '',
+          type: 'string',
         },
       ],
       [
         {
-          internalType: "string",
-          name: "market",
-          type: "string",
+          internalType: 'string',
+          name: 'market',
+          type: 'string',
         },
         {
-          internalType: "uint256",
-          name: "accountNumber",
-          type: "uint256",
+          internalType: 'uint256',
+          name: 'accountNumber',
+          type: 'uint256',
         },
         {
-          internalType: "address",
-          name: "ethAddress",
-          type: "address",
+          internalType: 'address',
+          name: 'ethAddress',
+          type: 'address',
         },
         {
-          internalType: "address",
-          name: "contractAddress",
-          type: "address",
+          internalType: 'address',
+          name: 'contractAddress',
+          type: 'address',
         },
         {
-          internalType: "string",
-          name: "publicKey",
-          type: "string",
+          internalType: 'string',
+          name: 'publicKey',
+          type: 'string',
         },
       ],
     ],
@@ -219,40 +219,40 @@ export async function getAllBankDetails(options: BaseTransactionOptions) {
   return readContract({
     contract: options.contract,
     method: [
-      "0xf54f0e56",
+      '0xf54f0e56',
       [],
       [
         {
           components: [
             {
-              internalType: "string",
-              name: "market",
-              type: "string",
+              internalType: 'string',
+              name: 'market',
+              type: 'string',
             },
             {
-              internalType: "uint256",
-              name: "accountNumber",
-              type: "uint256",
+              internalType: 'uint256',
+              name: 'accountNumber',
+              type: 'uint256',
             },
             {
-              internalType: "address",
-              name: "ethAddress",
-              type: "address",
+              internalType: 'address',
+              name: 'ethAddress',
+              type: 'address',
             },
             {
-              internalType: "address",
-              name: "contractAddress",
-              type: "address",
+              internalType: 'address',
+              name: 'contractAddress',
+              type: 'address',
             },
             {
-              internalType: "string",
-              name: "publicKey",
-              type: "string",
+              internalType: 'string',
+              name: 'publicKey',
+              type: 'string',
             },
           ],
-          internalType: "struct BankDepository.BankDetails[]",
-          name: "",
-          type: "tuple[]",
+          internalType: 'struct BankDepository.BankDetails[]',
+          name: '',
+          type: 'tuple[]',
         },
       ],
     ],
@@ -265,14 +265,14 @@ export async function getAllBankDetails(options: BaseTransactionOptions) {
  */
 export type GetBankDetailsParams = {
   market: AbiParameterToPrimitiveType<{
-    internalType: "string";
-    name: "market";
-    type: "string";
+    internalType: 'string';
+    name: 'market';
+    type: 'string';
   }>;
   accountNumber: AbiParameterToPrimitiveType<{
-    internalType: "uint256";
-    name: "_accountNumber";
-    type: "uint256";
+    internalType: 'uint256';
+    name: '_accountNumber';
+    type: 'uint256';
   }>;
 };
 
@@ -292,65 +292,57 @@ export type GetBankDetailsParams = {
  * ```
  */
 
-type GetBankDetailsResult = {
-  market: string;
-  accountNumber: bigint;
-  ethAddress: string;
-  cotnractAddress: string;
-  publicKey: string;
-};
-
 export async function getBankDetails(
-  options: BaseTransactionOptions<GetBankDetailsParams>,
+  options: BaseTransactionOptions<GetBankDetailsParams>
 ) {
   return readContract({
     contract: options.contract,
     method: [
-      "0x66acf573",
+      '0x66acf573',
       [
         {
-          internalType: "string",
-          name: "market",
-          type: "string",
+          internalType: 'string',
+          name: 'market',
+          type: 'string',
         },
         {
-          internalType: "uint256",
-          name: "_accountNumber",
-          type: "uint256",
+          internalType: 'uint256',
+          name: '_accountNumber',
+          type: 'uint256',
         },
       ],
       [
         {
           components: [
             {
-              internalType: "string",
-              name: "market",
-              type: "string",
+              internalType: 'string',
+              name: 'market',
+              type: 'string',
             },
             {
-              internalType: "uint256",
-              name: "accountNumber",
-              type: "uint256",
+              internalType: 'uint256',
+              name: 'accountNumber',
+              type: 'uint256',
             },
             {
-              internalType: "address",
-              name: "ethAddress",
-              type: "address",
+              internalType: 'address',
+              name: 'ethAddress',
+              type: 'address',
             },
             {
-              internalType: "address",
-              name: "contractAddress",
-              type: "address",
+              internalType: 'address',
+              name: 'contractAddress',
+              type: 'address',
             },
             {
-              internalType: "string",
-              name: "publicKey",
-              type: "string",
+              internalType: 'string',
+              name: 'publicKey',
+              type: 'string',
             },
           ],
-          internalType: "struct BankDepository.BankDetails",
-          name: "",
-          type: "tuple",
+          internalType: 'struct BankDepository.BankDetails',
+          name: '',
+          type: 'tuple',
         },
       ],
     ],
@@ -363,9 +355,9 @@ export async function getBankDetails(
  */
 export type GetTokenAddressParams = {
   tokenName: AbiParameterToPrimitiveType<{
-    internalType: "string";
-    name: "tokenName";
-    type: "string";
+    internalType: 'string';
+    name: 'tokenName';
+    type: 'string';
   }>;
 };
 
@@ -384,24 +376,24 @@ export type GetTokenAddressParams = {
  * ```
  */
 export async function getTokenAddress(
-  options: BaseTransactionOptions<GetTokenAddressParams>,
+  options: BaseTransactionOptions<GetTokenAddressParams>
 ) {
   return readContract({
     contract: options.contract,
     method: [
-      "0xc4091236",
+      '0xc4091236',
       [
         {
-          internalType: "string",
-          name: "tokenName",
-          type: "string",
+          internalType: 'string',
+          name: 'tokenName',
+          type: 'string',
         },
       ],
       [
         {
-          internalType: "address",
-          name: "",
-          type: "address",
+          internalType: 'address',
+          name: '',
+          type: 'address',
         },
       ],
     ],
@@ -425,13 +417,13 @@ export async function name(options: BaseTransactionOptions) {
   return readContract({
     contract: options.contract,
     method: [
-      "0x06fdde03",
+      '0x06fdde03',
       [],
       [
         {
-          internalType: "string",
-          name: "",
-          type: "string",
+          internalType: 'string',
+          name: '',
+          type: 'string',
         },
       ],
     ],
@@ -444,9 +436,9 @@ export async function name(options: BaseTransactionOptions) {
  */
 export type TokenAddressesParams = {
   arg_0: AbiParameterToPrimitiveType<{
-    internalType: "string";
-    name: "";
-    type: "string";
+    internalType: 'string';
+    name: '';
+    type: 'string';
   }>;
 };
 
@@ -465,24 +457,24 @@ export type TokenAddressesParams = {
  * ```
  */
 export async function tokenAddresses(
-  options: BaseTransactionOptions<TokenAddressesParams>,
+  options: BaseTransactionOptions<TokenAddressesParams>
 ) {
   return readContract({
     contract: options.contract,
     method: [
-      "0x935b13f6",
+      '0x935b13f6',
       [
         {
-          internalType: "string",
-          name: "",
-          type: "string",
+          internalType: 'string',
+          name: '',
+          type: 'string',
         },
       ],
       [
         {
-          internalType: "address",
-          name: "",
-          type: "address",
+          internalType: 'address',
+          name: '',
+          type: 'address',
         },
       ],
     ],
@@ -499,29 +491,29 @@ export async function tokenAddresses(
  */
 export type RegisterBankParams = {
   market: AbiParameterToPrimitiveType<{
-    internalType: "string";
-    name: "market";
-    type: "string";
+    internalType: 'string';
+    name: 'market';
+    type: 'string';
   }>;
   accountNumber: AbiParameterToPrimitiveType<{
-    internalType: "uint256";
-    name: "_accountNumber";
-    type: "uint256";
+    internalType: 'uint256';
+    name: '_accountNumber';
+    type: 'uint256';
   }>;
   ethAddress: AbiParameterToPrimitiveType<{
-    internalType: "address";
-    name: "_ethAddress";
-    type: "address";
+    internalType: 'address';
+    name: '_ethAddress';
+    type: 'address';
   }>;
   contractAddress: AbiParameterToPrimitiveType<{
-    internalType: "address";
-    name: "_contractAddress";
-    type: "address";
+    internalType: 'address';
+    name: '_contractAddress';
+    type: 'address';
   }>;
   publicKey: AbiParameterToPrimitiveType<{
-    internalType: "string";
-    name: "_publicKey";
-    type: "string";
+    internalType: 'string';
+    name: '_publicKey';
+    type: 'string';
   }>;
 };
 
@@ -547,37 +539,37 @@ export type RegisterBankParams = {
  * ```
  */
 export function registerBank(
-  options: BaseTransactionOptions<RegisterBankParams>,
+  options: BaseTransactionOptions<RegisterBankParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
     method: [
-      "0xeddedcb7",
+      '0xeddedcb7',
       [
         {
-          internalType: "string",
-          name: "market",
-          type: "string",
+          internalType: 'string',
+          name: 'market',
+          type: 'string',
         },
         {
-          internalType: "uint256",
-          name: "_accountNumber",
-          type: "uint256",
+          internalType: 'uint256',
+          name: '_accountNumber',
+          type: 'uint256',
         },
         {
-          internalType: "address",
-          name: "_ethAddress",
-          type: "address",
+          internalType: 'address',
+          name: '_ethAddress',
+          type: 'address',
         },
         {
-          internalType: "address",
-          name: "_contractAddress",
-          type: "address",
+          internalType: 'address',
+          name: '_contractAddress',
+          type: 'address',
         },
         {
-          internalType: "string",
-          name: "_publicKey",
-          type: "string",
+          internalType: 'string',
+          name: '_publicKey',
+          type: 'string',
         },
       ],
       [],

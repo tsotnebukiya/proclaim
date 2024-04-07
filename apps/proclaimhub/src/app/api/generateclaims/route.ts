@@ -22,7 +22,5 @@ export async function GET() {
     console.error("An error occurred while sending claims:", error);
   }
   const response = await kv.set("lastRefRedis", lastReference);
-  return new NextResponse(JSON.stringify({ response, lastReference }), {
-    status: 200,
-  });
+  return NextResponse.json({ response, lastReference }, { status: 200 });
 }

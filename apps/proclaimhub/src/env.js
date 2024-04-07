@@ -7,7 +7,37 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    NODE_ENV: z.enum(["development", "test", "production"]),
+    NODE_ENV: z
+      .enum(["development", "test", "production"])
+      .default("development"),
+    NEXTAUTH_SECRET:
+      process.env.NODE_ENV === "production"
+        ? z.string()
+        : z.string().optional(),
+    NEXTAUTH_URL: z.preprocess(
+      // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
+      // Since NextAuth.js automatically uses the VERCEL_URL if present.
+      (str) => process.env.VERCEL_URL ?? str,
+      // VERCEL_URL doesn't include `https` so it cant be validated as a URL
+      process.env.VERCEL ? z.string() : z.string().url(),
+    ),
+    THIRDWEB_CLIENT_ID: z.string(),
+    THIRDWEB_SECRET_KEY: z.string(),
+    PROCHAIN_PRIVATE_KEY: z.string(),
+    PROCHAIN_DEPOSITORY_CONTRACT: z.string(),
+    PROCHAIN_ID: z.string(),
+    PROCHAIN_RPC_URL: z.string(),
+    KV_URL: z.string(),
+    KV_REST_API_URL: z.string(),
+    KV_REST_API_TOKEN: z.string(),
+    KV_REST_API_READ_ONLY_TOKEN: z.string(),
+    CITI_API: z.string(),
+    JP_API: z.string(),
+    GOLDMAN_API: z.string(),
+    BARCLAYS_API: z.string(),
+    BNY_API: z.string(),
+    USD_CONTRACT: z.string(),
+    EUR_CONTRACT: z.string(),
   },
 
   /**
@@ -25,7 +55,25 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    THIRDWEB_CLIENT_ID: process.env.THIRDWEB_CLIENT_ID,
+    THIRDWEB_SECRET_KEY: process.env.THIRDWEB_SECRET_KEY,
+    PROCHAIN_PRIVATE_KEY: process.env.PROCHAIN_PRIVATE_KEY,
+    PROCHAIN_DEPOSITORY_CONTRACT: process.env.PROCHAIN_DEPOSITORY_CONTRACT,
+    PROCHAIN_ID: process.env.PROCHAIN_ID,
+    PROCHAIN_RPC_URL: process.env.PROCHAIN_RPC_URL,
+    KV_URL: process.env.KV_URL,
+    KV_REST_API_URL: process.env.KV_REST_API_URL,
+    KV_REST_API_TOKEN: process.env.KV_REST_API_TOKEN,
+    KV_REST_API_READ_ONLY_TOKEN: process.env.KV_REST_API_READ_ONLY_TOKEN,
+    CITI_API: process.env.CITI_API,
+    JP_API: process.env.JP_API,
+    GOLDMAN_API: process.env.GOLDMAN_API,
+    BARCLAYS_API: process.env.BARCLAYS_API,
+    BNY_API: process.env.BNY_API,
+    USD_CONTRACT: process.env.USD_CONTRACT,
+    EUR_CONTRACT: process.env.EUR_CONTRACT,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

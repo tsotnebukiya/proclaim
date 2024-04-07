@@ -1,12 +1,5 @@
-import { Claim } from './createClaims';
-
-const owners = [
-  { name: 'Citi', acc: '25343', api: process.env.CITI_API! },
-  { name: 'JP Morgan', acc: '93523', api: process.env.JP_API! },
-  { name: 'Goldman', acc: '10343', api: process.env.GOLDMAN_API! },
-  { name: 'Barclays', acc: '84632', api: process.env.BARCLAYS_API! },
-  { name: 'BNY Mellon', acc: '45634', api: process.env.BNY_API! },
-];
+import { Claim } from "./createClaims";
+import { owners } from "./owners";
 
 export const sendPromises = (groupedClaims: Record<string, Claim[]>) =>
   owners.map(async (el) => {
@@ -14,15 +7,15 @@ export const sendPromises = (groupedClaims: Record<string, Claim[]>) =>
     if (claims && claims.length > 0) {
       try {
         const response = await fetch(el.api, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(claims),
         });
         if (!response.ok) {
           console.error(
-            `Failed to send claims for owner ${el.name}: ${response.statusText}`
+            `Failed to send claims for owner ${el.name}: ${response.statusText}`,
           );
         }
       } catch (error) {

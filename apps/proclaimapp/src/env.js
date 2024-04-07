@@ -37,6 +37,10 @@ export const env = createEnv({
     PROCHAIN_DEPOSITORY_CONTRACT: z.string(),
     PROCHAIN_ID: z.string(),
     PROCHAIN_RPC_URL: z.string(),
+    HUB_API: z.string(),
+    ACCOUNT: z.string(),
+    USD_CONTRACT: z.string(),
+    EUR_CONTRACT: z.string(),
   },
 
   /**
@@ -66,6 +70,10 @@ export const env = createEnv({
     PROCHAIN_DEPOSITORY_CONTRACT: process.env.PROCHAIN_DEPOSITORY_CONTRACT,
     PROCHAIN_ID: process.env.PROCHAIN_ID,
     PROCHAIN_RPC_URL: process.env.PROCHAIN_RPC_URL,
+    HUB_API: process.env.HUB_API,
+    ACCOUNT: process.env.ACCOUNT,
+    USD_CONTRACT: process.env.USD_CONTRACT,
+    EUR_CONTRACT: process.env.EUR_CONTRACT,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

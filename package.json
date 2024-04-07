@@ -10,10 +10,10 @@
     "deploy": "cd packages/proclaim && npx thirdweb deploy"
   },
   "devDependencies": {
-    "tsconfig": "*",
     "concurrently": "^8.2.2",
     "dotenv-cli": "latest",
     "prettier": "^3.2.5",
+    "tsconfig": "*",
     "turbo": "latest"
   },
   "engines": {
@@ -25,6 +25,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "proclaim": "^0.0.1"
+    "proclaim": "^0.0.1",
+    "stream": "^0.0.2"
   }
 }
