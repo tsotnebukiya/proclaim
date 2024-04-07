@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/generateclaims",
+      "schedule": "00 08,20 * * *"
+    }
+  ]
+}

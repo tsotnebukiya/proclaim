@@ -1,0 +1,24 @@
+{
+  "name": "proclaim",
+  "exports": {
+    ".": "./index.ts",
+    "./contractFunctions": "./functions/bankcontract.ts",
+    "./depositoryFunctions": "./functions/depository.ts",
+    "./tokenFunctions": "./functions/token.ts"
+  },
+  "version": "0.0.1",
+  "scripts": {
+    "generateContracts": "npx thirdweb generate",
+    "deployContracts": "npx thirdweb deploy"
+  },
+  "dependencies": {
+    "thirdweb": "^5.2.0"
+  },
+  "tsconfig": "*",
+  "devDependencies": {
+    "typescript": "^5.4.2",
+    "@thirdweb-dev/contracts": "^3.8.0",
+    "@matterlabs/hardhat-zksync-solc": "^0.3.17",
+    "hardhat": "^2.13.0"
+  }
+}

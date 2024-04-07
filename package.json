@@ -1,0 +1,30 @@
+{
+  "name": "proclaim-turborepo",
+  "private": true,
+  "scripts": {
+    "build": "dotenv -- turbo build",
+    "dev": "dotenv -- turbo dev",
+    "lint": "dotenv -- turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "generate": "cd packages/proclaim && npx thirdweb generate",
+    "deploy": "cd packages/proclaim && npx thirdweb deploy"
+  },
+  "devDependencies": {
+    "tsconfig": "*",
+    "concurrently": "^8.2.2",
+    "dotenv-cli": "latest",
+    "prettier": "^3.2.5",
+    "turbo": "latest"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@10.2.3",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "proclaim": "^0.0.1"
+  }
+}
