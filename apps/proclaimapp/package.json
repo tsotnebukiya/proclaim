@@ -38,7 +38,6 @@
     "@trpc/react-query": "next",
     "@trpc/server": "next",
     "axios": "^1.6.8",
-    "crypto": "^1.0.1",
     "env-cmd": "^10.1.0",
     "ethers": "^5.7.2",
     "next": "^14.1.3",

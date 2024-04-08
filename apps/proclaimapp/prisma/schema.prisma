@@ -55,6 +55,8 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    ClaimsCreated Claim[]   @relation("ClaimsCreated")
+    ClaimsSettled Claim[]   @relation("ClaimsSettled")
 }
 
 model VerificationToken {
@@ -68,6 +70,11 @@ model VerificationToken {
 enum ClaimType {
     Payable
     Receivable
+}
+
+enum SysUser {
+    SYSTEM
+    USER
 }
 
 model Claim {
@@ -85,12 +92,20 @@ model Claim {
     owner                     String
     market                    String
     settled                   Boolean
+    createdBy                 SysUser   @default(SYSTEM)
+    settledBy                 SysUser   @default(SYSTEM)
     encryptedClaimData        String
     hash                      String?   @unique
     transaction               String?
     settledDate               DateTime?
     createdDate               DateTime
     type                      ClaimType
+    userCreateId              String?
+    userSettleId              String?
+    creator                   User?     @relation("ClaimsCreated", fields: [creatorId], references: [id])
+    settler                   User?     @relation("ClaimsSettled", fields: [settlerId], references: [id])
+    creatorId                 String?
+    settlerId                 String?
 
     @@map("dummy_claims")
 }

@@ -1,7 +1,8 @@
-import { toHex } from "thirdweb";
+import { keccak256 } from "thirdweb";
 
 export function generateHash(claimString: string): string {
-  return toHex(`0x${claimString}`);
+  const string = claimString as `0x${string}`;
+  return keccak256(string);
 }
 
 export function dummyEncrypt(message: string): string {

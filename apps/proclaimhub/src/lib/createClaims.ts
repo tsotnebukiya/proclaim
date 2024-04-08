@@ -83,13 +83,14 @@ export function generateDummyClaimsData(lastRefRedis: number): {
   const dummyClaimsData: Claim[] = [];
   const owners = ["25343", "93523", "10343", "84632", "45634"];
   let lastReference = lastRefRedis;
-  owners.forEach((el) => {
-    const owner = el;
-    owners.forEach((el) => {
-      const counterparty = el;
+  for (let i = 0; i < owners.length; i++) {
+    const owner = owners[i];
+
+    for (let j = i + 1; j < owners.length; j++) {
+      const counterparty = owners[j];
       const { claims, lastRef } = generateClaims(
-        owner,
-        counterparty,
+        owner!,
+        counterparty!,
         lastReference,
       );
       lastReference = lastRef;
@@ -107,8 +108,9 @@ export function generateDummyClaimsData(lastRefRedis: number): {
       });
 
       dummyClaimsData.push(...claims, ...counterpartyClaims);
-    });
-  });
+    }
+  }
+
   return { dummyClaimsData, lastReference };
 }
 
@@ -119,7 +121,7 @@ export function groupClaimsByOwner(claims: Claim[]): Record<string, Claim[]> {
     if (!claimsByOwner[claim.owner]) {
       claimsByOwner[claim.owner] = [];
     }
-    claimsByOwner[claim.owner]?.push(claim);
+    claimsByOwner[claim.owner]!.push(claim);
   });
 
   return claimsByOwner;

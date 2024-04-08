@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      ethers:
+        specifier: ^5.7.2
+        version: 5.7.2
       proclaim:
         specifier: ^0.0.1
         version: link:packages/proclaim
@@ -63,9 +66,6 @@ importers:
       axios:
         specifier: ^1.6.8
         version: 1.6.8
-      crypto:
-        specifier: ^1.0.1
-        version: 1.0.1
       env-cmd:
         specifier: ^10.1.0
         version: 10.1.0
@@ -212,16 +212,19 @@ importers:
 
   packages/proclaim:
     dependencies:
+      '@thirdweb-dev/contracts':
+        specifier: ^3.8.0
+        version: 3.13.0
       thirdweb:
         specifier: ^5.2.0
         version: 5.3.0(@types/react-dom@18.2.24)(@types/react@18.2.74)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.4)(zod@3.22.4)
+      zksync-web3:
+        specifier: ^0.14.3
+        version: 0.14.4(ethers@5.7.2)
     devDependencies:
       '@matterlabs/hardhat-zksync-solc':
         specifier: ^0.3.17
         version: 0.3.17(hardhat@2.22.2)
-      '@thirdweb-dev/contracts':
-        specifier: ^3.8.0
-        version: 3.13.0
       hardhat:
         specifier: ^2.13.0
         version: 2.22.2(typescript@5.4.4)
@@ -1173,8 +1176,8 @@ packages:
       fastq: 1.17.1
     dev: true
 
-  /@nomicfoundation/edr-darwin-arm64@0.3.3:
-    resolution: {integrity: sha512-E9VGsUD+1Ga4mn/5ooHsMi8JEfhZbKP6CXN/BhJ8kXbIC10NqTD1RuhCKGRtYq4vqH/3Nfq25Xg8E8RWOF4KBQ==}
+  /@nomicfoundation/edr-darwin-arm64@0.3.4:
+    resolution: {integrity: sha512-tjavrUFLWnkn0PI+jk0D83hP2jjbmeXT1QLd5NtIleyGrJ00ZWVl+sfuA2Lle3kzfOceoI2VTR0n1pZB4KJGbQ==}
     engines: {node: '>= 18'}
     cpu: [arm64]
     os: [darwin]
@@ -1182,8 +1185,8 @@ packages:
     dev: true
     optional: true
 
-  /@nomicfoundation/edr-darwin-x64@0.3.3:
-    resolution: {integrity: sha512-vkZXZ1ydPg+Ijb2iyqENA+KCkxGTCUWG5itCSliiA0Li2YE7ujDMGhheEpFp1WVlZadviz0bfk1rZXbCqlirpg==}
+  /@nomicfoundation/edr-darwin-x64@0.3.4:
+    resolution: {integrity: sha512-dXO0vlIoBosp8gf5/ah3dESMymjwit0Daef1E4Ew3gZ8q3LAdku0RC+YEQJi9f0I3QNfdgIrBTzibRZUoP+kVA==}
     engines: {node: '>= 18'}
     cpu: [x64]
     os: [darwin]
@@ -1191,8 +1194,8 @@ packages:
     dev: true
     optional: true
 
-  /@nomicfoundation/edr-linux-arm64-gnu@0.3.3:
-    resolution: {integrity: sha512-gdIg0Yj1qqS9wVuywc5B/+DqKylfUGB6/CQn/shMqwAfsAVAVpchkhy66PR+REEx7fh/GkNctxLlENXPeLzDiA==}
+  /@nomicfoundation/edr-linux-arm64-gnu@0.3.4:
+    resolution: {integrity: sha512-dv38qmFUaqkkeeA9S0JjerqruytTfHav7gbPLpZUAEXPlJGo49R0+HQxd45I0msbm6NAXbkmKEchTLApp1ohaA==}
     engines: {node: '>= 18'}
     cpu: [arm64]
     os: [linux]
@@ -1200,8 +1203,8 @@ packages:
     dev: true
     optional: true
 
-  /@nomicfoundation/edr-linux-arm64-musl@0.3.3:
-    resolution: {integrity: sha512-AXZ08MFvhNeBZbOBNmz1SJ/DMrMOE2mHEJtaNnsctlxIunjxfrWww4q+WXB34jbr9iaVYYlPsaWe5sueuw6s3Q==}
+  /@nomicfoundation/edr-linux-arm64-musl@0.3.4:
+    resolution: {integrity: sha512-CfEsb6gdCMVIlRSpWYTxoongEKHB60V6alE/y8mkfjIo7tA95wyiuvCtyo3fpiia3wQV7XoMYgIJHObHiKLKtA==}
     engines: {node: '>= 18'}
     cpu: [arm64]
     os: [linux]
@@ -1209,8 +1212,8 @@ packages:
     dev: true
     optional: true
 
-  /@nomicfoundation/edr-linux-x64-gnu@0.3.3:
-    resolution: {integrity: sha512-xElOs1U+E6lBLtv1mnJ+E8nr2MxZgKiLo8bZAgBboy9odYtmkDVwhMjtsFKSuZbGxFtsSyGRT4cXw3JAbtUDeA==}
+  /@nomicfoundation/edr-linux-x64-gnu@0.3.4:
+    resolution: {integrity: sha512-V0CpJA2lYWulgTR+zP11ftBAEwkpMAAki/AuMu3vd7HoPfjwIDzWDQR5KFU17qFmqAVz0ICRxsxDlvvBZ/PUxA==}
     engines: {node: '>= 18'}
     cpu: [x64]
     os: [linux]
@@ -1218,8 +1221,8 @@ packages:
     dev: true
     optional: true
 
-  /@nomicfoundation/edr-linux-x64-musl@0.3.3:
-    resolution: {integrity: sha512-2Fe6gwm1RAGQ/PfMYiaSba2OrFp8zzYWh+am9lYObOFjV9D+A1zhIzfy0UC74glPks5eV8eY4pBPrVR042m2Nw==}
+  /@nomicfoundation/edr-linux-x64-musl@0.3.4:
+    resolution: {integrity: sha512-0sgTrwZajarukerU/QSb+oRdlQLnJdd7of8OlXq2wtpeTNTqemgCOwY2l2qImbWboMpVrYgcmGbINXNVPCmuJw==}
     engines: {node: '>= 18'}
     cpu: [x64]
     os: [linux]
@@ -1227,8 +1230,8 @@ packages:
     dev: true
     optional: true
 
-  /@nomicfoundation/edr-win32-arm64-msvc@0.3.3:
-    resolution: {integrity: sha512-8NHyxIsFrl0ufSQ/ErqF2lKIa/gz1gaaa1a2vKkDEqvqCUcPhBTYhA5NHgTPhLETFTnCFr0z+YbctFCyjh4qrA==}
+  /@nomicfoundation/edr-win32-arm64-msvc@0.3.4:
+    resolution: {integrity: sha512-bOl3vhMtV0W9ozUMF5AZRBWw1183hhhx+e1YJdDLMaqNkBUFYi2CZbMYefDylq2OKQtOQ0gPLhZvn+z2D21Ztw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
@@ -1236,8 +1239,8 @@ packages:
     dev: true
     optional: true
 
-  /@nomicfoundation/edr-win32-ia32-msvc@0.3.3:
-    resolution: {integrity: sha512-0F6hM0kGia4dQVb/kauho9JcP1ozWisY2/She+ISR5ceuhzmAwQJluM0g+0TYDME0LtxBxiMPq/yPiZMQeq31w==}
+  /@nomicfoundation/edr-win32-ia32-msvc@0.3.4:
+    resolution: {integrity: sha512-yKQCpAX0uB2dalsSwOkau3yfNXkwBJa/Ks2OPl9AjHqJ+E8AqvBEB9jRpfQrdPzElMsgZuN4mqE+wh+JxY+0Aw==}
     engines: {node: '>= 18'}
     cpu: [ia32]
     os: [win32]
@@ -1245,8 +1248,8 @@ packages:
     dev: true
     optional: true
 
-  /@nomicfoundation/edr-win32-x64-msvc@0.3.3:
-    resolution: {integrity: sha512-d75q1uaMb6z9i+GQZoblbOfFBvlBnWc+5rB13UWRkCOJSnoYwyFWhGJx5GeM59gC7aIblc5VD9qOAhHuvM9N+w==}
+  /@nomicfoundation/edr-win32-x64-msvc@0.3.4:
+    resolution: {integrity: sha512-fResvsL/fSucep1K5W6iOs8lqqKKovHLsAmigMzAYVovqkyZKgCGVS/D8IVxA0nxuGCOlNxFnVmwWtph3pbKWA==}
     engines: {node: '>= 18'}
     cpu: [x64]
     os: [win32]
@@ -1254,19 +1257,19 @@ packages:
     dev: true
     optional: true
 
-  /@nomicfoundation/edr@0.3.3:
-    resolution: {integrity: sha512-zP+e+3B1nEUx6bW5BPnIzCQbkhmYfdMBJdiVggTqqTfAA82sOkdOG7wsOMcz5qF3fYfx/irNRM1kgc9HVFIbpQ==}
+  /@nomicfoundation/edr@0.3.4:
+    resolution: {integrity: sha512-e4jzVeJ+VTKBFzNgKDbSVnGVbHYNZHIfMdgifQBugXPiIa6QEUzZqleh2+y4lhkXcCthnFyrTYe3jiEpUzr3cA==}
     engines: {node: '>= 18'}
     optionalDependencies:
-      '@nomicfoundation/edr-darwin-arm64': 0.3.3
-      '@nomicfoundation/edr-darwin-x64': 0.3.3
-      '@nomicfoundation/edr-linux-arm64-gnu': 0.3.3
-      '@nomicfoundation/edr-linux-arm64-musl': 0.3.3
-      '@nomicfoundation/edr-linux-x64-gnu': 0.3.3
-      '@nomicfoundation/edr-linux-x64-musl': 0.3.3
-      '@nomicfoundation/edr-win32-arm64-msvc': 0.3.3
-      '@nomicfoundation/edr-win32-ia32-msvc': 0.3.3
-      '@nomicfoundation/edr-win32-x64-msvc': 0.3.3
+      '@nomicfoundation/edr-darwin-arm64': 0.3.4
+      '@nomicfoundation/edr-darwin-x64': 0.3.4
+      '@nomicfoundation/edr-linux-arm64-gnu': 0.3.4
+      '@nomicfoundation/edr-linux-arm64-musl': 0.3.4
+      '@nomicfoundation/edr-linux-x64-gnu': 0.3.4
+      '@nomicfoundation/edr-linux-x64-musl': 0.3.4
+      '@nomicfoundation/edr-win32-arm64-msvc': 0.3.4
+      '@nomicfoundation/edr-win32-ia32-msvc': 0.3.4
+      '@nomicfoundation/edr-win32-x64-msvc': 0.3.4
     dev: true
 
   /@nomicfoundation/ethereumjs-common@4.0.4:
@@ -1430,9 +1433,11 @@ packages:
 
   /@openzeppelin/contracts-upgradeable@4.9.6:
     resolution: {integrity: sha512-m4iHazOsOCv1DgM7eD7GupTJ+NFVujRZt1wzddDPSVGpWdKq1SKkla5htKG7+IS4d2XOCtzkUNwRZ7Vq5aEUMA==}
+    dev: false
 
   /@openzeppelin/contracts@4.9.6:
     resolution: {integrity: sha512-xSmezSupL+y9VkHZJGDoCBpmnB2ogM13ccaYDWqJTfS3dbuHkgjuwDFUmaFauBCboQMGB/S5UqUl2y54X99BmA==}
+    dev: false
 
   /@panva/hkdf@1.1.1:
     resolution: {integrity: sha512-dhPeilub1NuIG0X5Kvhh9lH4iW3ZsHlnzwgwbOlgwQ2wG1IqFzsgHqmKPk3WzsdWAeaxKJxgM0+W433RmN45GA==}
@@ -2378,10 +2383,12 @@ packages:
       '@openzeppelin/contracts-upgradeable': 4.9.6
       '@thirdweb-dev/dynamic-contracts': 1.2.5
       erc721a-upgradeable: 3.3.0
+    dev: false
 
   /@thirdweb-dev/dynamic-contracts@1.2.5:
     resolution: {integrity: sha512-YVsz+jUWbwj+6aF2eTZGMfyw47a1HRmgNl4LQ3gW9gwYL5y5+OX/yOzv6aV5ibvoqCk/k10aIVK2eFrcpMubQA==}
     engines: {node: '>=18.0.0'}
+    dev: false
 
   /@trpc/client@11.0.0-rc.332(@trpc/server@11.0.0-rc.332):
     resolution: {integrity: sha512-f9vpTwAZWI5VvbLDq22nzQI94Pe7nlt/SJH2PC/KzOheNoSxm+CoQ1PjriMPUePr69GjxG0OOGH8RDWG+vseKw==}
@@ -4105,11 +4112,6 @@ packages:
       randomfill: 1.0.4
     dev: false
 
-  /crypto@1.0.1:
-    resolution: {integrity: sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==}
-    deprecated: This package is no longer supported. It's now a built-in Node module. If you've depended on crypto, you should switch to the one that's built-in.
-    dev: false
-
   /cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
@@ -4470,6 +4472,7 @@ packages:
     resolution: {integrity: sha512-ILE0SjKuvhx+PABG0A/41QUp0MFiYmzrgo71htQ0Ov6JfDOmgUzGxDW8gZuYfKrdlYjNwSAqMpUFWBbyW3sWBA==}
     dependencies:
       '@openzeppelin/contracts-upgradeable': 4.9.6
+    dev: false
 
   /error-ex@1.3.2:
     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
@@ -5139,6 +5142,7 @@ packages:
 
   /file-uri-to-path@1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
+    requiresBuild: true
     dev: false
 
   /fill-range@7.0.1:
@@ -5472,7 +5476,7 @@ packages:
     dependencies:
       '@ethersproject/abi': 5.7.0
       '@metamask/eth-sig-util': 4.0.1
-      '@nomicfoundation/edr': 0.3.3
+      '@nomicfoundation/edr': 0.3.4
       '@nomicfoundation/ethereumjs-common': 4.0.4
       '@nomicfoundation/ethereumjs-tx': 5.0.4
       '@nomicfoundation/ethereumjs-util': 9.0.4
@@ -7529,7 +7533,7 @@ packages:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
     hasBin: true
     dependencies:
-      glob: 7.2.0
+      glob: 7.2.3
     dev: true
 
   /rimraf@3.0.2:
@@ -9005,6 +9009,15 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  /zksync-web3@0.14.4(ethers@5.7.2):
+    resolution: {integrity: sha512-kYehMD/S6Uhe1g434UnaMN+sBr9nQm23Ywn0EUP5BfQCsbjcr3ORuS68PosZw8xUTu3pac7G6YMSnNHk+fwzvg==}
+    deprecated: This package has been deprecated in favor of zksync-ethers@5.0.0
+    peerDependencies:
+      ethers: ^5.7.0
+    dependencies:
+      ethers: 5.7.2
+    dev: false
 
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}

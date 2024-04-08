@@ -1,13 +1,14 @@
 {
   "name": "proclaim-turborepo",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "dotenv -- turbo build",
     "dev": "dotenv -- turbo dev",
     "lint": "dotenv -- turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "generate": "cd packages/proclaim && npx thirdweb generate",
-    "deploy": "cd packages/proclaim && npx thirdweb deploy"
+    "deploy": "cd packages/proclaim && npx thirdweb@latest deploy"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
@@ -25,6 +26,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "ethers": "^5.7.2",
     "proclaim": "^0.0.1",
     "stream": "^0.0.2"
   }

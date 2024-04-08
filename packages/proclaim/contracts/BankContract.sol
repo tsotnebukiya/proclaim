@@ -73,8 +73,9 @@ contract CitiClaims {
         );
 
         for (uint i = 0; i < claimIdentifiers.length; i++) {
-            require(claims[claimIdentifiers[i]].counterpartyAddress == address(0), "Claim already exists.");
-
+             if (claims[claimIdentifiers[i]].counterpartyAddress != address(0)) {
+            continue;
+        }
             claims[claimIdentifiers[i]] = Claim({
                 encryptedClaimData: encryptedClaimDatas[i],
                 amountOwed: amountsOwed[i],
