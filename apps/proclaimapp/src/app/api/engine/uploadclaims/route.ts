@@ -1,11 +1,3 @@
-import { DummyClaimsArraySchema } from "@/lib/schemas";
-import { db } from "@/server/db";
-import processDummy from "@/lib/processDummy";
-import { allKeys, getBankDetails, name } from "proclaim/depositoryFunctions";
-import { depositoryContract } from "proclaim";
-import { env } from "@/env";
-import { z } from "zod";
-import axios from "axios";
 import { NextResponse } from "next/server";
 import { uploadClaims } from "@/lib/uploadClaims";
 

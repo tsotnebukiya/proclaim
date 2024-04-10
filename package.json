@@ -6,6 +6,8 @@
     "build": "dotenv -- turbo build",
     "dev": "dotenv -- turbo dev",
     "lint": "dotenv -- turbo lint",
+    "dbGenerate": "cd apps/proclaimapp && npx prisma generate",
+    "dbPush": "cd apps/proclaimapp && pnpm run db:push",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "generate": "cd packages/proclaim && npx thirdweb generate",
     "deploy": "cd packages/proclaim && npx thirdweb@latest deploy"
@@ -27,6 +29,7 @@
   ],
   "dependencies": {
     "ethers": "^5.7.2",
+    "pino-pretty": "^11.0.0",
     "proclaim": "^0.0.1",
     "stream": "^0.0.2"
   }

@@ -1,9 +1,9 @@
 import { Claim } from "./createClaims";
-import { owners } from "./owners";
+import { accounts } from "./owners";
 
 export const sendPromises = (groupedClaims: Record<string, Claim[]>) =>
-  owners.map(async (el) => {
-    const claims = groupedClaims[el.acc];
+  accounts.map(async (el) => {
+    const claims = groupedClaims[el.name];
     if (claims && claims.length > 0) {
       try {
         const response = await fetch(`${el.api}/engine/dummyclaims`, {

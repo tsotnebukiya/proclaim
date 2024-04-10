@@ -1,42 +1,37 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getBankDetails } from "proclaim/depositoryFunctions";
-import { mint } from "proclaim/tokenFunctions";
-import {
-  GetBankDetails,
-  depositoryContract,
-  tokenContract,
-  wallet,
-} from "proclaim";
+import { isApproved, mint, balanceOf } from "proclaim/tokenFunctions";
+import { tokenContract, wallet } from "proclaim";
 import { sendAndConfirmTransaction } from "thirdweb";
-
-export const runtime = "edge";
+import { env } from "@/env";
+import { createThirdwebClient, defineChain } from "thirdweb";
+import { proChain } from "proclaim";
 
 const schema = z.object({
-  account: z.number(),
   amount: z.number(),
-  market: z.string(),
+  ethAddress: z.string(),
   currency: z.enum(["EUR", "USD"]),
 });
+
 export async function POST(req: Request) {
   const object: unknown = await req.json();
+  console.log(object);
   try {
-    const { account, amount, market, currency } = schema.parse(object);
-    const res = (await getBankDetails({
-      contract: depositoryContract,
-      accountNumber: BigInt(account),
-      market: market,
-    })) as unknown;
-    const result = res as GetBankDetails;
+    const { amount, currency, ethAddress } = schema.parse(object);
+    await balanceOf({
+      account: ethAddress,
+      contract: tokenContract(currency),
+    });
     const mintTransaction = mint({
       contract: tokenContract(currency),
-      amount: BigInt(amount * 100),
-      recipient: result.ethAddress,
+      amount: BigInt(amount),
+      recipient: ethAddress,
     });
     const { transactionHash, status } = await sendAndConfirmTransaction({
       transaction: mintTransaction,
       account: wallet,
     });
+
     if (status === "reverted") {
       return NextResponse.json({ message: "Error" }, { status: 500 });
     }

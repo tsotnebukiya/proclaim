@@ -19,8 +19,7 @@ export async function POST(req: Request) {
   try {
     const receivedData = schema.parse(object);
     const res = await axios.post(`${env.HUB_API}/minttoken`, {
-      market: "EUR",
-      account: parseInt(env.ACCOUNT),
+      ethAddress: env.ETH_ADDRESS,
       ...receivedData,
     });
     if (res.status !== 200) {

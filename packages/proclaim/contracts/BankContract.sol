@@ -47,12 +47,11 @@ contract CitiClaims {
         address depositoryContractAddress, 
         string memory market, 
         uint accountNumber, 
-        address ethAddress,
         string memory publicKey
         ) {
         owner = msg.sender;
         bankDepository = IBankDepository(depositoryContractAddress);
-        bankDepository.registerBank(market, accountNumber,ethAddress, address(this), publicKey);
+        bankDepository.registerBank(market, accountNumber, owner, address(this), publicKey);
         tokenAddresses["USDt"] = bankDepository.getTokenAddress("USDt");
         tokenAddresses["EURt"] = bankDepository.getTokenAddress("EURt");
     }
@@ -88,30 +87,61 @@ contract CitiClaims {
         }
     }
 
+    function addClaim(
+        bytes32 claimIdentifier,
+        string memory encryptedClaimData,
+        uint256 amountOwed,
+        address counterpartyAddress,
+        string memory tokenName
+        ) public onlyOwner {
+        require(claims[claimIdentifier].counterpartyAddress == address(0), "Claim already exists.");
+
+        claims[claimIdentifier] = Claim({
+            encryptedClaimData: encryptedClaimData,
+            amountOwed: amountOwed,
+            isSettled: false,
+            counterpartyAddress: counterpartyAddress,
+            tokenName: tokenName
+        });
+
+        claimHashes.push(claimIdentifier);
+        emit ClaimAdded(claimIdentifier, amountOwed, counterpartyAddress, tokenName);
+    }
+
+
     function settleClaims(bytes32[] calldata claimIdentifiers) external {
         bool insufficientUsdtBalance = false;
         bool insufficientEurtBalance = false;
 
         for (uint i = 0; i < claimIdentifiers.length; i++) {
-            bytes32 claimIdentifier = claimIdentifiers[i];
-            Claim storage claim = claims[claimIdentifier];
-            if (claim.isSettled || claim.counterpartyAddress != msg.sender) {
-                continue; // Skip already settled claims or if caller is not the counterparty
-            }
+        bytes32 claimIdentifier = claimIdentifiers[i];
+        Claim storage claim = claims[claimIdentifier];
 
-            address tokenAddress = tokenAddresses[claim.tokenName];
+        if (claim.isSettled) {
+            emit SettlementError(claimIdentifier, "Claim already settled.");
+            continue; // Skip already settled claims
+        }
+
+        if (claim.counterpartyAddress != msg.sender) {
+            emit SettlementError(claimIdentifier, "Caller is not the counterparty.");
+            continue; // Skip if caller is not the counterparty
+        }
+
+        address tokenAddress = tokenAddresses[claim.tokenName];
+
         if (tokenAddress == address(0)) {
             emit SettlementError(claimIdentifier, "Unsupported token");
             continue; // Skip unsupported tokens
         }
 
-            IToken token = IToken(tokenAddress);
+        IToken token = IToken(tokenAddress);
+
         if (!token.isApproved(msg.sender, address(this))) {
             emit SettlementError(claimIdentifier, "BankContract not approved to transfer tokens.");
             continue;
         }
 
-            uint256 balance = token.balanceOf(msg.sender);
+        uint256 balance = token.balanceOf(msg.sender);
 
         if (balance < claim.amountOwed) {
             if (keccak256(bytes(claim.tokenName)) == keccak256(bytes("USDt"))) {
@@ -121,14 +151,18 @@ contract CitiClaims {
             }
             continue;
         }
-            bool success = token.transferFrom(msg.sender,owner, claim.amountOwed);
+
+        bool success = token.transferFrom(msg.sender,owner, claim.amountOwed);
+
         if (!success) {
             emit SettlementError(claimIdentifier, "Token transfer failed");
             continue;
         }
-            claim.isSettled = true;
-            emit ClaimSettled(claimIdentifier, claim.amountOwed, msg.sender, claim.tokenName);
+
+        claim.isSettled = true;
+        emit ClaimSettled(claimIdentifier, claim.amountOwed, msg.sender, claim.tokenName);
         }
+
         if (insufficientUsdtBalance) {
             emit SettlementError(0, "Insufficient USDt balance for some claims.");
                 }

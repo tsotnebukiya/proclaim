@@ -1,3 +1,5 @@
+import { accounts } from "./owners";
+
 export interface Claim {
   tradeReference: string;
   corporateAction: string;
@@ -18,6 +20,7 @@ function generateClaims(
   own: string,
   cp1: string,
   lastTradeRef: number,
+  market: string,
 ): { claims: Claim[]; lastRef: number } {
   let lastRef = lastTradeRef++;
   const claims: Claim[] = [];
@@ -55,7 +58,6 @@ function generateClaims(
         : quantity;
     const counterparty = cp1;
     const owner = own;
-    const market = "EUR";
     const type = Math.random() < 0.5 ? "Payable" : "Receivable";
     claims.push({
       tradeReference: tradeReference.toString(),
@@ -76,12 +78,15 @@ function generateClaims(
   return { claims, lastRef };
 }
 
-export function generateDummyClaimsData(lastRefRedis: number): {
+export function generateDummyClaimsData(
+  lastRefRedis: number,
+  market: string,
+  owners: string[],
+): {
   dummyClaimsData: Claim[];
   lastReference: number;
 } {
   const dummyClaimsData: Claim[] = [];
-  const owners = ["25343", "93523", "10343", "84632", "45634"];
   let lastReference = lastRefRedis;
   for (let i = 0; i < owners.length; i++) {
     const owner = owners[i];
@@ -92,6 +97,7 @@ export function generateDummyClaimsData(lastRefRedis: number): {
         owner!,
         counterparty!,
         lastReference,
+        market,
       );
       lastReference = lastRef;
       const counterpartyClaims = claims.map((claim) => {
@@ -118,10 +124,13 @@ export function groupClaimsByOwner(claims: Claim[]): Record<string, Claim[]> {
   const claimsByOwner: Record<string, Claim[]> = {};
 
   claims.forEach((claim) => {
-    if (!claimsByOwner[claim.owner]) {
-      claimsByOwner[claim.owner] = [];
+    const name = accounts.find(
+      (el) => el.icsd === claim.owner || el.us === claim.owner,
+    )?.name!;
+    if (!claimsByOwner[name]) {
+      claimsByOwner[name] = [];
     }
-    claimsByOwner[claim.owner]!.push(claim);
+    claimsByOwner[name]!.push(claim);
   });
 
   return claimsByOwner;
