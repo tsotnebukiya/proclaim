@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
-import { uploadClaims } from "@/lib/uploadClaims";
+import { uploadClaims } from "@/server/lib/claims/uploadClaims";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   try {
-    const hey = await uploadClaims();
-    return NextResponse.json({ message: "SUccess" }, { status: 200 });
+    const result = await uploadClaims();
+    return NextResponse.json({ message: "Success", result }, { status: 200 });
   } catch (error) {
     const err = error as { message?: string };
     const errorMessage = err.message ? err.message : "An error occured.";

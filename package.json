@@ -8,6 +8,7 @@
     "lint": "dotenv -- turbo lint",
     "dbGenerate": "cd apps/proclaimapp && npx prisma generate",
     "dbPush": "cd apps/proclaimapp && pnpm run db:push",
+    "studio": "cd apps/proclaimapp && pnpm run studio",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "generate": "cd packages/proclaim && npx thirdweb generate",
     "deploy": "cd packages/proclaim && npx thirdweb@latest deploy"

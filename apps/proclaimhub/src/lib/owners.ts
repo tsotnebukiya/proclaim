@@ -19,10 +19,4 @@ export const accounts = [
     api: env.GOLDMAN_API,
     name: "goldman",
   },
-  {
-    icsd: "45555",
-    us: "44444",
-    api: env.BNY_API,
-    name: "bny",
-  },
 ];

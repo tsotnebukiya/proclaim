@@ -6,7 +6,7 @@ export const sendPromises = (groupedClaims: Record<string, Claim[]>) =>
     const claims = groupedClaims[el.name];
     if (claims && claims.length > 0) {
       try {
-        const response = await fetch(`${el.api}/engine/dummyclaims`, {
+        const response = await fetch(`${el.api}/engine/claims/dummyclaims`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

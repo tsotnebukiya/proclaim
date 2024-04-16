@@ -14,6 +14,7 @@ export interface Claim {
   owner: string;
   market: string;
   type: "Payable" | "Receivable";
+  currency: string;
 }
 
 function generateClaims(
@@ -59,6 +60,7 @@ function generateClaims(
     const counterparty = cp1;
     const owner = own;
     const type = Math.random() < 0.5 ? "Payable" : "Receivable";
+    const currency = Math.random() < 0.5 ? "USDt" : "EURt";
     claims.push({
       tradeReference: tradeReference.toString(),
       corporateAction,
@@ -73,6 +75,7 @@ function generateClaims(
       counterparty,
       market,
       type,
+      currency,
     });
   }
   return { claims, lastRef };

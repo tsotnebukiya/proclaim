@@ -20,3 +20,22 @@ export function dummyDecrypt(encryptedMessage: string): string {
     .join("");
   return decrypted;
 }
+
+export function matchEncryptedData(data: string, data1: string): boolean {
+  console.log(data);
+  let fields = data.split(";");
+  if (fields.length !== 14) {
+    throw new Error("Invalid data format");
+  }
+  const temp = fields[9];
+  fields[9] = fields[10] ?? "";
+  fields[10] = temp ?? "";
+  fields[13] = fields[13] === "Payable" ? "Receivable" : "Payable";
+  const newData = fields.join(";");
+  return newData === data1;
+}
+export function delay(seconds: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, seconds * 1000);
+  });
+}

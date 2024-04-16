@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-contract EURtToken {
-    string public constant name = "EURt Token";
-    string public constant symbol = "EURt";
+contract StableCoin {
+    string public constant name = "USDtToken";
+    string public constant symbol = "USDt";
     uint8 public constant decimals = 2;
 
     mapping(address => uint256) private balances;

@@ -82,6 +82,7 @@ model Team {
     market          String
     account         Int
     contractAddress String
+    name            String
     Claim           Claim[]
 
     @@map("teams")
@@ -98,10 +99,12 @@ model Claim {
     contractualSettlementDate String
     actualSettlementDate      String
     amount                    Float
+    currency                  String
     counterparty              String
     owner                     String
     market                    String
-    settled                   Boolean
+    uploaded                  Boolean   @default(false)
+    settled                   Boolean   @default(false)
     createdBy                 SysUser   @default(SYSTEM)
     settledBy                 SysUser   @default(SYSTEM)
     encryptedClaimData        String
@@ -116,8 +119,13 @@ model Claim {
     settler                   User?     @relation("ClaimsSettled", fields: [settlerId], references: [id])
     creatorId                 String?
     settlerId                 String?
-    teamId                    Int? // Foreign key to Team
-    team                      Team?     @relation(fields: [teamId], references: [id]) // Establish the relationship
+    teamId                    Int // Foreign key to Team
+    team                      Team      @relation(fields: [teamId], references: [id]) // Establish the relationship
 
     @@map("dummy_claims")
+}
+
+model Config {
+    id    Int @id @default(autoincrement())
+    nonce Int
 }

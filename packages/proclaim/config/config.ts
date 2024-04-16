@@ -1,4 +1,4 @@
-import { createThirdwebClient, defineChain } from 'thirdweb';
+import { createThirdwebClient, defineChain, getRpcClient } from 'thirdweb';
 import { prepareDirectDeployTransaction } from 'thirdweb/contract';
 import { privateKeyAccount } from 'thirdweb/wallets';
 import { bytecode } from './bytecode';
@@ -13,6 +13,8 @@ export const proChain = defineChain({
   testnet: true,
 });
 
+export const request = getRpcClient({ client, chain: proChain });
+
 export const wallet = privateKeyAccount({
   client,
   privateKey: process.env.PROCHAIN_PRIVATE_KEY!,
@@ -22,44 +24,58 @@ type DeployProps = {
   market: string;
   account: number;
   publicKey: string;
+  teamName: string;
 };
 
-export const deployContract = ({ account, market, publicKey }: DeployProps) => {
+export const deployContract = ({
+  account,
+  market,
+  publicKey,
+  teamName,
+}: DeployProps) => {
   return prepareDirectDeployTransaction({
     chain: proChain,
     client,
     bytecode: bytecode,
     constructorAbi: {
+      type: 'constructor',
+      name: '',
       inputs: [
         {
-          internalType: 'address',
-          name: 'depositoryContractAddress',
           type: 'address',
+          name: 'depositoryContractAddress',
+          internalType: 'address',
         },
         {
-          internalType: 'string',
+          type: 'string',
           name: 'market',
-          type: 'string',
-        },
-        {
-          internalType: 'uint256',
-          name: 'accountNumber',
-          type: 'uint256',
-        },
-        {
           internalType: 'string',
-          name: 'publicKey',
+        },
+        {
+          type: 'uint256',
+          name: 'accountNumber',
+          internalType: 'uint256',
+        },
+        {
           type: 'string',
+          name: 'publicKey',
+          internalType: 'string',
+        },
+        {
+          type: 'string',
+          name: 'contractName',
+          internalType: 'string',
         },
       ],
+      outputs: [],
       stateMutability: 'nonpayable',
-      type: 'constructor',
     },
     constructorParams: [
       process.env.PROCHAIN_DEPOSITORY_CONTRACT,
       market,
       account,
       publicKey,
+      teamName,
     ],
   });
 };

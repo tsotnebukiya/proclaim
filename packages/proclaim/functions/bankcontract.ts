@@ -4,18 +4,27 @@ import {
   readContract,
   type BaseTransactionOptions,
   type AbiParameterToPrimitiveType,
-} from "thirdweb";
+} from 'thirdweb';
+
+type TransactionOptionsWithNonce<T extends object = object> =
+  BaseTransactionOptions<T> & {
+    nonce?: number;
+  };
 
 /**
-* Contract events
-*/
+ * Contract events
+ */
 
 /**
  * Represents the filters for the "ClaimAdded" event.
  */
 export type ClaimAddedEventFilters = Partial<{
-  claimIdentifier: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"bytes32","name":"claimIdentifier","type":"bytes32"}>
-counterpartyAddress: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"counterpartyAddress","type":"address"}>
+  claimIdentifier: AbiParameterToPrimitiveType<{
+    indexed: true;
+    internalType: 'bytes32';
+    name: 'claimIdentifier';
+    type: 'bytes32';
+  }>;
 }>;
 
 /**
@@ -26,32 +35,35 @@ counterpartyAddress: AbiParameterToPrimitiveType<{"indexed":true,"internalType":
  * ```
  * import { getContractEvents } from "thirdweb";
  * import { claimAddedEvent } from "TODO";
- * 
+ *
  * const events = await getContractEvents({
  * contract,
  * events: [
  *  claimAddedEvent({
  *  claimIdentifier: ...,
- *  counterpartyAddress: ...,
  * })
  * ],
  * });
  * ```
- */ 
+ */
+
 export function claimAddedEvent(filters: ClaimAddedEventFilters = {}) {
   return prepareEvent({
-    signature: "event ClaimAdded(bytes32 indexed claimIdentifier, uint256 amountOwed, address indexed counterpartyAddress, string tokenName)",
+    signature: 'event ClaimAdded(bytes32 indexed claimIdentifier)',
     filters,
   });
-};
-  
+}
 
 /**
  * Represents the filters for the "ClaimSettled" event.
  */
 export type ClaimSettledEventFilters = Partial<{
-  claimIdentifier: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"bytes32","name":"claimIdentifier","type":"bytes32"}>
-counterpartyAddress: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"counterpartyAddress","type":"address"}>
+  claimIdentifier: AbiParameterToPrimitiveType<{
+    indexed: true;
+    internalType: 'bytes32';
+    name: 'claimIdentifier';
+    type: 'bytes32';
+  }>;
 }>;
 
 /**
@@ -62,31 +74,34 @@ counterpartyAddress: AbiParameterToPrimitiveType<{"indexed":true,"internalType":
  * ```
  * import { getContractEvents } from "thirdweb";
  * import { claimSettledEvent } from "TODO";
- * 
+ *
  * const events = await getContractEvents({
  * contract,
  * events: [
  *  claimSettledEvent({
  *  claimIdentifier: ...,
- *  counterpartyAddress: ...,
  * })
  * ],
  * });
  * ```
- */ 
+ */
 export function claimSettledEvent(filters: ClaimSettledEventFilters = {}) {
   return prepareEvent({
-    signature: "event ClaimSettled(bytes32 indexed claimIdentifier, uint256 amountOwed, address indexed counterpartyAddress, string tokenName)",
+    signature: 'event ClaimSettled(bytes32 indexed claimIdentifier)',
     filters,
   });
-};
-  
+}
 
 /**
  * Represents the filters for the "SettlementError" event.
  */
 export type SettlementErrorEventFilters = Partial<{
-  claimIdentifier: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"bytes32","name":"claimIdentifier","type":"bytes32"}>
+  claimIdentifier: AbiParameterToPrimitiveType<{
+    indexed: true;
+    internalType: 'bytes32';
+    name: 'claimIdentifier';
+    type: 'bytes32';
+  }>;
 }>;
 
 /**
@@ -97,7 +112,7 @@ export type SettlementErrorEventFilters = Partial<{
  * ```
  * import { getContractEvents } from "thirdweb";
  * import { settlementErrorEvent } from "TODO";
- * 
+ *
  * const events = await getContractEvents({
  * contract,
  * events: [
@@ -107,20 +122,20 @@ export type SettlementErrorEventFilters = Partial<{
  * ],
  * });
  * ```
- */ 
-export function settlementErrorEvent(filters: SettlementErrorEventFilters = {}) {
+ */
+export function settlementErrorEvent(
+  filters: SettlementErrorEventFilters = {}
+) {
   return prepareEvent({
-    signature: "event SettlementError(bytes32 indexed claimIdentifier, string reason)",
+    signature:
+      'event SettlementError(bytes32 indexed claimIdentifier, string reason)',
     filters,
   });
-};
-  
+}
 
 /**
-* Contract read functions
-*/
-
-
+ * Contract read functions
+ */
 
 /**
  * Calls the "bankDepository" function on the contract.
@@ -129,37 +144,38 @@ export function settlementErrorEvent(filters: SettlementErrorEventFilters = {}) 
  * @example
  * ```
  * import { bankDepository } from "TODO";
- * 
+ *
  * const result = await bankDepository();
- * 
+ *
  * ```
  */
-export async function bankDepository(
-  options: BaseTransactionOptions
-) {
+export async function bankDepository(options: TransactionOptionsWithNonce) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x8df0c22a",
-  [],
-  [
-    {
-      "internalType": "contract IBankDepository",
-      "name": "",
-      "type": "address"
-    }
-  ]
-],
-    params: []
+      '0x8df0c22a',
+      [],
+      [
+        {
+          internalType: 'contract IBankDepository',
+          name: '',
+          type: 'address',
+        },
+      ],
+    ],
+    params: [],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "checkIfSettled" function.
  */
 export type CheckIfSettledParams = {
-  claimIdentifier: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"claimIdentifier","type":"bytes32"}>
+  claimIdentifier: AbiParameterToPrimitiveType<{
+    internalType: 'bytes32';
+    name: 'claimIdentifier';
+    type: 'bytes32';
+  }>;
 };
 
 /**
@@ -169,45 +185,48 @@ export type CheckIfSettledParams = {
  * @example
  * ```
  * import { checkIfSettled } from "TODO";
- * 
+ *
  * const result = await checkIfSettled({
  *  claimIdentifier: ...,
  * });
- * 
+ *
  * ```
  */
 export async function checkIfSettled(
-  options: BaseTransactionOptions<CheckIfSettledParams>
+  options: TransactionOptionsWithNonce<CheckIfSettledParams>
 ) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x6abd1ade",
-  [
-    {
-      "internalType": "bytes32",
-      "name": "claimIdentifier",
-      "type": "bytes32"
-    }
-  ],
-  [
-    {
-      "internalType": "bool",
-      "name": "",
-      "type": "bool"
-    }
-  ]
-],
-    params: [options.claimIdentifier]
+      '0x6abd1ade',
+      [
+        {
+          internalType: 'bytes32',
+          name: 'claimIdentifier',
+          type: 'bytes32',
+        },
+      ],
+      [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+    ],
+    params: [options.claimIdentifier],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "claimHashes" function.
  */
 export type ClaimHashesParams = {
-  arg_0: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"","type":"uint256"}>
+  arg_0: AbiParameterToPrimitiveType<{
+    internalType: 'uint256';
+    name: '';
+    type: 'uint256';
+  }>;
 };
 
 /**
@@ -217,45 +236,48 @@ export type ClaimHashesParams = {
  * @example
  * ```
  * import { claimHashes } from "TODO";
- * 
+ *
  * const result = await claimHashes({
  *  arg_0: ...,
  * });
- * 
+ *
  * ```
  */
 export async function claimHashes(
-  options: BaseTransactionOptions<ClaimHashesParams>
+  options: TransactionOptionsWithNonce<ClaimHashesParams>
 ) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x2639c060",
-  [
-    {
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }
-  ],
-  [
-    {
-      "internalType": "bytes32",
-      "name": "",
-      "type": "bytes32"
-    }
-  ]
-],
-    params: [options.arg_0]
+      '0x2639c060',
+      [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+    ],
+    params: [options.arg_0],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "claims" function.
  */
 export type ClaimsParams = {
-  arg_0: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"","type":"bytes32"}>
+  arg_0: AbiParameterToPrimitiveType<{
+    internalType: 'bytes32';
+    name: '';
+    type: 'bytes32';
+  }>;
 };
 
 /**
@@ -265,65 +287,68 @@ export type ClaimsParams = {
  * @example
  * ```
  * import { claims } from "TODO";
- * 
+ *
  * const result = await claims({
  *  arg_0: ...,
  * });
- * 
+ *
  * ```
  */
 export async function claims(
-  options: BaseTransactionOptions<ClaimsParams>
+  options: TransactionOptionsWithNonce<ClaimsParams>
 ) {
   return readContract({
     contract: options.contract,
     method: [
-  "0xeff0f592",
-  [
-    {
-      "internalType": "bytes32",
-      "name": "",
-      "type": "bytes32"
-    }
-  ],
-  [
-    {
-      "internalType": "string",
-      "name": "encryptedClaimData",
-      "type": "string"
-    },
-    {
-      "internalType": "uint256",
-      "name": "amountOwed",
-      "type": "uint256"
-    },
-    {
-      "internalType": "bool",
-      "name": "isSettled",
-      "type": "bool"
-    },
-    {
-      "internalType": "address",
-      "name": "counterpartyAddress",
-      "type": "address"
-    },
-    {
-      "internalType": "string",
-      "name": "tokenName",
-      "type": "string"
-    }
-  ]
-],
-    params: [options.arg_0]
+      '0xeff0f592',
+      [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      [
+        {
+          internalType: 'string',
+          name: 'encryptedClaimData',
+          type: 'string',
+        },
+        {
+          internalType: 'uint256',
+          name: 'amountOwed',
+          type: 'uint256',
+        },
+        {
+          internalType: 'bool',
+          name: 'isSettled',
+          type: 'bool',
+        },
+        {
+          internalType: 'address',
+          name: 'counterpartyAddress',
+          type: 'address',
+        },
+        {
+          internalType: 'string',
+          name: 'tokenName',
+          type: 'string',
+        },
+      ],
+    ],
+    params: [options.arg_0],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "getClaim" function.
  */
 export type GetClaimParams = {
-  claimIdentifier: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"claimIdentifier","type":"bytes32"}>
+  claimIdentifier: AbiParameterToPrimitiveType<{
+    internalType: 'bytes32';
+    name: 'claimIdentifier';
+    type: 'bytes32';
+  }>;
 };
 
 /**
@@ -333,61 +358,58 @@ export type GetClaimParams = {
  * @example
  * ```
  * import { getClaim } from "TODO";
- * 
+ *
  * const result = await getClaim({
  *  claimIdentifier: ...,
  * });
- * 
+ *
  * ```
  */
 export async function getClaim(
-  options: BaseTransactionOptions<GetClaimParams>
+  options: TransactionOptionsWithNonce<GetClaimParams>
 ) {
   return readContract({
     contract: options.contract,
     method: [
-  "0xc9100bcb",
-  [
-    {
-      "internalType": "bytes32",
-      "name": "claimIdentifier",
-      "type": "bytes32"
-    }
-  ],
-  [
-    {
-      "internalType": "string",
-      "name": "encryptedClaimData",
-      "type": "string"
-    },
-    {
-      "internalType": "uint256",
-      "name": "amountOwed",
-      "type": "uint256"
-    },
-    {
-      "internalType": "bool",
-      "name": "isSettled",
-      "type": "bool"
-    },
-    {
-      "internalType": "address",
-      "name": "counterpartyAddress",
-      "type": "address"
-    },
-    {
-      "internalType": "string",
-      "name": "tokenName",
-      "type": "string"
-    }
-  ]
-],
-    params: [options.claimIdentifier]
+      '0xc9100bcb',
+      [
+        {
+          internalType: 'bytes32',
+          name: 'claimIdentifier',
+          type: 'bytes32',
+        },
+      ],
+      [
+        {
+          internalType: 'string',
+          name: 'encryptedClaimData',
+          type: 'string',
+        },
+        {
+          internalType: 'uint256',
+          name: 'amountOwed',
+          type: 'uint256',
+        },
+        {
+          internalType: 'bool',
+          name: 'isSettled',
+          type: 'bool',
+        },
+        {
+          internalType: 'address',
+          name: 'counterpartyAddress',
+          type: 'address',
+        },
+        {
+          internalType: 'string',
+          name: 'tokenName',
+          type: 'string',
+        },
+      ],
+    ],
+    params: [options.claimIdentifier],
   });
-};
-
-
-
+}
 
 /**
  * Calls the "getClaims" function on the contract.
@@ -396,58 +418,153 @@ export async function getClaim(
  * @example
  * ```
  * import { getClaims } from "TODO";
- * 
+ *
  * const result = await getClaims();
- * 
+ *
  * ```
  */
-export async function getClaims(
-  options: BaseTransactionOptions
-) {
+export async function getClaims(options: TransactionOptionsWithNonce) {
   return readContract({
     contract: options.contract,
     method: [
-  "0xc52822f8",
-  [],
-  [
-    {
-      "internalType": "bytes32[]",
-      "name": "ids",
-      "type": "bytes32[]"
-    },
-    {
-      "internalType": "string[]",
-      "name": "encryptedData",
-      "type": "string[]"
-    },
-    {
-      "internalType": "uint256[]",
-      "name": "amounts",
-      "type": "uint256[]"
-    },
-    {
-      "internalType": "bool[]",
-      "name": "settledStatus",
-      "type": "bool[]"
-    },
-    {
-      "internalType": "address[]",
-      "name": "counterparties",
-      "type": "address[]"
-    },
-    {
-      "internalType": "string[]",
-      "name": "tokenNames",
-      "type": "string[]"
-    }
-  ]
-],
-    params: []
+      '0xc52822f8',
+      [],
+      [
+        {
+          internalType: 'bytes32[]',
+          name: 'ids',
+          type: 'bytes32[]',
+        },
+        {
+          internalType: 'string[]',
+          name: 'encryptedData',
+          type: 'string[]',
+        },
+        {
+          internalType: 'uint256[]',
+          name: 'amounts',
+          type: 'uint256[]',
+        },
+        {
+          internalType: 'bool[]',
+          name: 'settledStatus',
+          type: 'bool[]',
+        },
+        {
+          internalType: 'address[]',
+          name: 'counterparties',
+          type: 'address[]',
+        },
+        {
+          internalType: 'string[]',
+          name: 'tokenNames',
+          type: 'string[]',
+        },
+      ],
+    ],
+    params: [],
   });
-};
+}
 
+/**
+ * Calls the "getSettledClaims" function on the contract.
+ * @param options - The options for the getSettledClaims function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { getSettledClaims } from "TODO";
+ *
+ * const result = await getSettledClaims();
+ *
+ * ```
+ */
+export async function getSettledClaims(options: TransactionOptionsWithNonce) {
+  return readContract({
+    contract: options.contract,
+    method: [
+      '0x0ed847a5',
+      [],
+      [
+        {
+          internalType: 'bytes32[]',
+          name: 'ids',
+          type: 'bytes32[]',
+        },
+        {
+          internalType: 'string[]',
+          name: 'encryptedData',
+          type: 'string[]',
+        },
+        {
+          internalType: 'uint256[]',
+          name: 'amounts',
+          type: 'uint256[]',
+        },
+        {
+          internalType: 'address[]',
+          name: 'counterparties',
+          type: 'address[]',
+        },
+        {
+          internalType: 'string[]',
+          name: 'tokenNames',
+          type: 'string[]',
+        },
+      ],
+    ],
+    params: [],
+  });
+}
 
-
+/**
+ * Calls the "getUnsettledClaims" function on the contract.
+ * @param options - The options for the getUnsettledClaims function.
+ * @returns The parsed result of the function call.
+ * @example
+ * ```
+ * import { getUnsettledClaims } from "TODO";
+ *
+ * const result = await getUnsettledClaims();
+ *
+ * ```
+ */
+export async function getUnsettledClaims(options: TransactionOptionsWithNonce) {
+  return readContract({
+    contract: options.contract,
+    method: [
+      '0x7b145e53',
+      [],
+      [
+        {
+          internalType: 'bytes32[]',
+          name: 'ids',
+          type: 'bytes32[]',
+        },
+        {
+          internalType: 'string[]',
+          name: 'encryptedData',
+          type: 'string[]',
+        },
+        {
+          internalType: 'uint256[]',
+          name: 'amounts',
+          type: 'uint256[]',
+        },
+        {
+          internalType: 'address[]',
+          name: 'counterparties',
+          type: 'address[]',
+        },
+        {
+          internalType: 'string[]',
+          name: 'tokenNames',
+          type: 'string[]',
+        },
+      ],
+    ],
+    params: [],
+  });
+}
 
 /**
  * Calls the "name" function on the contract.
@@ -456,33 +573,28 @@ export async function getClaims(
  * @example
  * ```
  * import { name } from "TODO";
- * 
+ *
  * const result = await name();
- * 
+ *
  * ```
  */
-export async function name(
-  options: BaseTransactionOptions
-) {
+export async function name(options: TransactionOptionsWithNonce) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x06fdde03",
-  [],
-  [
-    {
-      "internalType": "string",
-      "name": "",
-      "type": "string"
-    }
-  ]
-],
-    params: []
+      '0x06fdde03',
+      [],
+      [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+    ],
+    params: [],
   });
-};
-
-
-
+}
 
 /**
  * Calls the "owner" function on the contract.
@@ -491,45 +603,159 @@ export async function name(
  * @example
  * ```
  * import { owner } from "TODO";
- * 
+ *
  * const result = await owner();
- * 
+ *
  * ```
  */
-export async function owner(
-  options: BaseTransactionOptions
-) {
+export async function owner(options: TransactionOptionsWithNonce) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x8da5cb5b",
-  [],
-  [
-    {
-      "internalType": "address",
-      "name": "",
-      "type": "address"
-    }
-  ]
-],
-    params: []
+      '0x8da5cb5b',
+      [],
+      [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+    ],
+    params: [],
   });
-};
-
+}
 
 /**
-* Contract write functions
-*/
+ * Contract write functions
+ */
+
+/**
+ * Represents the parameters for the "addClaim" function.
+ */
+export type AddClaimParams = {
+  claimIdentifier: AbiParameterToPrimitiveType<{
+    internalType: 'bytes32';
+    name: 'claimIdentifier';
+    type: 'bytes32';
+  }>;
+  encryptedClaimData: AbiParameterToPrimitiveType<{
+    internalType: 'string';
+    name: 'encryptedClaimData';
+    type: 'string';
+  }>;
+  amountOwed: AbiParameterToPrimitiveType<{
+    internalType: 'uint256';
+    name: 'amountOwed';
+    type: 'uint256';
+  }>;
+  counterpartyAddress: AbiParameterToPrimitiveType<{
+    internalType: 'address';
+    name: 'counterpartyAddress';
+    type: 'address';
+  }>;
+  tokenName: AbiParameterToPrimitiveType<{
+    internalType: 'string';
+    name: 'tokenName';
+    type: 'string';
+  }>;
+};
+
+/**
+ * Calls the "addClaim" function on the contract.
+ * @param options - The options for the "addClaim" function.
+ * @returns A prepared transaction object.
+ * @example
+ * ```
+ * import { addClaim } from "TODO";
+ *
+ * const transaction = addClaim({
+ *  claimIdentifier: ...,
+ *  encryptedClaimData: ...,
+ *  amountOwed: ...,
+ *  counterpartyAddress: ...,
+ *  tokenName: ...,
+ * });
+ *
+ * // Send the transaction
+ * ...
+ *
+ * ```
+ */
+export function addClaim(options: TransactionOptionsWithNonce<AddClaimParams>) {
+  return prepareContractCall({
+    contract: options.contract,
+    nonce: options.nonce,
+    method: [
+      '0xbdc2c6e1',
+      [
+        {
+          internalType: 'bytes32',
+          name: 'claimIdentifier',
+          type: 'bytes32',
+        },
+        {
+          internalType: 'string',
+          name: 'encryptedClaimData',
+          type: 'string',
+        },
+        {
+          internalType: 'uint256',
+          name: 'amountOwed',
+          type: 'uint256',
+        },
+        {
+          internalType: 'address',
+          name: 'counterpartyAddress',
+          type: 'address',
+        },
+        {
+          internalType: 'string',
+          name: 'tokenName',
+          type: 'string',
+        },
+      ],
+      [],
+    ],
+    params: [
+      options.claimIdentifier,
+      options.encryptedClaimData,
+      options.amountOwed,
+      options.counterpartyAddress,
+      options.tokenName,
+    ],
+  });
+}
 
 /**
  * Represents the parameters for the "addClaims" function.
  */
 export type AddClaimsParams = {
-  claimIdentifiers: AbiParameterToPrimitiveType<{"internalType":"bytes32[]","name":"claimIdentifiers","type":"bytes32[]"}>
-encryptedClaimDatas: AbiParameterToPrimitiveType<{"internalType":"string[]","name":"encryptedClaimDatas","type":"string[]"}>
-amountsOwed: AbiParameterToPrimitiveType<{"internalType":"uint256[]","name":"amountsOwed","type":"uint256[]"}>
-counterpartyAddresses: AbiParameterToPrimitiveType<{"internalType":"address[]","name":"counterpartyAddresses","type":"address[]"}>
-tokenNames: AbiParameterToPrimitiveType<{"internalType":"string[]","name":"tokenNames","type":"string[]"}>
+  claimIdentifiers: AbiParameterToPrimitiveType<{
+    internalType: 'bytes32[]';
+    name: 'claimIdentifiers';
+    type: 'bytes32[]';
+  }>;
+  encryptedClaimDatas: AbiParameterToPrimitiveType<{
+    internalType: 'string[]';
+    name: 'encryptedClaimDatas';
+    type: 'string[]';
+  }>;
+  amountsOwed: AbiParameterToPrimitiveType<{
+    internalType: 'uint256[]';
+    name: 'amountsOwed';
+    type: 'uint256[]';
+  }>;
+  counterpartyAddresses: AbiParameterToPrimitiveType<{
+    internalType: 'address[]';
+    name: 'counterpartyAddresses';
+    type: 'address[]';
+  }>;
+  tokenNames: AbiParameterToPrimitiveType<{
+    internalType: 'string[]';
+    name: 'tokenNames';
+    type: 'string[]';
+  }>;
 };
 
 /**
@@ -539,7 +765,7 @@ tokenNames: AbiParameterToPrimitiveType<{"internalType":"string[]","name":"token
  * @example
  * ```
  * import { addClaims } from "TODO";
- * 
+ *
  * const transaction = addClaims({
  *  claimIdentifiers: ...,
  *  encryptedClaimDatas: ...,
@@ -547,58 +773,68 @@ tokenNames: AbiParameterToPrimitiveType<{"internalType":"string[]","name":"token
  *  counterpartyAddresses: ...,
  *  tokenNames: ...,
  * });
- * 
+ *
  * // Send the transaction
  * ...
- * 
+ *
  * ```
  */
 export function addClaims(
-  options: BaseTransactionOptions<AddClaimsParams>
+  options: TransactionOptionsWithNonce<AddClaimsParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
+    nonce: options.nonce,
     method: [
-  "0x210d5e55",
-  [
-    {
-      "internalType": "bytes32[]",
-      "name": "claimIdentifiers",
-      "type": "bytes32[]"
-    },
-    {
-      "internalType": "string[]",
-      "name": "encryptedClaimDatas",
-      "type": "string[]"
-    },
-    {
-      "internalType": "uint256[]",
-      "name": "amountsOwed",
-      "type": "uint256[]"
-    },
-    {
-      "internalType": "address[]",
-      "name": "counterpartyAddresses",
-      "type": "address[]"
-    },
-    {
-      "internalType": "string[]",
-      "name": "tokenNames",
-      "type": "string[]"
-    }
-  ],
-  []
-],
-    params: [options.claimIdentifiers, options.encryptedClaimDatas, options.amountsOwed, options.counterpartyAddresses, options.tokenNames]
+      '0x210d5e55',
+      [
+        {
+          internalType: 'bytes32[]',
+          name: 'claimIdentifiers',
+          type: 'bytes32[]',
+        },
+        {
+          internalType: 'string[]',
+          name: 'encryptedClaimDatas',
+          type: 'string[]',
+        },
+        {
+          internalType: 'uint256[]',
+          name: 'amountsOwed',
+          type: 'uint256[]',
+        },
+        {
+          internalType: 'address[]',
+          name: 'counterpartyAddresses',
+          type: 'address[]',
+        },
+        {
+          internalType: 'string[]',
+          name: 'tokenNames',
+          type: 'string[]',
+        },
+      ],
+      [],
+    ],
+    params: [
+      options.claimIdentifiers,
+      options.encryptedClaimDatas,
+      options.amountsOwed,
+      options.counterpartyAddresses,
+      options.tokenNames,
+    ],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "settleClaim" function.
  */
 export type SettleClaimParams = {
-  claimIdentifier: AbiParameterToPrimitiveType<{"internalType":"bytes32","name":"claimIdentifier","type":"bytes32"}>
+  claimIdentifier: AbiParameterToPrimitiveType<{
+    internalType: 'bytes32';
+    name: 'claimIdentifier';
+    type: 'bytes32';
+  }>;
 };
 
 /**
@@ -608,42 +844,46 @@ export type SettleClaimParams = {
  * @example
  * ```
  * import { settleClaim } from "TODO";
- * 
+ *
  * const transaction = settleClaim({
  *  claimIdentifier: ...,
  * });
- * 
+ *
  * // Send the transaction
  * ...
- * 
+ *
  * ```
  */
 export function settleClaim(
-  options: BaseTransactionOptions<SettleClaimParams>
+  options: TransactionOptionsWithNonce<SettleClaimParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
+    nonce: options.nonce,
     method: [
-  "0xbdf80435",
-  [
-    {
-      "internalType": "bytes32",
-      "name": "claimIdentifier",
-      "type": "bytes32"
-    }
-  ],
-  []
-],
-    params: [options.claimIdentifier]
+      '0xbdf80435',
+      [
+        {
+          internalType: 'bytes32',
+          name: 'claimIdentifier',
+          type: 'bytes32',
+        },
+      ],
+      [],
+    ],
+    params: [options.claimIdentifier],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "settleClaims" function.
  */
 export type SettleClaimsParams = {
-  claimIdentifiers: AbiParameterToPrimitiveType<{"internalType":"bytes32[]","name":"claimIdentifiers","type":"bytes32[]"}>
+  claimIdentifiers: AbiParameterToPrimitiveType<{
+    internalType: 'bytes32[]';
+    name: 'claimIdentifiers';
+    type: 'bytes32[]';
+  }>;
 };
 
 /**
@@ -653,34 +893,33 @@ export type SettleClaimsParams = {
  * @example
  * ```
  * import { settleClaims } from "TODO";
- * 
+ *
  * const transaction = settleClaims({
  *  claimIdentifiers: ...,
  * });
- * 
+ *
  * // Send the transaction
  * ...
- * 
+ *
  * ```
  */
 export function settleClaims(
-  options: BaseTransactionOptions<SettleClaimsParams>
+  options: TransactionOptionsWithNonce<SettleClaimsParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
+    nonce: options.nonce,
     method: [
-  "0xd7f8fb9f",
-  [
-    {
-      "internalType": "bytes32[]",
-      "name": "claimIdentifiers",
-      "type": "bytes32[]"
-    }
-  ],
-  []
-],
-    params: [options.claimIdentifiers]
+      '0xd7f8fb9f',
+      [
+        {
+          internalType: 'bytes32[]',
+          name: 'claimIdentifiers',
+          type: 'bytes32[]',
+        },
+      ],
+      [],
+    ],
+    params: [options.claimIdentifiers],
   });
-};
-
-
+}

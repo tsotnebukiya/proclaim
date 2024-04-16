@@ -1,13 +1,23 @@
 import { env } from "@/env";
 import { NextRequest, NextResponse } from "next/server";
-import { tokenContract, wallet } from "proclaim";
+import {
+  GetBankDetails,
+  depositoryContract,
+  tokenContract,
+  wallet,
+} from "proclaim";
 import { isApproved, approve, disapprove } from "proclaim/tokenFunctions";
 import { sendAndConfirmTransaction } from "thirdweb";
-import { prepareDirectDeployTransaction } from "thirdweb/contract";
 import { z } from "zod";
+import { kv } from "@vercel/kv";
+import { getAllBankDetails } from "proclaim/depositoryFunctions";
+import { approveToken } from "@/server/lib/tokens/approveToken";
+import { delay } from "@/server/lib/utils";
 
 const currencySchema = z.enum(["USD", "EUR"]);
 const spenderSchema = z.string();
+
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   try {
@@ -37,7 +47,6 @@ export async function GET(req: NextRequest) {
 
 const schema = z.object({
   currency: currencySchema,
-  spender: spenderSchema,
   approved: z.boolean(),
 });
 
@@ -45,17 +54,17 @@ export async function POST(req: NextRequest) {
   const object: unknown = await req.json();
 
   try {
-    const { approved, currency, spender } = schema.parse(object);
-    const parameter = {
-      contract: tokenContract(currency),
-      spender,
-    };
-    const transaction = approved ? approve(parameter) : disapprove(parameter);
-    const { transactionHash, status } = await sendAndConfirmTransaction({
-      transaction: transaction,
-      account: wallet,
-    });
-    return NextResponse.json({ status, transactionHash }, { status: 200 });
+    const { approved, currency } = schema.parse(object);
+    const banks = (await getAllBankDetails({
+      contract: depositoryContract,
+    })) as GetBankDetails[];
+    const addresses = banks.map((el) => el.contractAddress);
+    const transactions: string[] = [];
+    for (const address of addresses) {
+      const transactionHash = await approveToken(currency, address, approved);
+      transactions.push(transactionHash);
+    }
+    return NextResponse.json({ transactions }, { status: 200 });
   } catch (error) {
     const err = error as { message?: string };
     const errorMessage = err.message ? err.message : "An error occured.";

@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 interface IBankDepository {
     function getTokenAddress(string memory tokenName) external view returns (address);
-    function registerBank(string memory market, uint accountNumber, address ethAddress, address contractAddress, string memory publicKey) external;
+    function registerBank(string memory market, uint accountNumber, address ethAddress, address contractAddress, string memory publicKey, string memory teamName) external;
 }
 
 interface IToken {
@@ -12,8 +12,8 @@ interface IToken {
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
 }
 
-contract CitiClaims {
-    string public constant name = "CitiClaims";
+contract ClaimsContract {
+    string public name;
     address public owner;
     IBankDepository public bankDepository;
     mapping(string => address) private tokenAddresses;
@@ -29,8 +29,8 @@ contract CitiClaims {
     mapping(bytes32 => Claim) public claims;
     bytes32[] public claimHashes;
 
-    event ClaimAdded(bytes32 indexed claimIdentifier, uint256 amountOwed, address indexed counterpartyAddress, string tokenName);
-    event ClaimSettled(bytes32 indexed claimIdentifier, uint256 amountOwed, address indexed counterpartyAddress, string tokenName);
+    event ClaimAdded(bytes32 indexed claimIdentifier);
+    event ClaimSettled(bytes32 indexed claimIdentifier);
     event SettlementError(bytes32 indexed claimIdentifier, string reason);
 
     modifier onlyOwner() {
@@ -47,13 +47,15 @@ contract CitiClaims {
         address depositoryContractAddress, 
         string memory market, 
         uint accountNumber, 
-        string memory publicKey
+        string memory publicKey,
+        string memory contractName
         ) {
         owner = msg.sender;
         bankDepository = IBankDepository(depositoryContractAddress);
-        bankDepository.registerBank(market, accountNumber, owner, address(this), publicKey);
+        bankDepository.registerBank(market, accountNumber, owner, address(this), publicKey, contractName);
         tokenAddresses["USDt"] = bankDepository.getTokenAddress("USDt");
         tokenAddresses["EURt"] = bankDepository.getTokenAddress("EURt");
+        name = contractName;
     }
     
     function addClaims(
@@ -83,7 +85,7 @@ contract CitiClaims {
                 tokenName: tokenNames[i]
             });
             claimHashes.push(claimIdentifiers[i]);
-            emit ClaimAdded(claimIdentifiers[i], amountsOwed[i], counterpartyAddresses[i], tokenNames[i]);
+            emit ClaimAdded(claimIdentifiers[i]);
         }
     }
 
@@ -105,7 +107,7 @@ contract CitiClaims {
         });
 
         claimHashes.push(claimIdentifier);
-        emit ClaimAdded(claimIdentifier, amountOwed, counterpartyAddress, tokenName);
+        emit ClaimAdded(claimIdentifier);
     }
 
 
@@ -160,7 +162,7 @@ contract CitiClaims {
         }
 
         claim.isSettled = true;
-        emit ClaimSettled(claimIdentifier, claim.amountOwed, msg.sender, claim.tokenName);
+        emit ClaimSettled(claimIdentifier);
         }
 
         if (insufficientUsdtBalance) {
@@ -198,7 +200,7 @@ contract CitiClaims {
         require(success, "Token transfer failed");
 
         claim.isSettled = true;
-        emit ClaimSettled(claimIdentifier, claim.amountOwed, msg.sender, claim.tokenName);
+        emit ClaimSettled(claimIdentifier);
     }
 
     function checkIfSettled(bytes32 claimIdentifier) external view returns (bool) {
@@ -233,6 +235,78 @@ contract CitiClaims {
         }
 
         return (ids, encryptedData, amounts, settledStatus, counterparties, tokenNames);
+    }
+
+    function getSettledClaims() public view returns (
+        bytes32[] memory ids, 
+        string[] memory encryptedData, 
+        uint256[] memory amounts, 
+        address[] memory counterparties, 
+        string[] memory tokenNames
+        ) {
+        uint256 count = 0;
+        // Count settled claims for array initialization
+        for (uint256 i = 0; i < claimHashes.length; i++) {
+            if (claims[claimHashes[i]].isSettled) {
+                count++;
+            }
+        }
+
+        ids = new bytes32[](count);
+        encryptedData = new string[](count);
+        amounts = new uint256[](count);
+        counterparties = new address[](count);
+        tokenNames = new string[](count);
+    
+        uint256 j = 0;
+        for (uint256 i = 0; i < claimHashes.length; i++) {
+            if (claims[claimHashes[i]].isSettled) {
+                ids[j] = claimHashes[i];
+                encryptedData[j] = claims[claimHashes[i]].encryptedClaimData;
+                amounts[j] = claims[claimHashes[i]].amountOwed;
+                counterparties[j] = claims[claimHashes[i]].counterpartyAddress;
+                tokenNames[j] = claims[claimHashes[i]].tokenName;
+                j++;
+            }
+        }
+    
+        return (ids, encryptedData, amounts, counterparties, tokenNames);
+    }
+
+    function getUnsettledClaims() public view returns (
+        bytes32[] memory ids, 
+        string[] memory encryptedData, 
+        uint256[] memory amounts, 
+        address[] memory counterparties, 
+        string[] memory tokenNames
+        ) {
+        uint256 count = 0;
+        // Count unsettled claims for array initialization
+        for (uint256 i = 0; i < claimHashes.length; i++) {
+            if (!claims[claimHashes[i]].isSettled) {
+                count++;
+            }
+        }
+
+        ids = new bytes32[](count);
+        encryptedData = new string[](count);
+        amounts = new uint256[](count);
+        counterparties = new address[](count);
+        tokenNames = new string[](count);
+
+        uint256 j = 0;
+        for (uint256 i = 0; i < claimHashes.length; i++) {
+            if (!claims[claimHashes[i]].isSettled) {
+                ids[j] = claimHashes[i];
+                encryptedData[j] = claims[claimHashes[i]].encryptedClaimData;
+                amounts[j] = claims[claimHashes[i]].amountOwed;
+                counterparties[j] = claims[claimHashes[i]].counterpartyAddress;
+                tokenNames[j] = claims[claimHashes[i]].tokenName;
+                j++;
+            }
+        }
+
+        return (ids, encryptedData, amounts, counterparties, tokenNames);
     }
 
     function getClaim(bytes32 claimIdentifier) public view returns (

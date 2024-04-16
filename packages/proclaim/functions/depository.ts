@@ -197,6 +197,11 @@ export async function bankRegistry(
           name: 'publicKey',
           type: 'string',
         },
+        {
+          internalType: 'string',
+          name: 'teamName',
+          type: 'string',
+        },
       ],
     ],
     params: [options.arg_0],
@@ -249,6 +254,11 @@ export async function getAllBankDetails(options: BaseTransactionOptions) {
               name: 'publicKey',
               type: 'string',
             },
+            {
+              internalType: 'string',
+              name: 'teamName',
+              type: 'string',
+            },
           ],
           internalType: 'struct BankDepository.BankDetails[]',
           name: '',
@@ -291,7 +301,6 @@ export type GetBankDetailsParams = {
  *
  * ```
  */
-
 export async function getBankDetails(
   options: BaseTransactionOptions<GetBankDetailsParams>
 ) {
@@ -337,6 +346,11 @@ export async function getBankDetails(
             {
               internalType: 'string',
               name: 'publicKey',
+              type: 'string',
+            },
+            {
+              internalType: 'string',
+              name: 'teamName',
               type: 'string',
             },
           ],
@@ -515,6 +529,11 @@ export type RegisterBankParams = {
     name: '_publicKey';
     type: 'string';
   }>;
+  teamName: AbiParameterToPrimitiveType<{
+    internalType: 'string';
+    name: '_teamName';
+    type: 'string';
+  }>;
 };
 
 /**
@@ -531,6 +550,7 @@ export type RegisterBankParams = {
  *  ethAddress: ...,
  *  contractAddress: ...,
  *  publicKey: ...,
+ *  teamName: ...,
  * });
  *
  * // Send the transaction
@@ -544,7 +564,7 @@ export function registerBank(
   return prepareContractCall({
     contract: options.contract,
     method: [
-      '0xeddedcb7',
+      '0xeb6901cd',
       [
         {
           internalType: 'string',
@@ -571,6 +591,11 @@ export function registerBank(
           name: '_publicKey',
           type: 'string',
         },
+        {
+          internalType: 'string',
+          name: '_teamName',
+          type: 'string',
+        },
       ],
       [],
     ],
@@ -580,6 +605,7 @@ export function registerBank(
       options.ethAddress,
       options.contractAddress,
       options.publicKey,
+      options.teamName,
     ],
   });
 }

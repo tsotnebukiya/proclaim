@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { isApproved, mint, balanceOf } from "proclaim/tokenFunctions";
+import { mint, balanceOf } from "proclaim/tokenFunctions";
 import { tokenContract, wallet } from "proclaim";
 import { sendAndConfirmTransaction } from "thirdweb";
-import { env } from "@/env";
-import { createThirdwebClient, defineChain } from "thirdweb";
-import { proChain } from "proclaim";
 
 const schema = z.object({
   amount: z.number(),
@@ -15,7 +12,6 @@ const schema = z.object({
 
 export async function POST(req: Request) {
   const object: unknown = await req.json();
-  console.log(object);
   try {
     const { amount, currency, ethAddress } = schema.parse(object);
     await balanceOf({
@@ -40,6 +36,7 @@ export async function POST(req: Request) {
       { status: 200 },
     );
   } catch (error) {
+    console.log(error);
     const err = error as { message?: string };
     const errorMessage = err.message ? err.message : "An error occured.";
     return NextResponse.json(

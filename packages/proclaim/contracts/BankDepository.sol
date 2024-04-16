@@ -14,6 +14,7 @@ contract BankDepository {
         address ethAddress;
         address contractAddress;
         string publicKey;
+        string teamName;
     }
 
     mapping(string => BankDetails) public bankRegistry;
@@ -36,7 +37,7 @@ contract BankDepository {
         return string(abi.encodePacked(market, '_', Strings.toString(accountNumber)));
     }
 
-    function registerBank(string memory market, uint _accountNumber, address _ethAddress, address _contractAddress, string memory _publicKey) external {
+    function registerBank(string memory market, uint _accountNumber, address _ethAddress, address _contractAddress, string memory _publicKey, string memory _teamName) external {
         require(_contractAddress == address(0) || !registeredContractAddresses[_contractAddress], "Contract address already registered or invalid.");
         string memory key = generateKey(market, _accountNumber);
         require(bankRegistry[key].ethAddress == address(0), "Bank already registered with this market and account number.");
@@ -46,7 +47,8 @@ contract BankDepository {
             accountNumber: _accountNumber,
             ethAddress: _ethAddress,
             contractAddress: _contractAddress,
-            publicKey: _publicKey
+            publicKey: _publicKey,
+            teamName: _teamName
         });
 
         bankRegistry[key] = newBank;

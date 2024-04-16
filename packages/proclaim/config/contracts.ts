@@ -527,3 +527,445 @@ export const tokenContract = (curency: 'USD' | 'EUR') => {
     ],
   });
 };
+
+export const bankContract = (contractAddress: string) => {
+  return getContract({
+    client,
+    chain: proChain,
+    address: contractAddress,
+    abi: [
+      {
+        type: 'constructor',
+        name: '',
+        inputs: [
+          {
+            type: 'address',
+            name: 'depositoryContractAddress',
+            internalType: 'address',
+          },
+          {
+            type: 'string',
+            name: 'market',
+            internalType: 'string',
+          },
+          {
+            type: 'uint256',
+            name: 'accountNumber',
+            internalType: 'uint256',
+          },
+          {
+            type: 'string',
+            name: 'publicKey',
+            internalType: 'string',
+          },
+          {
+            type: 'string',
+            name: 'contractName',
+            internalType: 'string',
+          },
+        ],
+        outputs: [],
+        stateMutability: 'nonpayable',
+      },
+      {
+        type: 'event',
+        name: 'ClaimAdded',
+        inputs: [
+          {
+            type: 'bytes32',
+            name: 'claimIdentifier',
+            indexed: true,
+            internalType: 'bytes32',
+          },
+        ],
+        outputs: [],
+        anonymous: false,
+      },
+      {
+        type: 'event',
+        name: 'ClaimSettled',
+        inputs: [
+          {
+            type: 'bytes32',
+            name: 'claimIdentifier',
+            indexed: true,
+            internalType: 'bytes32',
+          },
+        ],
+        outputs: [],
+        anonymous: false,
+      },
+      {
+        type: 'event',
+        name: 'SettlementError',
+        inputs: [
+          {
+            type: 'bytes32',
+            name: 'claimIdentifier',
+            indexed: true,
+            internalType: 'bytes32',
+          },
+          {
+            type: 'string',
+            name: 'reason',
+            indexed: false,
+            internalType: 'string',
+          },
+        ],
+        outputs: [],
+        anonymous: false,
+      },
+      {
+        type: 'function',
+        name: 'addClaim',
+        inputs: [
+          {
+            type: 'bytes32',
+            name: 'claimIdentifier',
+            internalType: 'bytes32',
+          },
+          {
+            type: 'string',
+            name: 'encryptedClaimData',
+            internalType: 'string',
+          },
+          {
+            type: 'uint256',
+            name: 'amountOwed',
+            internalType: 'uint256',
+          },
+          {
+            type: 'address',
+            name: 'counterpartyAddress',
+            internalType: 'address',
+          },
+          {
+            type: 'string',
+            name: 'tokenName',
+            internalType: 'string',
+          },
+        ],
+        outputs: [],
+        stateMutability: 'nonpayable',
+      },
+      {
+        type: 'function',
+        name: 'addClaims',
+        inputs: [
+          {
+            type: 'bytes32[]',
+            name: 'claimIdentifiers',
+            internalType: 'bytes32[]',
+          },
+          {
+            type: 'string[]',
+            name: 'encryptedClaimDatas',
+            internalType: 'string[]',
+          },
+          {
+            type: 'uint256[]',
+            name: 'amountsOwed',
+            internalType: 'uint256[]',
+          },
+          {
+            type: 'address[]',
+            name: 'counterpartyAddresses',
+            internalType: 'address[]',
+          },
+          {
+            type: 'string[]',
+            name: 'tokenNames',
+            internalType: 'string[]',
+          },
+        ],
+        outputs: [],
+        stateMutability: 'nonpayable',
+      },
+      {
+        type: 'function',
+        name: 'bankDepository',
+        inputs: [],
+        outputs: [
+          {
+            type: 'address',
+            name: '',
+            internalType: 'contract IBankDepository',
+          },
+        ],
+        stateMutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'checkIfSettled',
+        inputs: [
+          {
+            type: 'bytes32',
+            name: 'claimIdentifier',
+            internalType: 'bytes32',
+          },
+        ],
+        outputs: [
+          {
+            type: 'bool',
+            name: '',
+            internalType: 'bool',
+          },
+        ],
+        stateMutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'claimHashes',
+        inputs: [
+          {
+            type: 'uint256',
+            name: '',
+            internalType: 'uint256',
+          },
+        ],
+        outputs: [
+          {
+            type: 'bytes32',
+            name: '',
+            internalType: 'bytes32',
+          },
+        ],
+        stateMutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'claims',
+        inputs: [
+          {
+            type: 'bytes32',
+            name: '',
+            internalType: 'bytes32',
+          },
+        ],
+        outputs: [
+          {
+            type: 'string',
+            name: 'encryptedClaimData',
+            internalType: 'string',
+          },
+          {
+            type: 'uint256',
+            name: 'amountOwed',
+            internalType: 'uint256',
+          },
+          {
+            type: 'bool',
+            name: 'isSettled',
+            internalType: 'bool',
+          },
+          {
+            type: 'address',
+            name: 'counterpartyAddress',
+            internalType: 'address',
+          },
+          {
+            type: 'string',
+            name: 'tokenName',
+            internalType: 'string',
+          },
+        ],
+        stateMutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'getClaim',
+        inputs: [
+          {
+            type: 'bytes32',
+            name: 'claimIdentifier',
+            internalType: 'bytes32',
+          },
+        ],
+        outputs: [
+          {
+            type: 'string',
+            name: 'encryptedClaimData',
+            internalType: 'string',
+          },
+          {
+            type: 'uint256',
+            name: 'amountOwed',
+            internalType: 'uint256',
+          },
+          {
+            type: 'bool',
+            name: 'isSettled',
+            internalType: 'bool',
+          },
+          {
+            type: 'address',
+            name: 'counterpartyAddress',
+            internalType: 'address',
+          },
+          {
+            type: 'string',
+            name: 'tokenName',
+            internalType: 'string',
+          },
+        ],
+        stateMutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'getClaims',
+        inputs: [],
+        outputs: [
+          {
+            type: 'bytes32[]',
+            name: 'ids',
+            internalType: 'bytes32[]',
+          },
+          {
+            type: 'string[]',
+            name: 'encryptedData',
+            internalType: 'string[]',
+          },
+          {
+            type: 'uint256[]',
+            name: 'amounts',
+            internalType: 'uint256[]',
+          },
+          {
+            type: 'bool[]',
+            name: 'settledStatus',
+            internalType: 'bool[]',
+          },
+          {
+            type: 'address[]',
+            name: 'counterparties',
+            internalType: 'address[]',
+          },
+          {
+            type: 'string[]',
+            name: 'tokenNames',
+            internalType: 'string[]',
+          },
+        ],
+        stateMutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'getSettledClaims',
+        inputs: [],
+        outputs: [
+          {
+            type: 'bytes32[]',
+            name: 'ids',
+            internalType: 'bytes32[]',
+          },
+          {
+            type: 'string[]',
+            name: 'encryptedData',
+            internalType: 'string[]',
+          },
+          {
+            type: 'uint256[]',
+            name: 'amounts',
+            internalType: 'uint256[]',
+          },
+          {
+            type: 'address[]',
+            name: 'counterparties',
+            internalType: 'address[]',
+          },
+          {
+            type: 'string[]',
+            name: 'tokenNames',
+            internalType: 'string[]',
+          },
+        ],
+        stateMutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'getUnsettledClaims',
+        inputs: [],
+        outputs: [
+          {
+            type: 'bytes32[]',
+            name: 'ids',
+            internalType: 'bytes32[]',
+          },
+          {
+            type: 'string[]',
+            name: 'encryptedData',
+            internalType: 'string[]',
+          },
+          {
+            type: 'uint256[]',
+            name: 'amounts',
+            internalType: 'uint256[]',
+          },
+          {
+            type: 'address[]',
+            name: 'counterparties',
+            internalType: 'address[]',
+          },
+          {
+            type: 'string[]',
+            name: 'tokenNames',
+            internalType: 'string[]',
+          },
+        ],
+        stateMutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'name',
+        inputs: [],
+        outputs: [
+          {
+            type: 'string',
+            name: '',
+            internalType: 'string',
+          },
+        ],
+        stateMutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'owner',
+        inputs: [],
+        outputs: [
+          {
+            type: 'address',
+            name: '',
+            internalType: 'address',
+          },
+        ],
+        stateMutability: 'view',
+      },
+      {
+        type: 'function',
+        name: 'settleClaim',
+        inputs: [
+          {
+            type: 'bytes32',
+            name: 'claimIdentifier',
+            internalType: 'bytes32',
+          },
+        ],
+        outputs: [],
+        stateMutability: 'nonpayable',
+      },
+      {
+        type: 'function',
+        name: 'settleClaims',
+        inputs: [
+          {
+            type: 'bytes32[]',
+            name: 'claimIdentifiers',
+            internalType: 'bytes32[]',
+          },
+        ],
+        outputs: [],
+        stateMutability: 'nonpayable',
+      },
+    ],
+  });
+};

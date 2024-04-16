@@ -4,18 +4,33 @@ import {
   readContract,
   type BaseTransactionOptions,
   type AbiParameterToPrimitiveType,
-} from "thirdweb";
+} from 'thirdweb';
 
 /**
-* Contract events
-*/
+ * Contract events
+ */
+
+type TransactionOptionsWithNonce<T extends object = object> =
+  BaseTransactionOptions<T> & {
+    nonce?: number;
+  };
 
 /**
  * Represents the filters for the "Approval" event.
  */
 export type ApprovalEventFilters = Partial<{
-  owner: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"owner","type":"address"}>
-spender: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"spender","type":"address"}>
+  owner: AbiParameterToPrimitiveType<{
+    indexed: true;
+    internalType: 'address';
+    name: 'owner';
+    type: 'address';
+  }>;
+  spender: AbiParameterToPrimitiveType<{
+    indexed: true;
+    internalType: 'address';
+    name: 'spender';
+    type: 'address';
+  }>;
 }>;
 
 /**
@@ -26,7 +41,7 @@ spender: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","n
  * ```
  * import { getContractEvents } from "thirdweb";
  * import { approvalEvent } from "TODO";
- * 
+ *
  * const events = await getContractEvents({
  * contract,
  * events: [
@@ -37,21 +52,31 @@ spender: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","n
  * ],
  * });
  * ```
- */ 
+ */
 export function approvalEvent(filters: ApprovalEventFilters = {}) {
   return prepareEvent({
-    signature: "event Approval(address indexed owner, address indexed spender, bool isAllowed)",
+    signature:
+      'event Approval(address indexed owner, address indexed spender, bool isAllowed)',
     filters,
   });
-};
-  
+}
 
 /**
  * Represents the filters for the "Transfer" event.
  */
 export type TransferEventFilters = Partial<{
-  from: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"from","type":"address"}>
-to: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":"to","type":"address"}>
+  from: AbiParameterToPrimitiveType<{
+    indexed: true;
+    internalType: 'address';
+    name: 'from';
+    type: 'address';
+  }>;
+  to: AbiParameterToPrimitiveType<{
+    indexed: true;
+    internalType: 'address';
+    name: 'to';
+    type: 'address';
+  }>;
 }>;
 
 /**
@@ -62,7 +87,7 @@ to: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":
  * ```
  * import { getContractEvents } from "thirdweb";
  * import { transferEvent } from "TODO";
- * 
+ *
  * const events = await getContractEvents({
  * contract,
  * events: [
@@ -73,24 +98,28 @@ to: AbiParameterToPrimitiveType<{"indexed":true,"internalType":"address","name":
  * ],
  * });
  * ```
- */ 
+ */
 export function transferEvent(filters: TransferEventFilters = {}) {
   return prepareEvent({
-    signature: "event Transfer(address indexed from, address indexed to, uint256 value)",
+    signature:
+      'event Transfer(address indexed from, address indexed to, uint256 value)',
     filters,
   });
-};
-  
+}
 
 /**
-* Contract read functions
-*/
+ * Contract read functions
+ */
 
 /**
  * Represents the parameters for the "balanceOf" function.
  */
 export type BalanceOfParams = {
-  account: AbiParameterToPrimitiveType<{"internalType":"address","name":"account","type":"address"}>
+  account: AbiParameterToPrimitiveType<{
+    internalType: 'address';
+    name: 'account';
+    type: 'address';
+  }>;
 };
 
 /**
@@ -100,11 +129,11 @@ export type BalanceOfParams = {
  * @example
  * ```
  * import { balanceOf } from "TODO";
- * 
+ *
  * const result = await balanceOf({
  *  account: ...,
  * });
- * 
+ *
  * ```
  */
 export async function balanceOf(
@@ -113,28 +142,25 @@ export async function balanceOf(
   return readContract({
     contract: options.contract,
     method: [
-  "0x70a08231",
-  [
-    {
-      "internalType": "address",
-      "name": "account",
-      "type": "address"
-    }
-  ],
-  [
-    {
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }
-  ]
-],
-    params: [options.account]
+      '0x70a08231',
+      [
+        {
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+    ],
+    params: [options.account],
   });
-};
-
-
-
+}
 
 /**
  * Calls the "decimals" function on the contract.
@@ -143,38 +169,43 @@ export async function balanceOf(
  * @example
  * ```
  * import { decimals } from "TODO";
- * 
+ *
  * const result = await decimals();
- * 
+ *
  * ```
  */
-export async function decimals(
-  options: BaseTransactionOptions
-) {
+export async function decimals(options: BaseTransactionOptions) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x313ce567",
-  [],
-  [
-    {
-      "internalType": "uint8",
-      "name": "",
-      "type": "uint8"
-    }
-  ]
-],
-    params: []
+      '0x313ce567',
+      [],
+      [
+        {
+          internalType: 'uint8',
+          name: '',
+          type: 'uint8',
+        },
+      ],
+    ],
+    params: [],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "isApproved" function.
  */
 export type IsApprovedParams = {
-  owner: AbiParameterToPrimitiveType<{"internalType":"address","name":"_owner","type":"address"}>
-spender: AbiParameterToPrimitiveType<{"internalType":"address","name":"_spender","type":"address"}>
+  owner: AbiParameterToPrimitiveType<{
+    internalType: 'address';
+    name: '_owner';
+    type: 'address';
+  }>;
+  spender: AbiParameterToPrimitiveType<{
+    internalType: 'address';
+    name: '_spender';
+    type: 'address';
+  }>;
 };
 
 /**
@@ -184,12 +215,12 @@ spender: AbiParameterToPrimitiveType<{"internalType":"address","name":"_spender"
  * @example
  * ```
  * import { isApproved } from "TODO";
- * 
+ *
  * const result = await isApproved({
  *  owner: ...,
  *  spender: ...,
  * });
- * 
+ *
  * ```
  */
 export async function isApproved(
@@ -198,33 +229,30 @@ export async function isApproved(
   return readContract({
     contract: options.contract,
     method: [
-  "0xa389783e",
-  [
-    {
-      "internalType": "address",
-      "name": "_owner",
-      "type": "address"
-    },
-    {
-      "internalType": "address",
-      "name": "_spender",
-      "type": "address"
-    }
-  ],
-  [
-    {
-      "internalType": "bool",
-      "name": "",
-      "type": "bool"
-    }
-  ]
-],
-    params: [options.owner, options.spender]
+      '0xa389783e',
+      [
+        {
+          internalType: 'address',
+          name: '_owner',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: '_spender',
+          type: 'address',
+        },
+      ],
+      [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+    ],
+    params: [options.owner, options.spender],
   });
-};
-
-
-
+}
 
 /**
  * Calls the "name" function on the contract.
@@ -233,33 +261,28 @@ export async function isApproved(
  * @example
  * ```
  * import { name } from "TODO";
- * 
+ *
  * const result = await name();
- * 
+ *
  * ```
  */
-export async function name(
-  options: BaseTransactionOptions
-) {
+export async function name(options: BaseTransactionOptions) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x06fdde03",
-  [],
-  [
-    {
-      "internalType": "string",
-      "name": "",
-      "type": "string"
-    }
-  ]
-],
-    params: []
+      '0x06fdde03',
+      [],
+      [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+    ],
+    params: [],
   });
-};
-
-
-
+}
 
 /**
  * Calls the "owner" function on the contract.
@@ -268,33 +291,28 @@ export async function name(
  * @example
  * ```
  * import { owner } from "TODO";
- * 
+ *
  * const result = await owner();
- * 
+ *
  * ```
  */
-export async function owner(
-  options: BaseTransactionOptions
-) {
+export async function owner(options: BaseTransactionOptions) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x8da5cb5b",
-  [],
-  [
-    {
-      "internalType": "address",
-      "name": "",
-      "type": "address"
-    }
-  ]
-],
-    params: []
+      '0x8da5cb5b',
+      [],
+      [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+    ],
+    params: [],
   });
-};
-
-
-
+}
 
 /**
  * Calls the "symbol" function on the contract.
@@ -303,33 +321,28 @@ export async function owner(
  * @example
  * ```
  * import { symbol } from "TODO";
- * 
+ *
  * const result = await symbol();
- * 
+ *
  * ```
  */
-export async function symbol(
-  options: BaseTransactionOptions
-) {
+export async function symbol(options: BaseTransactionOptions) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x95d89b41",
-  [],
-  [
-    {
-      "internalType": "string",
-      "name": "",
-      "type": "string"
-    }
-  ]
-],
-    params: []
+      '0x95d89b41',
+      [],
+      [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+    ],
+    params: [],
   });
-};
-
-
-
+}
 
 /**
  * Calls the "totalSupply" function on the contract.
@@ -338,41 +351,42 @@ export async function symbol(
  * @example
  * ```
  * import { totalSupply } from "TODO";
- * 
+ *
  * const result = await totalSupply();
- * 
+ *
  * ```
  */
-export async function totalSupply(
-  options: BaseTransactionOptions
-) {
+export async function totalSupply(options: BaseTransactionOptions) {
   return readContract({
     contract: options.contract,
     method: [
-  "0x18160ddd",
-  [],
-  [
-    {
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }
-  ]
-],
-    params: []
+      '0x18160ddd',
+      [],
+      [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+    ],
+    params: [],
   });
-};
-
+}
 
 /**
-* Contract write functions
-*/
+ * Contract write functions
+ */
 
 /**
  * Represents the parameters for the "approve" function.
  */
 export type ApproveParams = {
-  spender: AbiParameterToPrimitiveType<{"internalType":"address","name":"spender","type":"address"}>
+  spender: AbiParameterToPrimitiveType<{
+    internalType: 'address';
+    name: 'spender';
+    type: 'address';
+  }>;
 };
 
 /**
@@ -382,48 +396,50 @@ export type ApproveParams = {
  * @example
  * ```
  * import { approve } from "TODO";
- * 
+ *
  * const transaction = approve({
  *  spender: ...,
  * });
- * 
+ *
  * // Send the transaction
  * ...
- * 
+ *
  * ```
  */
-export function approve(
-  options: BaseTransactionOptions<ApproveParams>
-) {
+export function approve(options: TransactionOptionsWithNonce<ApproveParams>) {
   return prepareContractCall({
     contract: options.contract,
+    nonce: options.nonce,
     method: [
-  "0xdaea85c5",
-  [
-    {
-      "internalType": "address",
-      "name": "spender",
-      "type": "address"
-    }
-  ],
-  [
-    {
-      "internalType": "bool",
-      "name": "",
-      "type": "bool"
-    }
-  ]
-],
-    params: [options.spender]
+      '0xdaea85c5',
+      [
+        {
+          internalType: 'address',
+          name: 'spender',
+          type: 'address',
+        },
+      ],
+      [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+    ],
+    params: [options.spender],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "disapprove" function.
  */
 export type DisapproveParams = {
-  spender: AbiParameterToPrimitiveType<{"internalType":"address","name":"spender","type":"address"}>
+  spender: AbiParameterToPrimitiveType<{
+    internalType: 'address';
+    name: 'spender';
+    type: 'address';
+  }>;
 };
 
 /**
@@ -433,49 +449,57 @@ export type DisapproveParams = {
  * @example
  * ```
  * import { disapprove } from "TODO";
- * 
+ *
  * const transaction = disapprove({
  *  spender: ...,
  * });
- * 
+ *
  * // Send the transaction
  * ...
- * 
+ *
  * ```
  */
 export function disapprove(
-  options: BaseTransactionOptions<DisapproveParams>
+  options: TransactionOptionsWithNonce<DisapproveParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
+    nonce: options.nonce,
     method: [
-  "0x15770d99",
-  [
-    {
-      "internalType": "address",
-      "name": "spender",
-      "type": "address"
-    }
-  ],
-  [
-    {
-      "internalType": "bool",
-      "name": "",
-      "type": "bool"
-    }
-  ]
-],
-    params: [options.spender]
+      '0x15770d99',
+      [
+        {
+          internalType: 'address',
+          name: 'spender',
+          type: 'address',
+        },
+      ],
+      [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+    ],
+    params: [options.spender],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "mint" function.
  */
 export type MintParams = {
-  recipient: AbiParameterToPrimitiveType<{"internalType":"address","name":"recipient","type":"address"}>
-amount: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"amount","type":"uint256"}>
+  recipient: AbiParameterToPrimitiveType<{
+    internalType: 'address';
+    name: 'recipient';
+    type: 'address';
+  }>;
+  amount: AbiParameterToPrimitiveType<{
+    internalType: 'uint256';
+    name: 'amount';
+    type: 'uint256';
+  }>;
 };
 
 /**
@@ -485,49 +509,55 @@ amount: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"amount","t
  * @example
  * ```
  * import { mint } from "TODO";
- * 
+ *
  * const transaction = mint({
  *  recipient: ...,
  *  amount: ...,
  * });
- * 
+ *
  * // Send the transaction
  * ...
- * 
+ *
  * ```
  */
-export function mint(
-  options: BaseTransactionOptions<MintParams>
-) {
+export function mint(options: TransactionOptionsWithNonce<MintParams>) {
   return prepareContractCall({
     contract: options.contract,
+    nonce: options.nonce,
     method: [
-  "0x40c10f19",
-  [
-    {
-      "internalType": "address",
-      "name": "recipient",
-      "type": "address"
-    },
-    {
-      "internalType": "uint256",
-      "name": "amount",
-      "type": "uint256"
-    }
-  ],
-  []
-],
-    params: [options.recipient, options.amount]
+      '0x40c10f19',
+      [
+        {
+          internalType: 'address',
+          name: 'recipient',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      [],
+    ],
+    params: [options.recipient, options.amount],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "transfer" function.
  */
 export type TransferParams = {
-  recipient: AbiParameterToPrimitiveType<{"internalType":"address","name":"recipient","type":"address"}>
-amount: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"amount","type":"uint256"}>
+  recipient: AbiParameterToPrimitiveType<{
+    internalType: 'address';
+    name: 'recipient';
+    type: 'address';
+  }>;
+  amount: AbiParameterToPrimitiveType<{
+    internalType: 'uint256';
+    name: 'amount';
+    type: 'uint256';
+  }>;
 };
 
 /**
@@ -537,56 +567,66 @@ amount: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"amount","t
  * @example
  * ```
  * import { transfer } from "TODO";
- * 
+ *
  * const transaction = transfer({
  *  recipient: ...,
  *  amount: ...,
  * });
- * 
+ *
  * // Send the transaction
  * ...
- * 
+ *
  * ```
  */
-export function transfer(
-  options: BaseTransactionOptions<TransferParams>
-) {
+export function transfer(options: TransactionOptionsWithNonce<TransferParams>) {
   return prepareContractCall({
     contract: options.contract,
+    nonce: options.nonce,
     method: [
-  "0xa9059cbb",
-  [
-    {
-      "internalType": "address",
-      "name": "recipient",
-      "type": "address"
-    },
-    {
-      "internalType": "uint256",
-      "name": "amount",
-      "type": "uint256"
-    }
-  ],
-  [
-    {
-      "internalType": "bool",
-      "name": "",
-      "type": "bool"
-    }
-  ]
-],
-    params: [options.recipient, options.amount]
+      '0xa9059cbb',
+      [
+        {
+          internalType: 'address',
+          name: 'recipient',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+    ],
+    params: [options.recipient, options.amount],
   });
-};
-
+}
 
 /**
  * Represents the parameters for the "transferFrom" function.
  */
 export type TransferFromParams = {
-  sender: AbiParameterToPrimitiveType<{"internalType":"address","name":"sender","type":"address"}>
-recipient: AbiParameterToPrimitiveType<{"internalType":"address","name":"recipient","type":"address"}>
-amount: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"amount","type":"uint256"}>
+  sender: AbiParameterToPrimitiveType<{
+    internalType: 'address';
+    name: 'sender';
+    type: 'address';
+  }>;
+  recipient: AbiParameterToPrimitiveType<{
+    internalType: 'address';
+    name: 'recipient';
+    type: 'address';
+  }>;
+  amount: AbiParameterToPrimitiveType<{
+    internalType: 'uint256';
+    name: 'amount';
+    type: 'uint256';
+  }>;
 };
 
 /**
@@ -596,52 +636,51 @@ amount: AbiParameterToPrimitiveType<{"internalType":"uint256","name":"amount","t
  * @example
  * ```
  * import { transferFrom } from "TODO";
- * 
+ *
  * const transaction = transferFrom({
  *  sender: ...,
  *  recipient: ...,
  *  amount: ...,
  * });
- * 
+ *
  * // Send the transaction
  * ...
- * 
+ *
  * ```
  */
 export function transferFrom(
-  options: BaseTransactionOptions<TransferFromParams>
+  options: TransactionOptionsWithNonce<TransferFromParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
+    nonce: options.nonce,
     method: [
-  "0x23b872dd",
-  [
-    {
-      "internalType": "address",
-      "name": "sender",
-      "type": "address"
-    },
-    {
-      "internalType": "address",
-      "name": "recipient",
-      "type": "address"
-    },
-    {
-      "internalType": "uint256",
-      "name": "amount",
-      "type": "uint256"
-    }
-  ],
-  [
-    {
-      "internalType": "bool",
-      "name": "",
-      "type": "bool"
-    }
-  ]
-],
-    params: [options.sender, options.recipient, options.amount]
+      '0x23b872dd',
+      [
+        {
+          internalType: 'address',
+          name: 'sender',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'recipient',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+    ],
+    params: [options.sender, options.recipient, options.amount],
   });
-};
-
-
+}

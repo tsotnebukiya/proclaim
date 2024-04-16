@@ -13,6 +13,7 @@ const DummyClaimSchema = z.object({
   counterparty: z.string(),
   owner: z.string(),
   market: z.string(),
+  currency: z.string(),
   type: z.union([z.literal("Payable"), z.literal("Receivable")]),
 });
 

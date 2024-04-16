@@ -1,12 +1,12 @@
-import { DummyClaimsArraySchema } from "@/lib/schemas";
+import { DummyClaimsArraySchema } from "@/server/lib/schemas";
 import { db } from "@/server/db";
-import processDummy from "@/lib/processDummy";
+import processDummy from "@/server/lib/claims/processDummy";
 
 export async function POST(req: Request) {
   const object: unknown = await req.json();
   try {
     const validatedData = DummyClaimsArraySchema.parse(object);
-    const processedData = processDummy(validatedData);
+    const processedData = await processDummy(validatedData);
     await db.claim.createMany({
       data: processedData,
     });

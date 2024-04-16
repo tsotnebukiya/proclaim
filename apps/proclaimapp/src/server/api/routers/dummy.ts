@@ -5,7 +5,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { DummyClaimsArraySchema } from "@/lib/schemas";
+import { DummyClaimsArraySchema } from "@/server/lib/schemas";
 
 export const dummyRouter = createTRPCRouter({
   transformDummy: publicProcedure
