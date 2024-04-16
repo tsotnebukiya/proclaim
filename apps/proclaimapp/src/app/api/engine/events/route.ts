@@ -3,9 +3,9 @@ import { processOwnEvents } from "@/server/lib/claims/processEvents";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const res = await processOwnEvents();
+    await processOwnEvents();
     return NextResponse.json({ message: "Success" }, { status: 200 });
   } catch (error) {
     const err = error as { message?: string };

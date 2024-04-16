@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import { db } from "@/server/db";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { deployContract, depositoryContract, wallet } from "proclaim";
 import { name } from "proclaim/depositoryFunctions";
 import { sendAndConfirmTransaction } from "thirdweb";
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       transaction: transaction,
       account: wallet,
     });
-    const latestNonce = (await kv.get<number>("latestNonce")) as number;
+    const latestNonce = (await kv.get<number>("latestNonce"))!;
     await kv.set<number>("latestNonce", latestNonce + 1);
     const response = await db.team.create({
       data: {

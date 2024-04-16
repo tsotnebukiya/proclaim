@@ -8,7 +8,7 @@ import { sendPromises } from "@/lib/distributeClaims";
 import { accounts } from "@/lib/owners";
 
 export async function GET() {
-  const lastRefRedis = (await kv.get<number>("lastRefRedis")) as number;
+  const lastRefRedis = (await kv.get<number>("lastRefRedis"))!;
   const icsdAccounts = accounts.map((el) => el.icsd);
   const usAccounts = accounts.map((el) => el.us);
   const { dummyClaimsData: icsdClaims, lastReference: preLastReference } =
@@ -25,7 +25,7 @@ export async function GET() {
   } catch (error) {
     console.error("An error occurred while sending claims:", error);
   }
-  const response = await kv.set("lastRefRedis", lastReference);
+  const response = (await kv.set("lastRefRedis", lastReference)) as number;
   return NextResponse.json(
     { response, lastReference, groupedClaims },
     { status: 200 },

@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { processOwnEvents } from "@/server/lib/claims/processEvents";
 import { getAllBankDetails } from "proclaim/depositoryFunctions";
-import { GetBankDetails, depositoryContract } from "proclaim";
+import { type GetBankDetails, depositoryContract } from "proclaim";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const banks = (await getAllBankDetails({
       contract: depositoryContract,

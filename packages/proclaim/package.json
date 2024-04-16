@@ -11,9 +11,6 @@
     "generateContracts": "npx thirdweb generate",
     "deployContracts": "npx thirdweb deploy"
   },
-  "dependencies": {
-    "thirdweb": "^5.2.0"
-  },
   "tsconfig": "*",
   "devDependencies": {
     "typescript": "^5.4.2"

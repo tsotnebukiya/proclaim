@@ -1,7 +1,6 @@
 import { DummyClaimsArraySchema } from "@/server/lib/schemas";
 import { db } from "@/server/db";
 import processDummy from "@/server/lib/claims/processDummy";
-import { Claim } from "@prisma/client";
 
 export async function POST(req: Request) {
   const object: unknown = await req.json();

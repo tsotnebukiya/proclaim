@@ -15,10 +15,10 @@
     "deploy": "cd packages/proclaim && npx thirdweb@latest deploy"
   },
   "devDependencies": {
+    "@repo/tsconfig": "*",
     "concurrently": "^8.2.2",
     "dotenv-cli": "latest",
     "prettier": "^3.2.5",
-    "tsconfig": "*",
     "turbo": "latest"
   },
   "engines": {
@@ -30,11 +30,13 @@
     "packages/*"
   ],
   "dependencies": {
+    "@vercel/kv": "^1.0.1",
     "ethers": "^5.7.2",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.45",
     "pino-pretty": "^11.0.0",
     "proclaim": "^0.0.1",
-    "stream": "^0.0.2"
+    "stream": "^0.0.2",
+    "thirdweb": "^5.2.0"
   }
 }
