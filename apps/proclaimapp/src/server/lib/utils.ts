@@ -1,4 +1,5 @@
 import { keccak256 } from "thirdweb";
+import moment from "moment-timezone";
 
 export function generateHash(claimString: string): string {
   const string = claimString as `0x${string}`;
@@ -19,6 +20,32 @@ export function dummyDecrypt(encryptedMessage: string): string {
     .map((char) => String.fromCharCode(char.charCodeAt(0) - 1))
     .join("");
   return decrypted;
+}
+
+export const warsawTime = moment.utc();
+
+export function convertContractArrays(
+  data: [string[], string[], bigint[], string[], string[]],
+) {
+  const [hashes, encryptedData, amounts, cpAddresses, currencies] = data;
+
+  return hashes.map((hash, index) => ({
+    hash: hash,
+    encryptedData: encryptedData[index]!,
+    amount: Number(amounts[index]),
+    cpAddress: cpAddresses[index]!,
+    currency: currencies[index]!,
+  }));
+}
+
+export function invertDecryptedData(data: string) {
+  const parts = data.split(";");
+  const temp = parts[9]!;
+  parts[9] = parts[10]!;
+  parts[10] = temp;
+  parts[parts.length - 1] =
+    parts[parts.length - 1] === "Receivable" ? "Payable" : "Receivable";
+  return parts.join(";");
 }
 
 export function matchEncryptedData(data: string, data1: string): boolean {

@@ -29,9 +29,9 @@ contract ClaimsContract {
     mapping(bytes32 => Claim) public claims;
     bytes32[] public claimHashes;
 
-    event ClaimAdded(bytes32 indexed claimIdentifier);
-    event ClaimSettled(bytes32 indexed claimIdentifier);
-    event SettlementError(bytes32 indexed claimIdentifier, string reason);
+    event ClaimAdded(bytes32 indexed claimIdentifier, address indexed counterpartyAddress);
+    event ClaimSettled(bytes32 indexed claimIdentifier, address indexed counterpartyAddress);
+    event SettlementError(bytes32 indexed claimIdentifier, address indexed counterpartyAddress, string reason);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Only the contract owner can perform this action.");
@@ -85,7 +85,7 @@ contract ClaimsContract {
                 tokenName: tokenNames[i]
             });
             claimHashes.push(claimIdentifiers[i]);
-            emit ClaimAdded(claimIdentifiers[i]);
+            emit ClaimAdded(claimIdentifiers[i], counterpartyAddresses[i]);
         }
     }
 
@@ -107,39 +107,36 @@ contract ClaimsContract {
         });
 
         claimHashes.push(claimIdentifier);
-        emit ClaimAdded(claimIdentifier);
+        emit ClaimAdded(claimIdentifier, counterpartyAddress);
     }
 
 
     function settleClaims(bytes32[] calldata claimIdentifiers) external {
-        bool insufficientUsdtBalance = false;
-        bool insufficientEurtBalance = false;
-
         for (uint i = 0; i < claimIdentifiers.length; i++) {
         bytes32 claimIdentifier = claimIdentifiers[i];
         Claim storage claim = claims[claimIdentifier];
 
         if (claim.isSettled) {
-            emit SettlementError(claimIdentifier, "Claim already settled.");
+            emit SettlementError(claimIdentifier, msg.sender, "Claim already settled.");
             continue; // Skip already settled claims
         }
 
         if (claim.counterpartyAddress != msg.sender) {
-            emit SettlementError(claimIdentifier, "Caller is not the counterparty.");
+            emit SettlementError(claimIdentifier, msg.sender, "Caller is not the counterparty.");
             continue; // Skip if caller is not the counterparty
         }
 
         address tokenAddress = tokenAddresses[claim.tokenName];
 
         if (tokenAddress == address(0)) {
-            emit SettlementError(claimIdentifier, "Unsupported token");
+            emit SettlementError(claimIdentifier, msg.sender, "Unsupported token");
             continue; // Skip unsupported tokens
         }
 
         IToken token = IToken(tokenAddress);
 
         if (!token.isApproved(msg.sender, address(this))) {
-            emit SettlementError(claimIdentifier, "BankContract not approved to transfer tokens.");
+            emit SettlementError(claimIdentifier, msg.sender, "BankContract not approved to transfer tokens.");
             continue;
         }
 
@@ -147,30 +144,23 @@ contract ClaimsContract {
 
         if (balance < claim.amountOwed) {
             if (keccak256(bytes(claim.tokenName)) == keccak256(bytes("USDt"))) {
-                insufficientUsdtBalance = true;
+                emit SettlementError(claimIdentifier, msg.sender, "Insufficient USDt balance for some claims.");
             } else if (keccak256(bytes(claim.tokenName)) == keccak256(bytes("EURt"))) {
-                insufficientEurtBalance = true;
+                emit SettlementError(claimIdentifier, msg.sender, "Insufficient EURt balance for some claims.");
             }
             continue;
         }
 
-        bool success = token.transferFrom(msg.sender,owner, claim.amountOwed);
+        bool success = token.transferFrom(msg.sender, owner, claim.amountOwed);
 
         if (!success) {
-            emit SettlementError(claimIdentifier, "Token transfer failed");
+            emit SettlementError(claimIdentifier, msg.sender, "Token transfer failed");
             continue;
         }
 
         claim.isSettled = true;
-        emit ClaimSettled(claimIdentifier);
+        emit ClaimSettled(claimIdentifier, msg.sender);
         }
-
-        if (insufficientUsdtBalance) {
-            emit SettlementError(0, "Insufficient USDt balance for some claims.");
-                }
-        if (insufficientEurtBalance) {
-            emit SettlementError(0, "Insufficient EURt balance for some claims.");
-                }
     }
     
     function settleClaim(bytes32 claimIdentifier) external onlyCounterparty(claimIdentifier){
@@ -189,9 +179,9 @@ contract ClaimsContract {
         if (balance < claim.amountOwed) {
             // Emit a specific error based on the token type
             if (keccak256(bytes(claim.tokenName)) == keccak256(bytes("USDt"))) {
-                emit SettlementError(claimIdentifier, "Insufficient USDt balance.");
+                emit SettlementError(claimIdentifier, msg.sender, "Insufficient USDt balance.");
             } else if (keccak256(bytes(claim.tokenName)) == keccak256(bytes("EURt"))) {
-                emit SettlementError(claimIdentifier, "Insufficient EURt balance.");
+                emit SettlementError(claimIdentifier, msg.sender, "Insufficient EURt balance.");
             }
             return;
         }
@@ -200,7 +190,7 @@ contract ClaimsContract {
         require(success, "Token transfer failed");
 
         claim.isSettled = true;
-        emit ClaimSettled(claimIdentifier);
+        emit ClaimSettled(claimIdentifier, msg.sender);
     }
 
     function checkIfSettled(bytes32 claimIdentifier) external view returns (bool) {

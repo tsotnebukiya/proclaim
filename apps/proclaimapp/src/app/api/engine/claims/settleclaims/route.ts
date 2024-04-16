@@ -1,11 +1,11 @@
+import { settleClaims } from "@/server/lib/claims/settleClaims";
 import { NextResponse } from "next/server";
-import { uploadClaims } from "@/server/lib/claims/uploadClaims";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const result = await uploadClaims();
+    const result = await settleClaims();
     return NextResponse.json({ message: "Success", result }, { status: 200 });
   } catch (error) {
     const err = error as { message?: string };

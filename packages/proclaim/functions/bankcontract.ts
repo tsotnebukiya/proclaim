@@ -25,6 +25,12 @@ export type ClaimAddedEventFilters = Partial<{
     name: 'claimIdentifier';
     type: 'bytes32';
   }>;
+  counterpartyAddress: AbiParameterToPrimitiveType<{
+    indexed: true;
+    internalType: 'address';
+    name: 'counterpartyAddress';
+    type: 'address';
+  }>;
 }>;
 
 /**
@@ -41,15 +47,16 @@ export type ClaimAddedEventFilters = Partial<{
  * events: [
  *  claimAddedEvent({
  *  claimIdentifier: ...,
+ *  counterpartyAddress: ...,
  * })
  * ],
  * });
  * ```
  */
-
 export function claimAddedEvent(filters: ClaimAddedEventFilters = {}) {
   return prepareEvent({
-    signature: 'event ClaimAdded(bytes32 indexed claimIdentifier)',
+    signature:
+      'event ClaimAdded(bytes32 indexed claimIdentifier, address indexed counterpartyAddress)',
     filters,
   });
 }
@@ -63,6 +70,12 @@ export type ClaimSettledEventFilters = Partial<{
     internalType: 'bytes32';
     name: 'claimIdentifier';
     type: 'bytes32';
+  }>;
+  counterpartyAddress: AbiParameterToPrimitiveType<{
+    indexed: true;
+    internalType: 'address';
+    name: 'counterpartyAddress';
+    type: 'address';
   }>;
 }>;
 
@@ -80,6 +93,7 @@ export type ClaimSettledEventFilters = Partial<{
  * events: [
  *  claimSettledEvent({
  *  claimIdentifier: ...,
+ *  counterpartyAddress: ...,
  * })
  * ],
  * });
@@ -87,7 +101,8 @@ export type ClaimSettledEventFilters = Partial<{
  */
 export function claimSettledEvent(filters: ClaimSettledEventFilters = {}) {
   return prepareEvent({
-    signature: 'event ClaimSettled(bytes32 indexed claimIdentifier)',
+    signature:
+      'event ClaimSettled(bytes32 indexed claimIdentifier, address indexed counterpartyAddress)',
     filters,
   });
 }
@@ -101,6 +116,12 @@ export type SettlementErrorEventFilters = Partial<{
     internalType: 'bytes32';
     name: 'claimIdentifier';
     type: 'bytes32';
+  }>;
+  counterpartyAddress: AbiParameterToPrimitiveType<{
+    indexed: true;
+    internalType: 'address';
+    name: 'counterpartyAddress';
+    type: 'address';
   }>;
 }>;
 
@@ -118,6 +139,7 @@ export type SettlementErrorEventFilters = Partial<{
  * events: [
  *  settlementErrorEvent({
  *  claimIdentifier: ...,
+ *  counterpartyAddress: ...,
  * })
  * ],
  * });
@@ -128,7 +150,7 @@ export function settlementErrorEvent(
 ) {
   return prepareEvent({
     signature:
-      'event SettlementError(bytes32 indexed claimIdentifier, string reason)',
+      'event SettlementError(bytes32 indexed claimIdentifier, address indexed counterpartyAddress, string reason)',
     filters,
   });
 }

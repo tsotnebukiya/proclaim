@@ -577,6 +577,12 @@ export const bankContract = (contractAddress: string) => {
             indexed: true,
             internalType: 'bytes32',
           },
+          {
+            type: 'address',
+            name: 'counterpartyAddress',
+            indexed: true,
+            internalType: 'address',
+          },
         ],
         outputs: [],
         anonymous: false,
@@ -591,6 +597,12 @@ export const bankContract = (contractAddress: string) => {
             indexed: true,
             internalType: 'bytes32',
           },
+          {
+            type: 'address',
+            name: 'counterpartyAddress',
+            indexed: true,
+            internalType: 'address',
+          },
         ],
         outputs: [],
         anonymous: false,
@@ -604,6 +616,12 @@ export const bankContract = (contractAddress: string) => {
             name: 'claimIdentifier',
             indexed: true,
             internalType: 'bytes32',
+          },
+          {
+            type: 'address',
+            name: 'counterpartyAddress',
+            indexed: true,
+            internalType: 'address',
           },
           {
             type: 'string',

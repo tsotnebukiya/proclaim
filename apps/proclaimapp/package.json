@@ -17,6 +17,10 @@
     "db:push:jp": "env-cmd -f .env.jp prisma db push",
     "db:push:goldman": "env-cmd -f .env.goldman prisma db push",
     "db:push": "pnpm run db:push:citi && pnpm run db:push:jp && pnpm run db:push:goldman",
+    "db:reset:citi": "env-cmd -f .env.citi prisma db push --force-reset",
+    "db:reset:jp": "env-cmd -f .env.jp prisma db push --force-reset",
+    "db:reset:goldman": "env-cmd -f .env.goldman prisma db push --force-reset",
+    "db:reset": "pnpm run db:reset:citi && pnpm run db:reset:jp && pnpm run db:reset:goldman",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start"

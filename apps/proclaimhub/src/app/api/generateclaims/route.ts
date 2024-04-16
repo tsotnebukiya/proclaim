@@ -7,8 +7,6 @@ import {
 import { sendPromises } from "@/lib/distributeClaims";
 import { accounts } from "@/lib/owners";
 
-export const runtime = "edge";
-
 export async function GET() {
   const lastRefRedis = (await kv.get<number>("lastRefRedis")) as number;
   const icsdAccounts = accounts.map((el) => el.icsd);

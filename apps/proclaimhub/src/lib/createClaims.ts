@@ -1,3 +1,4 @@
+import moment from "moment-timezone";
 import { accounts } from "./owners";
 
 export interface Claim {
@@ -25,9 +26,9 @@ function generateClaims(
 ): { claims: Claim[]; lastRef: number } {
   let lastRef = lastTradeRef++;
   const claims: Claim[] = [];
-  const startDate = new Date(); // Current date
+  const startDate = moment.utc().startOf("day");
   // Generate matching claims for the specified owner and counterparty
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 6; i++) {
     const tradeReference = lastRef;
     lastRef++;
     const corporateAction =
@@ -39,20 +40,22 @@ function generateClaims(
       corporateAction === "Interest Payment"
         ? Math.floor(Math.random() * 50) + 1
         : 1;
-    const payDate = new Date(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      startDate.getDate() + 1,
-    );
+    let payDate = startDate.clone();
+    if (i >= 2 && i < 4) {
+      payDate = payDate.add(1, "d");
+    } else if (i >= 4) {
+      payDate = payDate.add(2, "d");
+    }
+    const payDateTimestamp = payDate.valueOf();
     const quantity = Math.floor(Math.random() * 1000000) + 10000; // 10,000 to 99,999 shares
-    const contractualSettlementDate = new Date(payDate);
-    contractualSettlementDate.setDate(
-      contractualSettlementDate.getDate() - Math.floor(Math.random() * 3) - 2,
-    );
-    const actualSettlementDate = new Date(payDate);
-    actualSettlementDate.setDate(
-      actualSettlementDate.getDate() + Math.floor(Math.random() * 3) + 2,
-    );
+    const contractualSettlementDate = payDate
+      .clone()
+      .subtract(Math.floor(Math.random() * 3) + 2, "days")
+      .valueOf();
+    const actualSettlementDate = payDate
+      .clone()
+      .add(Math.floor(Math.random() * 3) + 2, "days")
+      .valueOf();
     const amount =
       corporateAction === "Interest Payment"
         ? (quantity / 1000) * eventRate
@@ -66,10 +69,10 @@ function generateClaims(
       corporateAction,
       corporateActionID,
       eventRate,
-      payDate: payDate.getTime().toString(),
+      payDate: payDateTimestamp.toString(),
       quantity,
-      contractualSettlementDate: contractualSettlementDate.getTime().toString(),
-      actualSettlementDate: actualSettlementDate.getTime().toString(),
+      contractualSettlementDate: contractualSettlementDate.toString(),
+      actualSettlementDate: actualSettlementDate.toString(),
       amount: Math.floor(amount),
       owner,
       counterparty,

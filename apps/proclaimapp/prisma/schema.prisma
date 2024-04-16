@@ -89,43 +89,51 @@ model Team {
 }
 
 model Claim {
-    id                        Int       @id @default(autoincrement())
-    tradeReference            String    @unique
+    id                        Int               @id @default(autoincrement())
+    tradeReference            String            @unique
     corporateAction           String
     corporateActionID         String
     eventRate                 Float
-    payDate                   String
+    payDate                   DateTime
     quantity                  BigInt
-    contractualSettlementDate String
-    actualSettlementDate      String
+    contractualSettlementDate DateTime
+    actualSettlementDate      DateTime
     amount                    Float
     currency                  String
     counterparty              String
     owner                     String
     market                    String
-    uploaded                  Boolean   @default(false)
-    settled                   Boolean   @default(false)
-    createdBy                 SysUser   @default(SYSTEM)
-    settledBy                 SysUser   @default(SYSTEM)
+    uploaded                  Boolean           @default(false)
+    settled                   Boolean           @default(false)
+    createdBy                 SysUser           @default(SYSTEM)
+    settledBy                 SysUser?
     encryptedClaimData        String
-    hash                      String?   @unique
+    hash                      String?           @unique
     transaction               String?
+    settlementError           BlockchainError[]
     settledDate               DateTime?
     createdDate               DateTime
     type                      ClaimType
     userCreateId              String?
     userSettleId              String?
-    creator                   User?     @relation("ClaimsCreated", fields: [creatorId], references: [id])
-    settler                   User?     @relation("ClaimsSettled", fields: [settlerId], references: [id])
+    creator                   User?             @relation("ClaimsCreated", fields: [creatorId], references: [id])
+    settler                   User?             @relation("ClaimsSettled", fields: [settlerId], references: [id])
     creatorId                 String?
     settlerId                 String?
     teamId                    Int // Foreign key to Team
-    team                      Team      @relation(fields: [teamId], references: [id]) // Establish the relationship
+    team                      Team              @relation(fields: [teamId], references: [id]) // Establish the relationship
+    blockchainErrorId         Int?
 
     @@map("dummy_claims")
 }
 
-model Config {
-    id    Int @id @default(autoincrement())
-    nonce Int
+model BlockchainError {
+    id              Int      @id @default(autoincrement())
+    eventName       String
+    contractAddress String
+    transactionHash String
+    reason          String
+    createdAt       DateTime @default(now())
+    claim           Claim    @relation(fields: [claimId], references: [id])
+    claimId         Int
 }

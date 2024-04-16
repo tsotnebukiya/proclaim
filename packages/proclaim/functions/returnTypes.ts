@@ -5,3 +5,11 @@ export type GetBankDetails = {
   contractAddress: string;
   piblicKey: string;
 };
+
+export type GetContractClaims = [
+  string[],
+  string[],
+  bigint[],
+  string[],
+  string[],
+];

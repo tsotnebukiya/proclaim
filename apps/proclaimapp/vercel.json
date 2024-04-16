@@ -1,0 +1,20 @@
+{
+  "crons": [
+    {
+      "path": "/api/engine/claims/uploadclaims",
+      "schedule": "02 08,20 * * *"
+    },
+    {
+      "path": "/api/engine/events",
+      "schedule": "05 08,20 * * *"
+    },
+    {
+      "path": "/api/engine/claims/settleclaims",
+      "schedule": "07 08,20 * * *"
+    },
+    {
+      "path": "/api/engine/events",
+      "schedule": "10 08,20 * * *"
+    }
+  ]
+}

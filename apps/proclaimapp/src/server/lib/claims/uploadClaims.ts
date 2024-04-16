@@ -10,22 +10,27 @@ import { sendTransaction } from "thirdweb";
 import { kv } from "@vercel/kv";
 import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import { db } from "@/server/db";
+import { warsawTime } from "../utils";
 
 export const uploadClaims = async () => {
   const banks = (await getAllBankDetails({
     contract: depositoryContract,
   })) as GetBankDetails[];
-
+  const payDate = warsawTime.startOf("d").toDate();
   const claims = await db.claim.findMany({
     where: {
       settled: false,
       uploaded: false,
       type: "Receivable",
+      payDate: payDate,
     },
     include: {
       team: true,
     },
   });
+  if (claims.length === 0) {
+    return null;
+  }
   const groupedClaims = claims.reduce<Record<string, Claim[]>>((acc, claim) => {
     const key = `${claim.counterparty}${claim.market}`;
     if (banks.some((b) => `${b.accountNumber}${b.market}` === key)) {
@@ -36,7 +41,7 @@ export const uploadClaims = async () => {
   const transactionsResults = [];
   for (const [owner, claims] of Object.entries(groupedClaims)) {
     if (claims.length === 0) {
-      return;
+      return null;
     }
     const transactionData = claims.map((claim) => {
       const key = `${claim.counterparty}${claim.market}`;

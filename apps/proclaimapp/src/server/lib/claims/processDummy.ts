@@ -1,6 +1,6 @@
 import { db } from "@/server/db";
 import { type DummyClaim } from "../schemas";
-import { dummyEncrypt, generateHash } from "../utils";
+import { dummyEncrypt, generateHash, warsawTime } from "../utils";
 
 export default async function processDummy(data: DummyClaim[]) {
   const teams = await db.team.findMany();
@@ -9,7 +9,12 @@ export default async function processDummy(data: DummyClaim[]) {
     const encryptedClaimData = dummyEncrypt(string);
     const hash =
       el.type === "Receivable" ? generateHash(encryptedClaimData) : undefined;
-    const createdDate = new Date();
+    const createdDate = warsawTime.toDate();
+    const payDate = new Date(parseInt(el.payDate));
+    const contractualSettlementDate = new Date(
+      parseInt(el.contractualSettlementDate),
+    );
+    const actualSettlementDate = new Date(parseInt(el.actualSettlementDate));
     const teamId = teams.find(
       (team) => `${team.account}${team.market}` === `${el.owner}${el.market}`,
     )?.id;
@@ -22,8 +27,16 @@ export default async function processDummy(data: DummyClaim[]) {
       hash,
       createdDate,
       teamId,
+      payDate,
+      contractualSettlementDate,
+      actualSettlementDate,
+      tradeReference: el.tradeReference,
     };
   });
   const filteredArray = array.flatMap((el) => (el?.teamId ? [el] : []));
+  console.log(
+    filteredArray.map((el) => el.tradeReference),
+    "CHECKHERE",
+  );
   return filteredArray;
 }
