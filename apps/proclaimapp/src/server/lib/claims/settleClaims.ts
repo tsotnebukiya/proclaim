@@ -144,9 +144,10 @@ async function sendTransactions(
 }
 
 export const settleClaims = async () => {
-  const banks = (await getAllBankDetails({
+  const banksRes = (await getAllBankDetails({
     contract: depositoryContract,
-  })) as GetBankDetails[];
+  })) as unknown;
+  const banks = banksRes as GetBankDetails[];
   const payDate = warsawTime.startOf("d").toDate();
   const claims = await db.claim.findMany({
     where: {

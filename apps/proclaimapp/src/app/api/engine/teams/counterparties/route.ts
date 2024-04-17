@@ -7,10 +7,10 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const banks = (await getAllBankDetails({
+    const banksRes = (await getAllBankDetails({
       contract: depositoryContract,
-    })) as GetBankDetails[];
-    console.log(banks);
+    })) as unknown;
+    const banks = banksRes as GetBankDetails[];
     const formatted = banks.map((el) => ({
       ...el,
       accountNumber: Number(el.accountNumber),

@@ -62,8 +62,8 @@ export const processOwnEvents = async () => {
     const teams = await db.team.findMany();
     const banksRes = (await getAllBankDetails({
       contract: depositoryContract,
-    })) as GetBankDetails[];
-    const counterparties = banksRes;
+    })) as unknown;
+    const counterparties = banksRes as GetBankDetails[];
     const claims = await db.claim.findMany({
       where: {
         settled: false,

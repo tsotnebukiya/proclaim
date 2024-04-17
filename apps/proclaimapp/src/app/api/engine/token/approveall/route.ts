@@ -55,9 +55,10 @@ export async function POST(req: NextRequest) {
 
   try {
     const { approved, currency } = schema.parse(object);
-    const banks = (await getAllBankDetails({
+    const banksRes = (await getAllBankDetails({
       contract: depositoryContract,
-    })) as GetBankDetails[];
+    })) as unknown;
+    const banks = banksRes as GetBankDetails[];
     const addresses = banks.map((el) => el.contractAddress);
     const transactions: string[] = [];
     for (const address of addresses) {

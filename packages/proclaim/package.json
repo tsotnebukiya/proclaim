@@ -12,6 +12,9 @@
     "deployContracts": "npx thirdweb deploy"
   },
   "tsconfig": "*",
+  "dependencies": {
+    "thirdweb": "^5.2.0"
+  },
   "devDependencies": {
     "typescript": "^5.4.2"
   }
