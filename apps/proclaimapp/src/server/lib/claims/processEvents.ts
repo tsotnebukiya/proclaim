@@ -30,6 +30,7 @@ async function processSettledEvents(
       where: { hash: event.hash, settled: false },
       data: {
         settled: true,
+        uploaded: true,
         settledBy: "SYSTEM",
         transaction: event.transactionHash,
       },
@@ -105,17 +106,17 @@ export const processOwnEvents = async () => {
           .filter((ev) => ev.eventName === "ClaimAdded")
           .map((el) => el.args.claimIdentifier),
       ),
-      processSettledEvents(
-        [...cpEvents, ...ourEvents]
-          .filter((ev) => ev.eventName === "ClaimSettled")
-          .map((el) => ({
-            hash: el.args.claimIdentifier,
-            transactionHash: el.transactionHash,
-          })),
-      ),
       processSettlementErrors(cpEvents, claims),
     ];
     await Promise.all(updatePromises);
+    await processSettledEvents(
+      [...cpEvents, ...ourEvents]
+        .filter((ev) => ev.eventName === "ClaimSettled")
+        .map((el) => ({
+          hash: el.args.claimIdentifier,
+          transactionHash: el.transactionHash,
+        })),
+    );
     return true;
   } catch (err) {
     console.log(err);
