@@ -31,12 +31,9 @@ export default async function processDummy(data: DummyClaim[]) {
       contractualSettlementDate,
       actualSettlementDate,
       tradeReference: el.tradeReference,
+      uploaded: el.type === "Receivable" ? false : undefined,
     };
   });
   const filteredArray = array.flatMap((el) => (el?.teamId ? [el] : []));
-  console.log(
-    filteredArray.map((el) => el.tradeReference),
-    "CHECKHERE",
-  );
   return filteredArray;
 }

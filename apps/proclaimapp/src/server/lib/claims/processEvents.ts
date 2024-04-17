@@ -30,7 +30,6 @@ async function processSettledEvents(
       where: { hash: event.hash, settled: false },
       data: {
         settled: true,
-        uploaded: true,
         settledBy: "SYSTEM",
         transaction: event.transactionHash,
       },

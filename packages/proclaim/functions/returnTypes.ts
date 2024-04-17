@@ -12,4 +12,5 @@ export type GetContractClaims = [
   bigint[],
   string[],
   string[],
+  string[],
 ];

@@ -23,9 +23,6 @@ import { sendTransaction } from "thirdweb";
 import { env } from "@/env";
 
 async function sortCPClaims(claims: Claim[], banks: GetBankDetails[]) {
-  // const counterparties = [
-  //   ...new Set(claims.map((el) => el.counterparty + el.market)),
-  // ];
   const bankMap = new Map(
     banks.map((bank) => [
       `${bank.accountNumber}${bank.market}`,
@@ -153,7 +150,9 @@ export const settleClaims = async () => {
     where: {
       settled: false,
       type: "Payable",
-      payDate: payDate,
+      payDate: {
+        lte: payDate,
+      },
     },
     include: {
       team: true,

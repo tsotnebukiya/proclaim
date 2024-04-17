@@ -23,7 +23,9 @@ export const uploadClaims = async () => {
       settled: false,
       uploaded: false,
       type: "Receivable",
-      payDate: payDate,
+      payDate: {
+        lte: payDate,
+      },
     },
     include: {
       team: true,

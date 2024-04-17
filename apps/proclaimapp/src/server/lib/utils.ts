@@ -25,14 +25,16 @@ export function dummyDecrypt(encryptedMessage: string): string {
 export const warsawTime = moment.utc();
 
 export function convertContractArrays(
-  data: [string[], string[], bigint[], string[], string[]],
+  data: [string[], string[], bigint[], string[], string[], string[]],
 ) {
-  const [hashes, encryptedData, amounts, cpAddresses, currencies] = data;
+  const [hashes, encryptedData, amounts, settled, cpAddresses, currencies] =
+    data;
 
   return hashes.map((hash, index) => ({
     hash: hash,
     encryptedData: encryptedData[index]!,
     amount: Number(amounts[index]),
+    settled: settled[index]!,
     cpAddress: cpAddresses[index]!,
     currency: currencies[index]!,
   }));

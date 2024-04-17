@@ -103,7 +103,7 @@ model Claim {
     counterparty              String
     owner                     String
     market                    String
-    uploaded                  Boolean           @default(false)
+    uploaded                  Boolean?
     settled                   Boolean           @default(false)
     createdBy                 SysUser           @default(SYSTEM)
     settledBy                 SysUser?
