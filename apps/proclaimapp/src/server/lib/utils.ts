@@ -24,7 +24,21 @@ export function dummyDecrypt(encryptedMessage: string): string {
 
 export const warsawTime = moment.utc();
 
-export function convertContractArrays(
+export function convertContractUnsettled(
+  data: [string[], string[], bigint[], string[], string[]],
+) {
+  const [hashes, encryptedData, amounts, cpAddresses, currencies] = data;
+
+  return hashes.map((hash, index) => ({
+    hash: hash,
+    encryptedData: encryptedData[index]!,
+    amount: Number(amounts[index]),
+    cpAddress: cpAddresses[index]!,
+    currency: currencies[index]!,
+  }));
+}
+
+export function convertContractAll(
   data: [string[], string[], bigint[], string[], string[], string[]],
 ) {
   const [hashes, encryptedData, amounts, settled, cpAddresses, currencies] =
@@ -39,7 +53,6 @@ export function convertContractArrays(
     currency: currencies[index]!,
   }));
 }
-
 export function invertDecryptedData(data: string) {
   const parts = data.split(";");
   const temp = parts[9]!;

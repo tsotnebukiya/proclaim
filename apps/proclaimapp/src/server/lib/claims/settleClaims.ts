@@ -12,7 +12,7 @@ import {
 } from "proclaim/contractFunctions";
 import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import {
-  convertContractArrays,
+  convertContractUnsettled,
   dummyDecrypt,
   invertDecryptedData,
   warsawTime,
@@ -43,7 +43,7 @@ async function sortCPClaims(claims: Claim[], banks: GetBankDetails[]) {
     const unsettledClaims = (await getUnsettledClaims({
       contract,
     })) as GetContractClaims;
-    const converted = convertContractArrays(unsettledClaims);
+    const converted = convertContractUnsettled(unsettledClaims);
     const arrayWithAddress = converted.map((el) => ({
       ...el,
       contractAddress,
@@ -159,13 +159,10 @@ export const settleClaims = async () => {
     },
   });
   if (claims.length === 0) return null;
-
   const cpClaims = await sortCPClaims(claims, banks);
   if (cpClaims.length === 0) return null;
-
   const claimsToSettle = await matchCPClaims(cpClaims, claims);
   if (claimsToSettle.length === 0) return null;
-
   const transactionsResults = await sendTransactions(claimsToSettle);
 
   return transactionsResults;

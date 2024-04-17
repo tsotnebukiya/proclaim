@@ -1,7 +1,7 @@
 import { db } from "@/server/db";
 import { bankContract } from "proclaim";
 import { getClaims } from "proclaim/contractFunctions";
-import { convertContractArrays } from "../utils";
+import { convertContractAll } from "../utils";
 
 export default async function getContractClaims() {
   const teams = await db.team.findMany();
@@ -19,7 +19,7 @@ export default async function getContractClaims() {
     const claimsRes = (await getClaims({
       contract: bankContract(team.contractAddress),
     })) as unknown;
-    const claims = convertContractArrays(
+    const claims = convertContractAll(
       claimsRes as [string[], string[], bigint[], string[], string[], string[]],
     );
     claimsByContract[team.contractAddress] = claims;
