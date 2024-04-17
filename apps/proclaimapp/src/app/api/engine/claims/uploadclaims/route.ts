@@ -1,11 +1,19 @@
 import { NextResponse } from "next/server";
 import { uploadClaims } from "@/server/lib/claims/uploadClaims";
+import { processEvents } from "@/server/lib/claims/processEvents";
+import { getAllBankDetails } from "proclaim/depositoryFunctions";
+import { GetBankDetails, depositoryContract } from "proclaim";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const result = await uploadClaims();
+    const banksRes = (await getAllBankDetails({
+      contract: depositoryContract,
+    })) as unknown;
+    const banks = banksRes as GetBankDetails[];
+    const result = await uploadClaims({ banks });
+    await processEvents({ banks });
     return NextResponse.json({ message: "Success", result }, { status: 200 });
   } catch (error) {
     const err = error as { message?: string };

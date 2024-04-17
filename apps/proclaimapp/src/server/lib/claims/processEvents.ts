@@ -57,19 +57,16 @@ async function processSettlementErrors(cpEvents: any, claims: Claim[]) {
   await db.blockchainError.createMany({ data: errors.filter((e: any) => e) });
 }
 
-export const processOwnEvents = async () => {
+export const processEvents = async ({ banks }: { banks: GetBankDetails[] }) => {
   try {
     const teams = await db.team.findMany();
-    const banksRes = (await getAllBankDetails({
-      contract: depositoryContract,
-    })) as unknown;
-    const counterparties = banksRes as GetBankDetails[];
+
     const claims = await db.claim.findMany({
       where: {
         settled: false,
       },
     });
-    const contracts = counterparties.map((el) => el.contractAddress);
+    const contracts = banks.map((el) => el.contractAddress);
     const lastCheckedBlock = (await kv.get<number>(
       "lastCheckedBlock",
     )) as number;

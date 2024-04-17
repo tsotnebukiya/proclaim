@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { processOwnEvents } from "@/server/lib/claims/processEvents";
 import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import { type GetBankDetails, depositoryContract } from "proclaim";
 

@@ -12,11 +12,7 @@ import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import { db } from "@/server/db";
 import { warsawTime } from "../utils";
 
-export const uploadClaims = async () => {
-  const banksRes = (await getAllBankDetails({
-    contract: depositoryContract,
-  })) as unknown;
-  const banks = banksRes as GetBankDetails[];
+export const uploadClaims = async ({ banks }: { banks: GetBankDetails[] }) => {
   const payDate = warsawTime.startOf("d").toDate();
   const claims = await db.claim.findMany({
     where: {
