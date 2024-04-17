@@ -5,16 +5,12 @@
       "schedule": "02 08,20 * * *"
     },
     {
-      "path": "/api/engine/events",
-      "schedule": "05 08,20 * * *"
-    },
-    {
       "path": "/api/engine/claims/settleclaims",
-      "schedule": "07 08,20 * * *"
+      "schedule": "04 08,20 * * *"
     },
     {
       "path": "/api/engine/events",
-      "schedule": "10 08,20 * * *"
+      "schedule": "06 08,20 * * *"
     }
   ]
 }

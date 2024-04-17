@@ -1,6 +1,5 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDotEnv": [".env"],
   "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "build": {
@@ -12,30 +11,7 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true,
-      "dependsOn": ["^dev"]
-    },
-    "dev:citi": {
-      "outputs": []
-    },
-    "dev:jp": {
-      "outputs": []
-    },
-    "dev:goldman": {
-      "outputs": []
-    },
-    "dev:barclays": {
-      "outputs": []
-    },
-    "dev:bny": {
-      "outputs": []
-    },
-    "generateContracts": {
-      "cache": false
-    },
-    "deployContracts": {
-      "cache": false,
-      "interactive": true
+      "persistent": true
     }
   }
 }
