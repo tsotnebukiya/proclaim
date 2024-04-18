@@ -7,6 +7,10 @@
     {
       "path": "/api/engine/claims/settleclaims",
       "schedule": "04 08,20 * * *"
+    },
+    {
+      "path": "/api/engine/events",
+      "schedule": "06 08,20 * * *"
     }
   ]
 }
