@@ -7,6 +7,8 @@ import {
 import { sendPromises } from "@/lib/distributeClaims";
 import { accounts } from "@/lib/owners";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const lastRefRedis = (await kv.get<number>("lastRefRedis"))!;
   const icsdAccounts = accounts.map((el) => el.icsd);
