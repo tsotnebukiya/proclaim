@@ -21,6 +21,7 @@ export async function GET() {
     usAccounts,
   );
   const groupedClaims = groupClaimsByOwner([...icsdClaims, ...usClaims]);
+
   try {
     await Promise.all(sendPromises(groupedClaims));
     console.log("All claims have been sent successfully.");

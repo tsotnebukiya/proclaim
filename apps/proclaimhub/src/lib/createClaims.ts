@@ -106,7 +106,11 @@ export function generateDummyClaimsData(
         market,
       );
       lastReference = lastRef;
-      const counterpartyClaims = claims.map((claim) => {
+      const counterpartyClaims = claims.map((claim, claimI) => {
+        let amount = claim.amount;
+        if (claimI === 0) {
+          amount = claim.amount + 1000;
+        }
         const type =
           claim.type === "Payable"
             ? "Receivable"
@@ -116,6 +120,7 @@ export function generateDummyClaimsData(
           owner: claim.counterparty,
           counterparty: claim.owner,
           type,
+          amount,
         };
       });
 
