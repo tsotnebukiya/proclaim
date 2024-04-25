@@ -5,6 +5,7 @@
   "scripts": {
     "build": "dotenv -- turbo build",
     "dev": "dotenv -- turbo dev",
+    "devCiti": "dotenv -- turbo dev:citi",
     "lint": "dotenv -- turbo lint",
     "dbGenerate": "cd apps/proclaimapp && npx prisma generate",
     "dbPush": "cd apps/proclaimapp && pnpm run db:push",
