@@ -6,6 +6,7 @@
     "build": "dotenv -- turbo build",
     "dev": "dotenv -- turbo dev",
     "devCiti": "dotenv -- turbo dev:citi",
+    "startCiti": "dotenv -- turbo start:citi",
     "lint": "dotenv -- turbo lint",
     "dbGenerate": "cd apps/proclaimapp && npx prisma generate",
     "dbPush": "cd apps/proclaimapp && pnpm run db:push",

@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Citi Proclaim",
+  title: "Proclaim",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

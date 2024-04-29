@@ -16,6 +16,10 @@
     "dev:citi": {
       "cache": false,
       "persistent": true
+    },
+    "start:citi": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

@@ -1,10 +1,14 @@
 import PrismLoader from "@/frontend/lib/prism-loader";
+import { api } from "@/trpc/server";
 
-export default function Contracts() {
+export default async function Contracts() {
+  const res = await api.contract.getContracts();
   return (
-    <div>
-      <pre className="language-solidity">
-        <code className="language-solidity">{`contract StableCoin {
+    <>
+      {res.map((el) => el.toFixed())}
+      {/* <div>
+        <pre className="language-solidity">
+          <code className="language-solidity">{`contract StableCoin {
     string public constant name = "USDtToken";
     string public constant symbol = "USDt";
     uint8 public constant decimals = 2;
@@ -77,8 +81,9 @@ export default function Contracts() {
         emit Transfer(address(0), recipient, amount);
     }
 }`}</code>
-      </pre>
-      <PrismLoader />
-    </div>
+        </pre>
+        <PrismLoader />
+      </div> */}
+    </>
   );
 }
