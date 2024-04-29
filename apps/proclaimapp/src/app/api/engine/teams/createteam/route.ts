@@ -1,18 +1,6 @@
-import { env } from "@/env";
-import { db } from "@/server/db";
 import { type NextRequest, NextResponse } from "next/server";
-import { deployContract, depositoryContract, wallet } from "proclaim";
-import { name } from "proclaim/depositoryFunctions";
-import { sendAndConfirmTransaction } from "thirdweb";
-import { kv } from "@vercel/kv";
-
-import { z } from "zod";
-
-const schema = z.object({
-  market: z.string(),
-  account: z.number(),
-  teamName: z.string(),
-});
+import createTeam from "@/server/lib/teams/createTeam";
+import { createTeamSchema } from "@/server/lib/schemas";
 
 export const dynamic = "force-dynamic";
 
@@ -20,28 +8,8 @@ export async function POST(req: NextRequest) {
   const object: unknown = await req.json();
 
   try {
-    await name({ contract: depositoryContract });
-    const { account, market, teamName } = schema.parse(object);
-    const transaction = deployContract({
-      account,
-      market,
-      publicKey: env.PROCHAIN_PUBLIC_KEY,
-      teamName,
-    });
-    const { contractAddress } = await sendAndConfirmTransaction({
-      transaction: transaction,
-      account: wallet,
-    });
-    const latestNonce = (await kv.get<number>("latestNonce"))!;
-    await kv.set<number>("latestNonce", latestNonce + 1);
-    const response = await db.team.create({
-      data: {
-        account,
-        market,
-        contractAddress: contractAddress!,
-        name: teamName,
-      },
-    });
+    const input = createTeamSchema.parse(object);
+    const response = await createTeam(input);
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     const err = error as { message?: string };

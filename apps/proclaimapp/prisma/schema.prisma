@@ -83,6 +83,8 @@ model Team {
     account         Int
     contractAddress String
     name            String
+    stp             Boolean @default(true)
+    slug            String
     Claim           Claim[]
 
     @@map("teams")

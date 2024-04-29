@@ -22,6 +22,9 @@ export const uploadClaims = async ({ banks }: { banks: GetBankDetails[] }) => {
       payDate: {
         lte: payDate,
       },
+      team:{
+        stp:true
+      }
     },
     include: {
       team: true,

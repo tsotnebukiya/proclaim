@@ -47,6 +47,7 @@ import {
   SelectValue,
 } from "@/frontend/components/ui/select";
 import { usePathname, useRouter } from "next/navigation";
+import NewTeamModal from "../components/teams/new-team";
 
 const groups = [
   {
@@ -74,9 +75,11 @@ interface TeamSwitcherProps extends PopoverTriggerProps {}
 
 export default function TeamSwitcher({}: TeamSwitcherProps) {
   const pathname = usePathname();
+  const parts = pathname.split("/");
+  const teamPath = `/${parts[1]}/${parts[2]}`;
   const { push } = useRouter();
   const selectedTeam =
-    groups[0]?.teams.find((el) => `/portal/${el.value}` === pathname) || null;
+    groups[0]?.teams.find((el) => `/portal/${el.value}` === teamPath) || null;
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
@@ -163,50 +166,7 @@ export default function TeamSwitcher({}: TeamSwitcherProps) {
           </Command>
         </PopoverContent>
       </Popover>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create team</DialogTitle>
-          <DialogDescription>
-            Add a new team to manage products and customers.
-          </DialogDescription>
-        </DialogHeader>
-        <div>
-          <div className="space-y-4 py-2 pb-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Team name</Label>
-              <Input id="name" placeholder="Acme Inc." />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="plan">Subscription plan</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a plan" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="free">
-                    <span className="font-medium">Free</span> -{" "}
-                    <span className="text-muted-foreground">
-                      Trial for two weeks
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="pro">
-                    <span className="font-medium">Pro</span> -{" "}
-                    <span className="text-muted-foreground">
-                      $9/month per user
-                    </span>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setShowNewTeamDialog(false)}>
-            Cancel
-          </Button>
-          <Button type="submit">Continue</Button>
-        </DialogFooter>
-      </DialogContent>
+      {showNewTeamDialog && <NewTeamModal setOpen={setShowNewTeamDialog} />}
     </Dialog>
   );
 }

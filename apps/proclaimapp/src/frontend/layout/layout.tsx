@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Pyramid } from "lucide-react";
-import Slash from "../components/icons/slash";
 import TeamSwitcher from "./team-switcher";
 import Search from "./search";
 import UserNav from "./user-nav";
@@ -13,26 +12,29 @@ export default function PortalLayout({
 }) {
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <header className="bg-background sticky top-0 flex flex-col gap-4 border-b px-6 pt-4">
-        <div className="flex items-center">
-          <div className="flex items-center gap-3">
-            <Link href={"/"}>
-              <Pyramid size={36} />
-            </Link>
-            <Slash />
-            <TeamSwitcher />
+      <header className="sticky top-0 z-10 border-b bg-background">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-4  px-4 pt-4">
+          <div className="flex items-center">
+            <div className="flex items-center gap-6">
+              <Link href={"/"}>
+                <Pyramid size={36} />
+              </Link>
+              <TeamSwitcher />
+            </div>
+            <div className="ml-auto flex items-center space-x-4">
+              <Search />
+              <UserNav />
+            </div>
           </div>
-          <div className="ml-auto flex items-center space-x-4">
-            <Search />
-            <UserNav />
+          <div>
+            <NavMenu />
           </div>
-        </div>
-        <div>
-          <NavMenu />
         </div>
       </header>
-      <main className="bg-muted/40 flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
-        {children}
+      <main className="flex flex-1 flex-col bg-background">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 pt-4">
+          {children}
+        </div>
       </main>
     </div>
   );

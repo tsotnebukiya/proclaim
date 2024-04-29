@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button, buttonVariants } from "../components/ui/button";
+import { buttonVariants } from "../components/ui/button";
 import { usePathname } from "next/navigation";
 import { cn } from "../lib/utils";
 
@@ -21,23 +21,28 @@ export default function NavMenu() {
   const pathname = usePathname();
   return (
     <div className="flex">
-      {dummyArray.map((el, i) => (
-        <div
-          key={i}
-          className={pathname === el.url ? `border-b-2 border-black` : ""}
-        >
-          <Link
-            className={cn(
-              buttonVariants({ variant: "nav" }),
-              pathname === el.url ? `text-foreground` : "",
-            )}
-            href={el.url}
-            target={el.title === "Block Explorer" ? "_blank" : ""}
+      {dummyArray.map((el, i) => {
+        const isHome = pathname === "/portal" && el.url === "/portal";
+        const isActive = el.url !== "/portal" && pathname.includes(el.url);
+        console.log(isHome, isActive);
+        return (
+          <div
+            key={i}
+            className={isHome || isActive ? `border-b-2 border-black` : ""}
           >
-            {el.title}
-          </Link>
-        </div>
-      ))}
+            <Link
+              className={cn(
+                buttonVariants({ variant: "nav" }),
+                isHome || isActive ? `text-foreground` : "",
+              )}
+              href={el.url}
+              target={el.title === "Block Explorer" ? "_blank" : ""}
+            >
+              {el.title}
+            </Link>
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -6,6 +6,27 @@ export function generateHash(claimString: string): string {
   return keccak256(string);
 }
 
+const currencyRates: Record<string, number> = { EURt: 1.07 };
+
+export function convertToUSD(amount: number, currency: string) {
+  if (currency === "USDt") return amount; // No conversion needed for USD
+
+  const rate = currencyRates[currency];
+  if (!rate) throw new Error(`Exchange rate for ${currency} not found`);
+
+  return amount * rate;
+}
+
+export function slugify(text: string) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/[^\w\-]+/g, "") // Remove all non-word chars
+    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+    .replace(/^-+/, "") // Trim - from start of text
+    .replace(/-+$/, ""); // Trim - from end of text
+}
 export function dummyEncrypt(message: string): string {
   const encrypted = message
     .split("")

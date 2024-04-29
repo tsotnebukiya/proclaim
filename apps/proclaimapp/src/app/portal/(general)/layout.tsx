@@ -2,14 +2,10 @@ import PortalLayout from "@/frontend/layout/layout";
 import { getServerAuthSession } from "@/server/auth";
 import { redirect } from "next/navigation";
 
-export default async function Portal({
+export default async function GeneralLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerAuthSession();
-  if (!session) {
-    redirect("/auth");
-  }
-  return <PortalLayout>{children}</PortalLayout>;
+  return <>{children}</>;
 }

@@ -149,6 +149,9 @@ export const settleClaims = async ({ banks }: { banks: GetBankDetails[] }) => {
       payDate: {
         lte: payDate,
       },
+      team: {
+        stp: true,
+      },
     },
     include: {
       team: true,

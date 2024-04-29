@@ -20,3 +20,23 @@ const DummyClaimSchema = z.object({
 export const DummyClaimsArraySchema = z.array(DummyClaimSchema);
 
 export type DummyClaim = z.infer<typeof DummyClaimSchema>;
+
+export const createTeamSchema = z.object({
+  teamName: z.string().min(5, {
+    message: "Team Name must be at least 5 characters.",
+  }),
+  market: z.string().min(2, {
+    message: "Market must be at least 2 characters.",
+  }),
+  account: z
+    .string()
+    .regex(/^\d+$/, {
+      message: "Account must be a numeric value.",
+    })
+    .min(5, {
+      message: "Account must be at least 5 characters.",
+    }),
+  stp: z.boolean(),
+});
+
+export type CreateTeamType = z.infer<typeof createTeamSchema>;

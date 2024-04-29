@@ -108,9 +108,9 @@ export function generateDummyClaimsData(
       lastReference = lastRef;
       const counterpartyClaims = claims.map((claim, claimI) => {
         let amount = claim.amount;
-        if (claimI === 0) {
-          amount = claim.amount + 1000;
-        }
+        // if (claimI === 0) {
+        //   amount = claim.amount + 1000;
+        // }
         const type =
           claim.type === "Payable"
             ? "Receivable"
