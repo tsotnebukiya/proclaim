@@ -17,6 +17,17 @@ export function convertToUSD(amount: number, currency: string) {
   return amount * rate;
 }
 
+export const deployers: Record<string, string> = {
+  "0xa1DE3190196739c5c21C6fAb50b3FaAB4dCEDF5C": "Citibank",
+  "0x2D827566cf97A2e20D26799ca2c1d64E0028c92F": "JP Morgan",
+  "0x25356c8F6812a7c756A74763B3096Da6e09f8e90": "Goldman",
+};
+
+export const PROCLAIM_ADDRESS = "0x874392305B2fe9783bc0A26e79DdEfF4f0083687";
+
+export const BLOCKSCOUT_API =
+  "https://sn2-stavanger-blockscout.eu-north-2.gateway.fm/api/v2";
+
 export function slugify(text: string) {
   return text
     .toString()

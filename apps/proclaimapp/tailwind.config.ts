@@ -20,6 +20,9 @@ module.exports = {
       },
     },
     extend: {
+      height: {
+        main: "calc(100vh - 147px)",
+      },
       colors: {
         // light mode
         tremor: {

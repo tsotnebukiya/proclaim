@@ -155,7 +155,7 @@ export default function NewTeamModal({ setOpen, onSuccess }: Props) {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="mt-2" disabled={isPending}>
+            <Button type="submit" className="mt-2" loading={isPending}>
               Create
             </Button>
           </form>

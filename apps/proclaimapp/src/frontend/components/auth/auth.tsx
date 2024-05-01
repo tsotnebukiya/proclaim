@@ -4,8 +4,19 @@ import Image from "next/image";
 
 import { Button } from "@/frontend/components/ui/button";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 export function Auth() {
+  const [loading, setLoading] = useState(false);
+  const handleSignIn = async () => {
+    setLoading(true);
+    try {
+      await signIn("google");
+    } catch (error) {
+      console.error("Error signing in", error);
+    }
+    setLoading(false);
+  };
   return (
     <div className="h-full w-full bg-muted/75 lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="flex items-center justify-center py-12">
@@ -14,7 +25,8 @@ export function Auth() {
             <Button
               variant="default"
               className="w-full"
-              onClick={() => signIn("google")}
+              loading={loading}
+              onClick={handleSignIn}
             >
               Login with Google
             </Button>

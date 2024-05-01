@@ -16,7 +16,7 @@ contract StableCoin {
     event Approval(address indexed owner, address indexed spender, bool isAllowed);
 
     constructor() {
-        owner = msg.sender; // Set the contract deployer as the owner
+        owner = msg.sender;
     }
 
     modifier onlyOwner() {

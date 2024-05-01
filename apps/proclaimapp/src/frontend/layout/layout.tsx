@@ -31,8 +31,8 @@ export default function PortalLayout({
           </div>
         </div>
       </header>
-      <main className="flex flex-1 flex-col bg-background">
-        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 pt-4">
+      <main className="flex flex-1 flex-col bg-background py-4">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4">
           {children}
         </div>
       </main>
