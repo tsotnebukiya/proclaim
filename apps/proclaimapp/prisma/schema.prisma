@@ -112,6 +112,7 @@ model Claim {
     encryptedClaimData        String
     hash                      String?           @unique
     transaction               String?
+    transactionLog            Int?
     settlementError           BlockchainError[]
     settledDate               DateTime?
     createdDate               DateTime
