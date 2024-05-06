@@ -1,3 +1,5 @@
+"use client";
+
 import { Search } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { Input } from "../ui/input";
@@ -8,19 +10,52 @@ import { List, ListItem } from "@tremor/react";
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
 import { RouterOutput } from "@/server/api/root";
+import { Switch } from "../ui/switch";
+import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 type BlockProps = {
   item: RouterOutput["contract"]["getContracts"][number];
   selected: string;
   setSelected: Dispatch<SetStateAction<string>>;
   setType: Dispatch<SetStateAction<ContractType>>;
+  refetchHandler: () => Promise<void>;
 };
 
-function Block({ item, selected, setSelected, setType }: BlockProps) {
+function Block({
+  item,
+  selected,
+  setSelected,
+  setType,
+  refetchHandler,
+}: BlockProps) {
+  const { mutate, isPending } = api.contract.approveContractToken.useMutation({
+    onError: (err) => {
+      toast.error("Error", {
+        description: err.message,
+      });
+    },
+    onSuccess: async (data) => {
+      await refetchHandler();
+      toast.success("Success", {
+        description: `Token transfer ${data ? "" : "un"}approved`,
+      });
+    },
+  });
+  const onCheckChange = (ccy: string) => {
+    const currentState = item.ccyApproved?.find(
+      (el) => el.ccy === ccy,
+    )?.approved!;
+    mutate({
+      address: item.contractAddress,
+      ccy,
+      approve: !currentState,
+    });
+  };
   return (
-    <button
+    <div
       className={cn(
-        "flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
+        "flex cursor-pointer flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
         selected === item.contractAddress && "bg-muted",
       )}
       onClick={() => {
@@ -91,17 +126,41 @@ function Block({ item, selected, setSelected, setType }: BlockProps) {
             <span className={cn("text-foreground")}>{item.account}</span>
           </ListItem>
         )}
+        {item.ccyApproved && (
+          <ListItem className="flex items-baseline space-x-2 py-1">
+            <div>Token Transfer:</div>
+            <div className="flex flex-1 justify-around">
+              {item.ccyApproved.map((el) => (
+                <div className="flex  flex-col items-center gap-2">
+                  <div className="font-medium text-foreground">{el.ccy}</div>
+                  <div>
+                    <Switch
+                      checked={el.approved}
+                      disabled={isPending}
+                      onCheckedChange={() => onCheckChange(el.ccy)}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ListItem>
+        )}
       </List>
-    </button>
+    </div>
   );
 }
 
 type Props = {
   items: RouterOutput["contract"]["getContracts"];
   setType: Dispatch<SetStateAction<ContractType>>;
+  refetchHandler: () => Promise<void>;
 };
 
-export default function ContractBlocks({ items, setType }: Props) {
+export default function ContractBlocks({
+  items,
+  setType,
+  refetchHandler,
+}: Props) {
   const [search, setSearch] = useState("");
   const filteredItems = items.filter((el) =>
     search.length > 0
@@ -110,7 +169,12 @@ export default function ContractBlocks({ items, setType }: Props) {
   );
   const depoItems = filteredItems.filter((el) => el.type === "depo");
   const tokenItems = filteredItems.filter((el) => el.type === "token");
-  const claimItems = filteredItems.filter((el) => el.type === "claim");
+  const ourClaimItems = filteredItems.filter(
+    (el) => el.type === "claim" && !el.cp,
+  );
+  const cpClaimItems = filteredItems.filter(
+    (el) => el.type === "claim" && el.cp,
+  );
   const [selected, setSelected] = useState(filteredItems[0]?.contractAddress!);
   return (
     <div className="grid grid-rows-[auto_1fr] gap-6">
@@ -132,9 +196,10 @@ export default function ContractBlocks({ items, setType }: Props) {
                 Depository
               </h4>
               <div className="grid grid-cols-2 gap-2">
-                {depoItems.map((item, i) => (
+                {depoItems.map((item) => (
                   <Block
-                    key={i}
+                    refetchHandler={refetchHandler}
+                    key={item.contractAddress}
                     item={item}
                     selected={selected}
                     setSelected={setSelected}
@@ -151,9 +216,10 @@ export default function ContractBlocks({ items, setType }: Props) {
               Tokens
             </h4>
             <div className="grid grid-cols-2 gap-2">
-              {tokenItems.map((item, i) => (
+              {tokenItems.map((item) => (
                 <Block
-                  key={i}
+                  refetchHandler={refetchHandler}
+                  key={item.contractAddress}
                   item={item}
                   selected={selected}
                   setSelected={setSelected}
@@ -164,21 +230,43 @@ export default function ContractBlocks({ items, setType }: Props) {
           </div>
         )}
 
-        {claimItems.length > 0 && (
+        {ourClaimItems.length > 0 && (
           <div>
-            <h4 className=" text-title mb-4 w-fit items-center rounded bg-indigo-100 px-1.5 py-0.5 font-medium text-indigo-800 ">
-              Claims
+            <h4 className=" text-title mb-4 w-fit items-center rounded bg-amber-100 px-1.5 py-0.5 font-medium text-amber-800 ">
+              Our Claims
             </h4>
             <div className="grid grid-cols-2 gap-2">
-              {claimItems
+              {ourClaimItems
                 .sort((a, b) => a.deployer.localeCompare(b.deployer))
-                .map((item, i) => (
+                .map((item) => (
                   <Block
-                    key={i}
+                    refetchHandler={refetchHandler}
+                    key={item.contractAddress}
                     item={item}
                     selected={selected}
                     setSelected={setSelected}
                     setType={setType}
+                  />
+                ))}
+            </div>
+          </div>
+        )}
+        {cpClaimItems.length > 0 && (
+          <div>
+            <h4 className=" text-title mb-4 w-fit items-center rounded bg-indigo-100 px-1.5 py-0.5 font-medium text-indigo-800 ">
+              Counterparty Claims
+            </h4>
+            <div className="grid grid-cols-2 gap-2">
+              {cpClaimItems
+                .sort((a, b) => a.deployer.localeCompare(b.deployer))
+                .map((item) => (
+                  <Block
+                    key={item.contractAddress}
+                    item={item}
+                    selected={selected}
+                    setSelected={setSelected}
+                    setType={setType}
+                    refetchHandler={refetchHandler}
                   />
                 ))}
             </div>

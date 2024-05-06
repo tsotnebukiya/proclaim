@@ -15,10 +15,12 @@ type ContractsReturn = RouterOutput["contract"]["getContracts"];
 
 export default function ContractsList({ items }: { items: ContractsReturn }) {
   const [type, setType] = useState<ContractType>("depo");
-
   const { data, refetch } = api.contract.getContracts.useQuery(undefined, {
     initialData: items,
   });
+  const refetchHandler =async () => {
+    await refetch();
+  };
   const { mutate, isPending } = api.contract.refetchContracts.useMutation({
     onSuccess: () => {
       refetch();
@@ -49,7 +51,11 @@ export default function ContractsList({ items }: { items: ContractsReturn }) {
       </div>
       <Divider className="my-4" />
       <div className="grid flex-1 grid-cols-2 gap-8">
-        <ContractBlocks setType={setType} items={data} />
+        <ContractBlocks
+          setType={setType}
+          items={data}
+          refetchHandler={refetchHandler}
+        />
         <ContractsCode setType={setType} type={type} />
       </div>
     </>

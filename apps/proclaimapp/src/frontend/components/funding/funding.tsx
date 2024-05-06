@@ -14,13 +14,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/frontend/components/ui/select";
-import { useState } from "react";
-import { FormControl } from "../ui/form";
+import { useRouter } from "next/navigation";
+import { RouterOutput } from "@/server/api/root";
+import { api } from "@/trpc/react";
 
-const tokens = [{ name: "USD" }, { name: "EUR" }];
+const tokens = [{ name: "usd" }, { name: "eur" }];
 
-export default function Funding() {
-  const [token, setToken] = useState(tokens[0]?.name!);
+type Props = {
+  ccy: string;
+  fundingData: RouterOutput["funding"]["getGeneralData"];
+};
+
+export default function Funding({ ccy, fundingData }: Props) {
+  const { data, refetch } = api.funding.getGeneralData.useQuery(
+    { token: ccy },
+    {
+      initialData: fundingData,
+    },
+  );
+  const handleRefetch = async () => {
+    await refetch();
+  };
+  const { generalData, requests, transfers } = data;
+  const { push } = useRouter();
   return (
     <div className="grid flex-1 grid-cols-[1fr,1fr,auto,1fr] gap-6">
       <div className="col-span-2 ">
@@ -34,23 +50,30 @@ export default function Funding() {
             </span>
           </div>
           <div className="flex items-center space-x-4">
-            <Select onValueChange={setToken} defaultValue={token}>
+            <Select
+              onValueChange={(el) => push(`/portal/funding/${el}`)}
+              defaultValue={ccy}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select a verified email to display" />
               </SelectTrigger>
               <SelectContent>
                 {tokens.map((t) => (
-                  <SelectItem value={t.name}>{t.name}</SelectItem>
+                  <SelectItem value={t.name}>{t.name.toUpperCase()}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
         </div>
         <Divider className="my-4" />
-        <TokenStats />
+        <TokenStats generalData={generalData} transfers={transfers} ccy={ccy} />
       </div>
       <Separator orientation="vertical" className="" />
-      <RequestToken />
+      <RequestToken
+        ccy={ccy.toUpperCase()}
+        requests={requests}
+        handleRefetch={handleRefetch}
+      />
     </div>
   );
 }

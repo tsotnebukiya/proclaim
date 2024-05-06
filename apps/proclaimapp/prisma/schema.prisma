@@ -140,3 +140,11 @@ model BlockchainError {
     claim           Claim    @relation(fields: [claimId], references: [id])
     claimId         Int
 }
+
+model TokenRequest {
+    id          Int      @id @default(autoincrement())
+    amount      Int
+    token       String
+    transaction String
+    createdAt   DateTime @default(now())
+}

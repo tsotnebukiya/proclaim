@@ -4,13 +4,20 @@ import {
   PROCLAIM_ADDRESS,
   deployers,
 } from "@/server/lib/utils";
-import { GetBankDetails, bankContract, depositoryContract } from "proclaim";
+import {
+  GetBankDetails,
+  bankContract,
+  depositoryContract,
+  tokenContract,
+} from "proclaim";
 import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import axios from "axios";
 import { ScoutAddress } from "@/server/lib/types";
 import { name } from "proclaim/contractFunctions";
+import { kv } from "@vercel/kv";
+import { isApproved } from "proclaim/tokenFunctions";
 
-type Contract = {
+export type Contract = {
   name: string;
   totalSupply?: string;
   holders?: string;
@@ -20,9 +27,11 @@ type Contract = {
   type: "depo" | "token" | "claim";
   account?: number;
   market?: string;
+  ccyApproved?: { ccy: string; approved: boolean }[];
+  cp?: boolean;
 };
 
-export default async function fetchContracts() {
+export async function fetchContracts() {
   const depository: Contract = {
     name: "Banks Depository",
     contractAddress: env.PROCHAIN_DEPOSITORY_CONTRACT,
@@ -71,6 +80,49 @@ export default async function fetchContracts() {
     tokenPromises,
     namesPromises,
   ]);
+  const tokenApprovalPromises = namesResponses
+    .filter((contract) => contract.deployerAddress !== env.ETH_ADDRESS)
+    .map(async (contract) => {
+      const usdPromise = isApproved({
+        contract: tokenContract("USD"),
+        owner: env.ETH_ADDRESS,
+        spender: contract.contractAddress,
+      });
+      const eurPromise = isApproved({
+        contract: tokenContract("EUR"),
+        owner: env.ETH_ADDRESS,
+        spender: contract.contractAddress,
+      });
+      return Promise.all([usdPromise, eurPromise]).then(
+        ([usdApproved, eurApproved]) => ({
+          contractAddress: contract.contractAddress,
+          ccyApproved: [
+            { ccy: "USD", approved: usdApproved },
+            { ccy: "EUR", approved: eurApproved },
+          ],
+        }),
+      );
+    });
+  const tokenApprovalResponses = await Promise.all(tokenApprovalPromises);
+  namesResponses.forEach((el) => {
+    const tokenResponse = tokenApprovalResponses.find(
+      (tokenApp) => tokenApp.contractAddress === el.contractAddress,
+    );
+    if (tokenResponse) {
+      el.ccyApproved = tokenResponse.ccyApproved;
+      el.cp = true;
+    }
+  });
   const result = [depository, ...tokenResponses, ...namesResponses];
+  return result;
+}
+
+export async function getCachedContracts() {
+  const cachedContracts = await kv.get<Contract[]>("contracts");
+  if (cachedContracts) {
+    return cachedContracts;
+  }
+  const result = await fetchContracts();
+  await kv.set("contracts", result, { ex: 3600 });
   return result;
 }

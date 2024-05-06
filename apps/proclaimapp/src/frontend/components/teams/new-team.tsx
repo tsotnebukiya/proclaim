@@ -143,7 +143,7 @@ export default function NewTeamModal({ setOpen, onSuccess }: Props) {
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">STP</FormLabel>
                     <FormDescription>
-                      Automatically upload and settle claim
+                      Automatically upload and settle claims
                     </FormDescription>
                   </div>
                   <FormControl>

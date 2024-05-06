@@ -9,22 +9,25 @@ const dummyArray = [
   { title: "Overview", url: "/portal" },
   { title: "Teams", url: "/portal/teams" },
   { title: "Smart Contracts", url: "/portal/contracts" },
-  { title: "Funding", url: "/portal/funding" },
+  { title: "Funding", url: "/portal/funding/usd" },
   {
     title: "Block Explorer",
     url: "https://sn2-stavanger-blockscout.eu-north-2.gateway.fm/",
   },
-  { title: "Settings", url: "/portal/settings" },
+  // { title: "Settings", url: "/portal/settings" },
 ];
 
 export default function NavMenu() {
   const pathname = usePathname();
+
   return (
     <div className="flex">
       {dummyArray.map((el, i) => {
+        const pathSegments = el.url.split("/");
+        console.log(pathSegments, "CHECKTHISPLEASE");
+        const path = `${pathSegments[1]}/${pathSegments[2]}`;
         const isHome = pathname === "/portal" && el.url === "/portal";
-        const isActive = el.url !== "/portal" && pathname.includes(el.url);
-        console.log(isHome, isActive);
+        const isActive = el.url !== "/portal" && pathname.includes(path);
         return (
           <div
             key={i}

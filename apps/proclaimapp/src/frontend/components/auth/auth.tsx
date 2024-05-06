@@ -11,11 +11,12 @@ export function Auth() {
   const handleSignIn = async () => {
     setLoading(true);
     try {
-      await signIn("google");
+      const sm = await signIn("google");
+      console.log(sm, "CHECKTHIS");
     } catch (error) {
       console.error("Error signing in", error);
+      setLoading(false);
     }
-    setLoading(false);
   };
   return (
     <div className="h-full w-full bg-muted/75 lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
