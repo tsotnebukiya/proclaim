@@ -25,8 +25,11 @@ import {
   TableRow,
 } from "@/frontend/components/ui/table";
 
-import { DataTablePagination } from "./data-table-pagination";
-import { DataTableToolbar } from "./data-table-toolbar";
+import { DataTablePagination } from "../shared-table/data-table-pagination";
+import { DataTableToolbar } from "../shared-table/data-table-toolbar";
+import { api } from "@/trpc/react";
+import { RouterOutput } from "@/server/api/root";
+import { toast } from "sonner";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,23 +38,55 @@ interface DataTableProps<TData, TValue> {
     value: string;
     label: string;
   }[];
+  workspace: string;
 }
+
+type Claim = RouterOutput["workspace"]["cpClaims"]["getCPClaims"][number];
 
 export function CPClaimsTable<TData, TValue>({
   columns,
   data,
   uniqueCpValues,
+  workspace,
 }: DataTableProps<TData, TValue>) {
+  const { data: fetchedData, refetch } =
+    api.workspace.cpClaims.getCPClaims.useQuery(
+      { workspace },
+      {
+        initialData: data as Claim[],
+      },
+    );
+  const { mutate, isPending } =
+    api.workspace.cpClaims.refetchCPCLaims.useMutation({
+      onSuccess: () => {
+        refetch();
+        toast.success("Success", {
+          description: "CP pending claims refetched",
+        });
+      },
+    });
+  const onRefresh = () => {
+    mutate({ workspace });
+  };
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({ id: false, ccy: false });
+    React.useState<VisibilityState>({
+      contractualSettlementDate: false,
+      actualSettlementDate: false,
+      corporateActionID: false,
+      market: false,
+      eventRate: false,
+      quantity: false,
+      currency: false,
+      owner: false,
+    });
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
-    data,
+    data: fetchedData as TData[],
     columns,
     state: {
       sorting,
@@ -74,7 +109,13 @@ export function CPClaimsTable<TData, TValue>({
 
   return (
     <div className="space-y-2">
-      <DataTableToolbar table={table} cpOptions={uniqueCpValues} />
+      <DataTableToolbar
+        table={table}
+        cpOptions={uniqueCpValues}
+        type="cp"
+        isRefreshing={isPending}
+        onRefresh={onRefresh}
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

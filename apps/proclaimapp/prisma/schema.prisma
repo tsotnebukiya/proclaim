@@ -105,6 +105,7 @@ model Claim {
     counterparty              String
     owner                     String
     market                    String
+    matched                   Boolean           @default(false)
     uploaded                  Boolean?
     settled                   Boolean           @default(false)
     cancelled                 Boolean           @default(false)

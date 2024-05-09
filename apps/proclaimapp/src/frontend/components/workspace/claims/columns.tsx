@@ -3,11 +3,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Badge } from "@/frontend/components/ui/badge";
-import { Checkbox } from "@/frontend/components/ui/checkbox";
 
-import { labels, priorities, statuses } from "./data";
-import { DataTableColumnHeader } from "./data-table-column-header";
-import { DataTableRowActions } from "./data-table-row-actions";
+import { labels, priorities, statuses } from "../shared-table/data";
+import { DataTableColumnHeader } from "../shared-table/data-table-column-header";
+import { DataTableRowActions } from "../shared-table/data-table-row-actions";
 import { RouterOutput } from "@/server/api/root";
 
 type Claim = RouterOutput["workspace"]["claims"]["getClaims"][number];

@@ -25,8 +25,10 @@ import {
   TableRow,
 } from "@/frontend/components/ui/table";
 
-import { DataTablePagination } from "./data-table-pagination";
-import { DataTableToolbar } from "./data-table-toolbar";
+import { DataTablePagination } from "../shared-table/data-table-pagination";
+import { DataTableToolbar } from "../shared-table/data-table-toolbar";
+import { api } from "@/trpc/react";
+import { RouterOutput } from "@/server/api/root";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,13 +37,25 @@ interface DataTableProps<TData, TValue> {
     value: string;
     label: string;
   }[];
+  workspace: string;
 }
+
+type Claim = RouterOutput["workspace"]["claims"]["getClaims"][number];
 
 export function ClaimsTable<TData, TValue>({
   columns,
   data,
   uniqueCpValues,
+  workspace,
 }: DataTableProps<TData, TValue>) {
+  const { data: fetchedData, refetch } =
+    api.workspace.claims.getClaims.useQuery(
+      { workspace },
+      {
+        initialData: data as Claim[],
+      },
+    );
+  // const {mutate} =
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({ id: false, ccy: false });
@@ -51,7 +65,7 @@ export function ClaimsTable<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
-    data,
+    data: fetchedData as TData[],
     columns,
     state: {
       sorting,
@@ -74,7 +88,7 @@ export function ClaimsTable<TData, TValue>({
 
   return (
     <div className="space-y-2">
-      <DataTableToolbar table={table} cpOptions={uniqueCpValues} />
+      <DataTableToolbar table={table} cpOptions={uniqueCpValues} type="own" />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

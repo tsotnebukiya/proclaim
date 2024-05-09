@@ -60,7 +60,19 @@ export async function getCPClaims({
       .map((el) => {
         const claimData = dummyDecrypt(el.encryptedData);
         const { hash } = el;
-        return { hash, ...stringToClaim(claimData) };
+        const data = stringToClaim(claimData);
+        const cp = contracts.find(
+          (contract) =>
+            `${data.owner}${market}` ===
+            `${contract.account}${contract.market}`,
+        )?.name!;
+        return {
+          hash,
+          ...data,
+          cp,
+          currency: data.currency.substring(0, 3),
+          paydate: data.payDate,
+        };
       })
       .filter((el) => el.market + el.counterparty === market + account);
     return decryptedClaims;
@@ -68,7 +80,7 @@ export async function getCPClaims({
   return formattedClaims.flatMap((el) => el);
 }
 
-type CachedCPClaim = DummyClaim & { hash: string };
+export type CachedCPClaim = DummyClaim & { hash: string; cp: string };
 
 export async function getCachedCPClaims(
   workspace: string,

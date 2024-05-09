@@ -91,7 +91,7 @@ async function matchCPClaims(
     updates.map((update) =>
       db.claim.update({
         where: { id: update.id },
-        data: { hash: update.hash },
+        data: { hash: update.hash,matched:true },
       }),
     ),
   );
