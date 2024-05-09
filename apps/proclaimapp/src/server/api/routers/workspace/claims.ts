@@ -14,6 +14,9 @@ export const claimRouter = createTRPCRouter({
             slug: workspace,
           },
         },
+        orderBy: {
+          payDate: "desc",
+        },
       });
       const contracts = await getCachedContracts();
       const today = new Date();
@@ -32,6 +35,7 @@ export const claimRouter = createTRPCRouter({
           counterparty,
           market,
           corporateAction: label,
+          matched,
         } = claim;
         let status;
         const payDateObj = new Date(paydate);
@@ -42,6 +46,8 @@ export const claimRouter = createTRPCRouter({
           status = "upcoming";
         } else if (settled) {
           status = "settled";
+        } else if (matched) {
+          status = "matched";
         } else {
           status = "pending";
         }

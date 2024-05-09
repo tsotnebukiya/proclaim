@@ -74,12 +74,21 @@ export default async function getTokenData({ token }: { token: string }) {
     const amountVal = Number(el.total.value) / 100;
     const amount = el.from.hash === env.ETH_ADDRESS ? -amountVal : amountVal;
     const transaction = el.tx_hash;
+    const log = el.log_index;
     const tofromAddress =
       el.from.hash === env.ETH_ADDRESS ? el.to.hash : el.from.hash;
     const tofrom = deployers[tofromAddress]!;
     const claimObject = claims.find(
-      (claim) => claim.transaction === transaction,
+      (claim) =>
+        claim.transaction === transaction &&
+        Number(log) + 1 === claim.transactionLog,
     )!;
+    if (
+      transaction ===
+      "0x150f5b0e99bf062b36c1ee5a724dbdb6c830d60d12e17f5783364f3956410526"
+    ) {
+      console.log(Number(log) + 1 === claimObject.transactionLog);
+    }
     const claim = claimObject.tradeReference;
     const teamSlug = claimObject.team.slug;
     return { amount, tofrom, claim, teamSlug, ccy: token, transaction };

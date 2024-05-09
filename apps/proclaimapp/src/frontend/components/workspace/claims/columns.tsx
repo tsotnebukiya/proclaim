@@ -8,6 +8,7 @@ import { labels, priorities, statuses } from "../shared-table/data";
 import { DataTableColumnHeader } from "../shared-table/data-table-column-header";
 import { DataTableRowActions } from "../shared-table/data-table-row-actions";
 import { RouterOutput } from "@/server/api/root";
+import { cn } from "@/frontend/lib/utils";
 
 type Claim = RouterOutput["workspace"]["claims"]["getClaims"][number];
 
@@ -117,7 +118,7 @@ export const columns: ColumnDef<Claim>[] = [
       return (
         <div className="flex w-fit items-center">
           {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+            <status.icon className={cn("mr-2 h-4 w-4", status.color)} />
           )}
           <span>{status.label}</span>
         </div>

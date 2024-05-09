@@ -25,8 +25,8 @@ async function processUploadedEvents(hashes: string[]) {
 async function processSettledEvents(
   events: { hash: string; transactionHash: string; transactionLog: number }[],
 ) {
-  const updatePromises = events.map((event) =>
-    db.claim.updateMany({
+  const updatePromises = events.map(async (event) => {
+    return await db.claim.updateMany({
       where: { hash: event.hash, settled: false },
       data: {
         settled: true,
@@ -35,8 +35,8 @@ async function processSettledEvents(
         transaction: event.transactionHash,
         transactionLog: event.transactionLog,
       },
-    }),
-  );
+    });
+  });
 
   await Promise.all(updatePromises);
 }
@@ -113,7 +113,7 @@ export const processEvents = async ({ banks }: { banks: GetBankDetails[] }) => {
         .map((el) => ({
           hash: el.args.claimIdentifier,
           transactionHash: el.transactionHash,
-          transactionLog: el.transactionIndex,
+          transactionLog: el.logIndex,
         })),
     );
     return true;
