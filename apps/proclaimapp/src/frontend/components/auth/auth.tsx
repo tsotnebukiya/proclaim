@@ -12,9 +12,7 @@ export function Auth() {
     setLoading(true);
     try {
       const sm = await signIn("google");
-      console.log(sm, "CHECKTHIS");
     } catch (error) {
-      console.error("Error signing in", error);
       setLoading(false);
     }
   };

@@ -20,7 +20,6 @@ export const approveToken = async (
     transaction: transaction,
     account: wallet,
   });
-  console.log(transactionHash);
   await kv.set<number>("latestNonce", newNonce);
   return transactionHash;
 };

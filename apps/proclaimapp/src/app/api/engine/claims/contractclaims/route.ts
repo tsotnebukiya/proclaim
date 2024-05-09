@@ -1,4 +1,4 @@
-import getContractClaims from "@/server/lib/claims/contractClaims";
+import { getContractClaims } from "@/server/lib/claims/contractClaims";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";

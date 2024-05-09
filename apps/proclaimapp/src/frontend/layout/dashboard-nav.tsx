@@ -38,22 +38,16 @@ const items: NavItem[] = [
     label: "dashboard",
   },
   {
-    title: "Pending",
-    href: "/pending",
-    Icon: CircleDashed,
-    label: "pending",
-  },
-  {
-    title: "Upcoming",
-    href: "/upcoming",
-    Icon: CalendarFold,
-    label: "upcoming",
-  },
-  {
-    title: "Settled",
-    href: "/settled",
+    title: "Claims",
+    href: "/claims/table",
     Icon: BookCheck,
     label: "settled",
+  },
+  {
+    title: "Pending CP",
+    href: "/counterparty",
+    Icon: CircleDashed,
+    label: "pending",
   },
   {
     title: "Create new",

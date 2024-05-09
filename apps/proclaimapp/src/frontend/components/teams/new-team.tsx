@@ -65,7 +65,6 @@ export default function NewTeamModal({ setOpen, onSuccess }: Props) {
       teamName: "",
     },
   });
-  console.log(form.getValues("market"));
   function onSubmit(values: CreateTeamType) {
     mutate(values);
   }

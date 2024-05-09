@@ -6,9 +6,9 @@ export default async function TeamLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid grid-cols-5 gap-6">
+    <div className="grid grid-cols-6 gap-6">
       <Sidebar />
-      <div className="col-span-4">{children}</div>
+      <div className="col-span-5">{children}</div>
     </div>
   );
 }

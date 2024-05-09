@@ -1,5 +1,6 @@
 import { keccak256 } from "thirdweb";
 import moment from "moment-timezone";
+import { DummyClaim } from "./schemas";
 
 export function generateHash(claimString: string): string {
   const string = claimString as `0x${string}`;
@@ -54,6 +55,44 @@ export function dummyDecrypt(encryptedMessage: string): string {
   return decrypted;
 }
 
+export function stringToClaim(dataString: string): DummyClaim {
+  const keys = [
+    "tradeReference",
+    "corporateAction",
+    "corporateActionID",
+    "eventRate",
+    "payDate",
+    "quantity",
+    "contractualSettlementDate",
+    "actualSettlementDate",
+    "amount",
+    "counterparty",
+    "owner",
+    "market",
+    "currency",
+    "type",
+  ];
+
+  const values = dataString.split(";");
+
+  const resultObject = keys.reduce((obj, key, index) => {
+    switch (key) {
+      case "eventRate":
+      case "amount":
+        obj[key] = parseFloat(values[index]!);
+        break;
+      case "quantity":
+        obj[key] = parseInt(values[index]!, 10);
+        break;
+      default:
+        obj[key] = values[index];
+    }
+    return obj;
+  }, {} as any);
+
+  return resultObject as DummyClaim;
+}
+
 export const warsawTime = moment.utc();
 
 export function convertContractUnsettled(
@@ -96,7 +135,6 @@ export function invertDecryptedData(data: string) {
 }
 
 export function matchEncryptedData(data: string, data1: string): boolean {
-  console.log(data);
   let fields = data.split(";");
   if (fields.length !== 14) {
     throw new Error("Invalid data format");

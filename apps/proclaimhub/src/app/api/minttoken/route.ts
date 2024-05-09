@@ -12,7 +12,6 @@ const schema = z.object({
 
 export async function POST(req: Request) {
   const object: unknown = await req.json();
-  console.log(object);
   try {
     const { amount, currency, ethAddress } = schema.parse(object);
     await balanceOf({
@@ -39,7 +38,6 @@ export async function POST(req: Request) {
   } catch (error) {
     const err = error as { message?: string };
     const errorMessage = err.message ? err.message : "An error occured.";
-    console.log(err, "CHECKHERE");
     return NextResponse.json(
       { message: "Error", errorMessage },
       { status: 500 },

@@ -107,6 +107,7 @@ model Claim {
     market                    String
     uploaded                  Boolean?
     settled                   Boolean           @default(false)
+    cancelled                 Boolean           @default(false)
     createdBy                 SysUser           @default(SYSTEM)
     settledBy                 SysUser?
     encryptedClaimData        String

@@ -24,7 +24,6 @@ export default function NavMenu() {
     <div className="flex">
       {dummyArray.map((el, i) => {
         const pathSegments = el.url.split("/");
-        console.log(pathSegments, "CHECKTHISPLEASE");
         const path = `${pathSegments[1]}/${pathSegments[2]}`;
         const isHome = pathname === "/portal" && el.url === "/portal";
         const isActive = el.url !== "/portal" && pathname.includes(path);
