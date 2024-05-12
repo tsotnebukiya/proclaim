@@ -8,7 +8,7 @@ export default async function TeamLayout({
   return (
     <div className="grid grid-cols-6 gap-6">
       <Sidebar />
-      <div className="col-span-5">{children}</div>
+      <div className="col-span-5 flex flex-col">{children}</div>
     </div>
   );
 }

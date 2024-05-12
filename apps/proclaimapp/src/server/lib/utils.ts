@@ -93,6 +93,22 @@ export function stringToClaim(dataString: string): DummyClaim {
   return resultObject as DummyClaim;
 }
 
+export function claimStatus(paydate: Date, settled: boolean) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const payDateObj = new Date(paydate);
+  payDateObj.setHours(0, 0, 0, 0);
+  let status;
+  if (payDateObj > today) {
+    status = "upcoming";
+  } else if (settled) {
+    status = "settled";
+  } else {
+    status = "pending";
+  }
+  return status;
+}
+
 export const warsawTime = moment.utc();
 
 export function convertContractUnsettled(

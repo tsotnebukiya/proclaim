@@ -39,7 +39,7 @@ const items: NavItem[] = [
   },
   {
     title: "Claims",
-    href: "/claims/table",
+    href: "/claims",
     Icon: BookCheck,
     label: "settled",
   },
@@ -71,7 +71,6 @@ export function DashboardNav({ setOpen, isCollapsed }: DashboardNavProps) {
         const href = teamPath + item.href;
         const isHome = pathname === teamPath && item.href === "/";
         const isActive = item.href !== "/" && pathname.includes(item.href);
-
         const link = (
           <Link key={index} href={href} onClick={() => setOpen?.(false)}>
             <span

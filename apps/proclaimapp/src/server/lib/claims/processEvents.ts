@@ -6,6 +6,7 @@ import { getContractEvents } from "thirdweb";
 import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import { env } from "@/env";
 import { Claim } from "@prisma/client";
+import { warsawTime } from "../utils";
 
 type Error = {
   claimIdentifier: `0x${string}`;
@@ -34,6 +35,7 @@ async function processSettledEvents(
         settledBy: "SYSTEM",
         transaction: event.transactionHash,
         transactionLog: event.transactionLog,
+        settledDate: warsawTime.startOf("d").toDate(),
       },
     });
   });

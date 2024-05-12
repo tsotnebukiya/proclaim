@@ -27,12 +27,6 @@ export const statuses = [
     color: "text-teal-500",
   },
   {
-    value: "matched",
-    label: "Matched",
-    icon: PlusCircledIcon,
-    color: "text-cyan-500",
-  },
-  {
     value: "pending",
     label: "Pending",
     icon: QuestionMarkCircledIcon,
@@ -43,12 +37,6 @@ export const statuses = [
     label: "Upcoming",
     icon: StopwatchIcon,
     color: "text-gray-500",
-  },
-  {
-    value: "cancelled",
-    label: "Cancelled",
-    icon: CrossCircledIcon,
-    color: "text-red-500",
   },
 ];
 

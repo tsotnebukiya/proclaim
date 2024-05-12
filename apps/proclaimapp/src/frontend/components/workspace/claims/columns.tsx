@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, RowData } from "@tanstack/react-table";
 
 import { Badge } from "@/frontend/components/ui/badge";
 
@@ -9,6 +9,8 @@ import { DataTableColumnHeader } from "../shared-table/data-table-column-header"
 import { DataTableRowActions } from "../shared-table/data-table-row-actions";
 import { RouterOutput } from "@/server/api/root";
 import { cn } from "@/frontend/lib/utils";
+import Link from "next/link";
+import { buttonVariants } from "../../ui/button";
 
 type Claim = RouterOutput["workspace"]["claims"]["getClaims"][number];
 
@@ -24,12 +26,20 @@ export const columns: ColumnDef<Claim>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Trade Ref" />
     ),
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const label = labels.find((label) => label.value === row.original.label);
-
+      const tradeRef = row.getValue("traderef") as string;
       return (
         <div className="flex w-fit space-x-2">
-          <span className="font-medium">{row.getValue("traderef")}</span>
+          <Link
+            href={"claims/" + tradeRef}
+            className={cn(
+              buttonVariants({ variant: "link" }),
+              "h-fit p-0 text-foreground",
+            )}
+          >
+            {tradeRef}
+          </Link>
           {label && <Badge variant="outline">{label.label}</Badge>}
         </div>
       );

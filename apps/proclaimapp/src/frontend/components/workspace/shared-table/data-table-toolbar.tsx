@@ -64,7 +64,6 @@ export function DataTableToolbar<TData>({
             placeholder="Filter CPs..."
             value={(table.getColumn("owner")?.getFilterValue() as string) ?? ""}
             onChange={(event) => {
-              console.log(event.target.value);
               table.getColumn("owner")?.setFilterValue(event.target.value);
             }}
             className="h-8 w-[150px]"
