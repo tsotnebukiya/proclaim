@@ -11,5 +11,5 @@ export default async function Portal({
   if (!session) {
     redirect("/auth");
   }
-  return <PortalLayout>{children}</PortalLayout>;
+  return <PortalLayout session={session}>{children}</PortalLayout>;
 }

@@ -8,11 +8,7 @@ import {
 } from "@radix-ui/react-icons";
 
 import { cn } from "@/frontend/lib/utils";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/frontend/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/frontend/components/ui/avatar";
 import { Button, buttonVariants } from "@/frontend/components/ui/button";
 import {
   Command,

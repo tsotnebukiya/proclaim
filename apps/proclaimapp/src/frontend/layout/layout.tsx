@@ -4,11 +4,14 @@ import TeamSwitcher from "./team-switcher";
 import Search from "./search";
 import UserNav from "./user-nav";
 import NavMenu from "./nav";
+import { Session } from "next-auth";
 
 export default function PortalLayout({
   children,
+  session
 }: {
   children: React.ReactNode;
+  session:Session
 }) {
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -23,7 +26,7 @@ export default function PortalLayout({
             </div>
             <div className="ml-auto flex items-center space-x-4">
               <Search />
-              <UserNav />
+              <UserNav session={session}/>
             </div>
           </div>
           <div>
