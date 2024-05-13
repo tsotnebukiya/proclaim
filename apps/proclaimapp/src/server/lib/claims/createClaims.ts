@@ -1,6 +1,12 @@
 import { db } from "@/server/db";
 import { NewClaim, type DummyClaim } from "../schemas";
-import { dummyEncrypt, generateHash, warsawTime } from "../utils";
+import {
+  dummyDecrypt,
+  dummyEncrypt,
+  generateHash,
+  stringToClaim,
+  warsawTime,
+} from "../utils";
 import moment from "moment-timezone";
 
 export async function processDummy(data: DummyClaim[]) {
@@ -47,13 +53,41 @@ export async function createClaim({
   workspace: string;
   userId: string;
 }) {
-  console.log(workspace, "CHECKTHIS");
   const team = await db.team.findFirstOrThrow({
     where: {
       slug: workspace,
     },
   });
-  const string = Object.values(data).join(";");
+  const {
+    actualSettlementDate: asd,
+    amount,
+    contractualSettlementDate: csd,
+    corporateAction,
+    corporateActionID,
+    counterparty,
+    currency,
+    eventRate,
+    payDate: pd,
+    quantity,
+    tradeReference,
+    type,
+  } = data;
+  const string = Object.values({
+    tradeReference,
+    corporateAction,
+    corporateActionID,
+    eventRate,
+    pd: pd.getTime(),
+    quantity,
+    csd: csd.getTime(),
+    asd: asd.getTime(),
+    amount,
+    counterparty,
+    owner: String(team.account),
+    market: team.market,
+    currency,
+    type,
+  }).join(";");
   const encryptedClaimData = dummyEncrypt(string);
   const hash =
     data.type === "Receivable" ? generateHash(encryptedClaimData) : undefined;

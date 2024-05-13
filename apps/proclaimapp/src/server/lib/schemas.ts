@@ -34,10 +34,10 @@ export const dummyClaimSchema = z.object({
   actualSettlementDate: z.string(),
   amount: z.number(),
   counterparty: z.string(),
-  currency: z.string(),
-  type: z.union([z.literal("Payable"), z.literal("Receivable")]),
   owner: z.string(),
   market: z.string(),
+  currency: z.string(),
+  type: z.union([z.literal("Payable"), z.literal("Receivable")]),
 });
 
 export const DummyClaimsArraySchema = z.array(dummyClaimSchema);

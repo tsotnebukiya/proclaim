@@ -61,6 +61,9 @@ export async function getCPClaims({
         const claimData = dummyDecrypt(el.encryptedData);
         const { hash } = el;
         const data = stringToClaim(claimData);
+        if (!data) {
+          return null;
+        }
         const cp = contracts.find(
           (contract) =>
             `${data.owner}${market}` ===
@@ -74,7 +77,13 @@ export async function getCPClaims({
           paydate: data.payDate,
         };
       })
-      .filter((el) => el.market + el.counterparty === market + account);
+      .filter((el) => {
+        if (el) {
+          return el.market + el.counterparty === market + account;
+        } else {
+          return false;
+        }
+      }) as CachedCPClaim[];
     return decryptedClaims;
   });
   return formattedClaims.flatMap((el) => el);

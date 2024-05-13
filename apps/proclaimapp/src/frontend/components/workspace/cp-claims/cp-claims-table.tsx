@@ -88,6 +88,9 @@ export function CPClaimsTable<TData, TValue>({
   const table = useReactTable({
     data: fetchedData as TData[],
     columns,
+    initialState: {
+      pagination: { pageSize: 9 },
+    },
     state: {
       sorting,
       columnVisibility,
@@ -106,7 +109,6 @@ export function CPClaimsTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
-
   return (
     <div className="space-y-2">
       <DataTableToolbar

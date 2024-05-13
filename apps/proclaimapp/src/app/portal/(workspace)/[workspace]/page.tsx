@@ -3,5 +3,5 @@ export default function TeamDashboard({
 }: {
   params: { team: string };
 }) {
-  return <>{params.team}</>;
+  return <div></div>;
 }

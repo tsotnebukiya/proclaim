@@ -95,6 +95,9 @@ export function RequestsTable({
   const table = useReactTable({
     data: requests,
     columns,
+    initialState: {
+      pagination: { pageSize: 5 },
+    },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -110,9 +113,6 @@ export function RequestsTable({
       rowSelection,
     },
   });
-  React.useEffect(() => {
-    table.setPageSize(5);
-  }, []);
   return (
     <div className="w-full">
       <div className="rounded-md border">

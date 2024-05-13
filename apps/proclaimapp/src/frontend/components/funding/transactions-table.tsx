@@ -191,6 +191,9 @@ export function TransactionsTable({
   const table = useReactTable({
     data: transfers,
     columns,
+    initialState: {
+      pagination: { pageSize: 8 },
+    },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -206,9 +209,6 @@ export function TransactionsTable({
       rowSelection,
     },
   });
-  React.useEffect(() => {
-    table.setPageSize(8);
-  }, []);
   return (
     <div className="w-full">
       <div className="flex items-center justify-between pb-4">

@@ -57,7 +57,6 @@ export const columns: ColumnDef<Claim>[] = [
       );
     },
     filterFn: (row, id, value) => {
-      console.log(row.getValue(id), value);
       return value.includes(row.getValue(id));
     },
   },

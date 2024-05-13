@@ -83,12 +83,6 @@ export default async function getTokenData({ token }: { token: string }) {
         claim.transaction === transaction &&
         Number(log) + 1 === claim.transactionLog,
     )!;
-    if (
-      transaction ===
-      "0x150f5b0e99bf062b36c1ee5a724dbdb6c830d60d12e17f5783364f3956410526"
-    ) {
-      console.log(Number(log) + 1 === claimObject.transactionLog);
-    }
     const claim = claimObject.tradeReference;
     const teamSlug = claimObject.team.slug;
     return { amount, tofrom, claim, teamSlug, ccy: token, transaction };

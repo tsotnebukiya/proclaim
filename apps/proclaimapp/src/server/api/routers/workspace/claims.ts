@@ -153,7 +153,7 @@ export const claimRouter = createTRPCRouter({
           txHash,
           settledDate,
           settled,
-          uploaded
+          uploaded,
         },
         auditTrail: {
           audit: {
