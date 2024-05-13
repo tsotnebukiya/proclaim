@@ -55,6 +55,16 @@ export function dummyDecrypt(encryptedMessage: string): string {
   return decrypted;
 }
 
+export function invertDecryptedData(data: string) {
+  const parts = data.split(";");
+  const temp = parts[10]!;
+  parts[10] = parts[11]!;
+  parts[11] = temp;
+  parts[parts.length - 1] =
+    parts[parts.length - 1] === "Receivable" ? "Payable" : "Receivable";
+  return parts.join(";");
+}
+
 export function stringToClaim(dataString: string): DummyClaim | null {
   const keys = [
     "tradeReference",
@@ -177,15 +187,6 @@ export function convertContractAll(
     cpAddress: cpAddresses[index]!,
     currency: currencies[index]!,
   }));
-}
-export function invertDecryptedData(data: string) {
-  const parts = data.split(";");
-  const temp = parts[9]!;
-  parts[9] = parts[10]!;
-  parts[10] = temp;
-  parts[parts.length - 1] =
-    parts[parts.length - 1] === "Receivable" ? "Payable" : "Receivable";
-  return parts.join(";");
 }
 
 export function matchEncryptedData(data: string, data1: string): boolean {

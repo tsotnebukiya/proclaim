@@ -9,9 +9,14 @@ import { createClaim } from "@/server/lib/claims/createClaims";
 import { processSpecifiContractEvents } from "@/server/lib/claims/processEvents";
 import { getCachedContracts } from "@/server/lib/contracts/fetch-contracts";
 import { dummyClaimSchema, newClaimSchema } from "@/server/lib/schemas";
-import { claimStatus } from "@/server/lib/utils";
+import {
+  claimStatus,
+  dummyDecrypt,
+  invertDecryptedData,
+} from "@/server/lib/utils";
 import { TRPCError } from "@trpc/server";
 import { kv } from "@vercel/kv";
+import moment from "moment-timezone";
 import { bankContract, wallet } from "proclaim";
 import { addClaims, settleClaims } from "proclaim/contractFunctions";
 import { sendTransaction } from "thirdweb";
@@ -280,7 +285,16 @@ export const claimRouter = createTRPCRouter({
           Number(owner),
           true,
         );
-        const cpClaim = cpClaims.find((el) => el.hash === hash);
+        const cpClaim = cpClaims.find((el) => {
+          console.log(
+            invertDecryptedData(el.decryptedString),
+            dummyDecrypt(claim.encryptedClaimData),
+          );
+          return (
+            invertDecryptedData(el.decryptedString) ===
+            dummyDecrypt(claim.encryptedClaimData)
+          );
+        });
         usedHash = cpClaim?.hash;
       }
       if (!usedHash) {

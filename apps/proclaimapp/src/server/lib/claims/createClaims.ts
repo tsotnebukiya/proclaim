@@ -58,29 +58,38 @@ export async function createClaim({
       slug: workspace,
     },
   });
+
   const {
-    actualSettlementDate: asd,
     amount,
-    contractualSettlementDate: csd,
     corporateAction,
     corporateActionID,
     counterparty,
     currency,
     eventRate,
-    payDate: pd,
     quantity,
     tradeReference,
     type,
   } = data;
+  const payDate = moment(data.payDate).utc().startOf("day").toDate();
+  const contractualSettlementDate = moment(data.contractualSettlementDate)
+    .utc()
+    .startOf("day")
+    .toDate();
+
+  const actualSettlementDate = moment(data.actualSettlementDate)
+    .utc()
+    .startOf("day")
+    .toDate();
+
   const string = Object.values({
     tradeReference,
     corporateAction,
     corporateActionID,
     eventRate,
-    pd: pd.getTime(),
+    pd: payDate.getTime(),
     quantity,
-    csd: csd.getTime(),
-    asd: asd.getTime(),
+    csd: contractualSettlementDate.getTime(),
+    asd: actualSettlementDate.getTime(),
     amount,
     counterparty,
     owner: String(team.account),
@@ -92,15 +101,6 @@ export async function createClaim({
   const hash =
     data.type === "Receivable" ? generateHash(encryptedClaimData) : undefined;
   const createdDate = warsawTime.toDate();
-  const payDate = moment(data.payDate).utc().startOf("day").toDate();
-  const contractualSettlementDate = moment(data.contractualSettlementDate)
-    .utc()
-    .startOf("day")
-    .toDate();
-  const actualSettlementDate = moment(data.actualSettlementDate)
-    .utc()
-    .startOf("day")
-    .toDate();
   const teamId = team.id;
   const uploadClaim = {
     ...data,

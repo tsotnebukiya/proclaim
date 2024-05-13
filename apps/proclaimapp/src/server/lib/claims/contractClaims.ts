@@ -75,6 +75,7 @@ export async function getCPClaims({
           cp,
           currency: data.currency.substring(0, 3),
           paydate: data.payDate,
+          decryptedString: claimData,
         };
       })
       .filter((el) => {
@@ -89,7 +90,11 @@ export async function getCPClaims({
   return formattedClaims.flatMap((el) => el);
 }
 
-export type CachedCPClaim = DummyClaim & { hash: string; cp: string };
+export type CachedCPClaim = DummyClaim & {
+  hash: string;
+  cp: string;
+  decryptedString: string;
+};
 
 export async function getCachedCPClaims(
   workspace: string,
