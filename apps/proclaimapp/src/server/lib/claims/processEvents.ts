@@ -117,7 +117,6 @@ export const processEvents = async ({ banks }: { banks: GetBankDetails[] }) => {
     );
     return true;
   } catch (err) {
-    console.log(err);
     return false;
   }
 };
@@ -147,7 +146,6 @@ export const processSpecifiContractEvents = async ({
     const allEvents = events
       .flatMap((event) => event)
       .filter((ev: any) => ev.args.claimIdentifier === claimHash);
-    console.log(allEvents);
     if (!allEvents || !allEvents[0]) {
       return type === "settle"
         ? "Settlement in Progress"
@@ -172,12 +170,12 @@ export const processSpecifiContractEvents = async ({
           settled: true,
         },
       });
-      return type === "settle" ? "Transaction Settled" : "Claim Uploaded";
+      return "Transaction Settled";
     }
     const uploadEvent = allEvents.find((el) => el.eventName === "ClaimAdded");
     if (uploadEvent) {
       await processUploadedEvents([claimHash]);
-      return type === "settle" ? "Settlement Error" : "Uploading Error";
+      return "Claim Uploaded";
     }
     const errorEvent = allEvents.find(
       (el) => el.eventName === "SettlementError",

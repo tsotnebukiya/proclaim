@@ -57,9 +57,9 @@ export function dummyDecrypt(encryptedMessage: string): string {
 
 export function invertDecryptedData(data: string) {
   const parts = data.split(";");
-  const temp = parts[10]!;
-  parts[10] = parts[11]!;
-  parts[11] = temp;
+  const temp = parts[9]!;
+  parts[9] = parts[10]!;
+  parts[10] = temp;
   parts[parts.length - 1] =
     parts[parts.length - 1] === "Receivable" ? "Payable" : "Receivable";
   return parts.join(";");

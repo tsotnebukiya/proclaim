@@ -285,11 +285,9 @@ export const claimRouter = createTRPCRouter({
           Number(owner),
           true,
         );
+        console.log(dummyDecrypt(claim.encryptedClaimData));
         const cpClaim = cpClaims.find((el) => {
-          console.log(
-            invertDecryptedData(el.decryptedString),
-            dummyDecrypt(claim.encryptedClaimData),
-          );
+          console.log(invertDecryptedData(el.decryptedString));
           return (
             invertDecryptedData(el.decryptedString) ===
             dummyDecrypt(claim.encryptedClaimData)
@@ -402,15 +400,15 @@ export const claimRouter = createTRPCRouter({
       });
       latestNonce++;
       await kv.set<number>(`latestNonce`, latestNonce);
-      const response = await processSpecifiContractEvents({
-        claimHash: hash!,
-        claimId: claim.id,
-        contractAddress: claim.team.contractAddress,
-        tradeRef,
-        userId: session.user.id,
-        type: "upload",
+      db.claim.update({
+        where: {
+          tradeReference: tradeRef,
+        },
+        data: {
+          uploaded: true,
+        },
       });
-      return response;
+      return "Claim Uploaded";
     }),
   createClaim: protectedProcedure
     .input(z.object({ claim: newClaimSchema, workspace: z.string() }))

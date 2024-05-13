@@ -7,6 +7,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/frontend/components/ui/dropdown-menu";
 import { api } from "@/trpc/react";
@@ -74,6 +76,8 @@ export default function ClaimActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
           {!settled && payable ? (
             <DropdownMenuItem onClick={handleSettle}>
               <Settings2 className="mr-2 h-4 w-4" />
