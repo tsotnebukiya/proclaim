@@ -1,7 +1,20 @@
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import { db } from "@/server/db";
+import { getCachedCPClaims } from "@/server/lib/claims/contractClaims";
+import { createClaim } from "@/server/lib/claims/createClaims";
+import { processSpecifiContractEvents } from "@/server/lib/claims/processEvents";
 import { getCachedContracts } from "@/server/lib/contracts/fetch-contracts";
+import { dummyClaimSchema, newClaimSchema } from "@/server/lib/schemas";
 import { claimStatus } from "@/server/lib/utils";
+import { TRPCError } from "@trpc/server";
+import { kv } from "@vercel/kv";
+import { bankContract, wallet } from "proclaim";
+import { addClaims, settleClaims } from "proclaim/contractFunctions";
+import { sendTransaction } from "thirdweb";
 import { z } from "zod";
 
 export const claimRouter = createTRPCRouter({
@@ -9,7 +22,7 @@ export const claimRouter = createTRPCRouter({
     .input(z.object({ workspace: z.string() }))
     .query(async ({ input }) => {
       const { workspace } = input;
-      const claims = await db.claim.findMany({
+      const claimsResp = db.claim.findMany({
         where: {
           team: {
             slug: workspace,
@@ -19,14 +32,16 @@ export const claimRouter = createTRPCRouter({
           payDate: "desc",
         },
       });
-      const contracts = await getCachedContracts();
-
+      const contractsResp = getCachedContracts();
+      const [claims, contracts] = await Promise.all([
+        claimsResp,
+        contractsResp,
+      ]);
       const formattedClaims = claims.map((claim) => {
         const {
           id,
           tradeReference: traderef,
           currency: ccy,
-          cancelled,
           settled,
           type,
           payDate: paydate,
@@ -34,15 +49,15 @@ export const claimRouter = createTRPCRouter({
           counterparty,
           market,
           corporateAction: label,
-          matched,
         } = claim;
 
         const status = claimStatus(paydate, settled);
-        const cp = contracts.find(
-          (contract) =>
-            `${counterparty}${market}` ===
-            `${contract.account}${contract.market}`,
-        )?.name!;
+        const cp =
+          contracts.find(
+            (contract) =>
+              `${counterparty}${market}` ===
+              `${contract.account}${contract.market}`,
+          )?.name || "N/A";
         return {
           id,
           traderef,
@@ -104,15 +119,17 @@ export const claimRouter = createTRPCRouter({
         hash: claimHash,
         transaction: txHash,
         settlementError,
+        uploaded,
       } = claim;
-      const cpName = contracts.find(
-        (contract) =>
-          `${cpAcc}${market}` === `${contract.account}${contract.market}`,
-      )?.name!;
-
+      const cpName =
+        contracts.find(
+          (contract) =>
+            `${cpAcc}${market}` === `${contract.account}${contract.market}`,
+        )?.name || "N/A";
       const status = claimStatus(pd, settled);
       return {
         claimInfo: {
+          tradeRef,
           csd,
           asd,
           pd,
@@ -126,6 +143,7 @@ export const claimRouter = createTRPCRouter({
           eventID,
           eventRate,
           amount,
+          uploaded,
           ccy: ccy.substring(0, 3),
         },
         settlementInfo: {
@@ -134,6 +152,8 @@ export const claimRouter = createTRPCRouter({
           claimHash,
           txHash,
           settledDate,
+          settled,
+          uploaded
         },
         auditTrail: {
           audit: {
@@ -141,7 +161,7 @@ export const claimRouter = createTRPCRouter({
             createdBy,
             creatorName: creator?.name,
             creatorId: creator?.id,
-            settled: settledDate,
+            settled,
             settledBy,
             settledDate,
             settlerName: settler?.name,
@@ -150,5 +170,244 @@ export const claimRouter = createTRPCRouter({
           errors: settlementError,
         },
       };
+    }),
+  attachHash: publicProcedure
+    .input(
+      z.object({
+        tradeRef: z.string(),
+        workspace: z.string(),
+        hash: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { tradeRef, workspace, hash } = input;
+      const claim = await db.claim.findUniqueOrThrow({
+        where: {
+          type: "Payable",
+          tradeReference: tradeRef,
+          team: {
+            slug: workspace,
+          },
+        },
+        include: {
+          creator: true,
+          settler: true,
+          settlementError: true,
+        },
+      });
+
+      const { settled, matched, owner, market } = claim;
+      if (settled || matched) {
+        throw new TRPCError({
+          message: "Claim already matched",
+          code: "BAD_REQUEST",
+        });
+      }
+      const cpClaims = await getCachedCPClaims(
+        workspace,
+        market,
+        Number(owner),
+        true,
+      );
+      const cpClaim = cpClaims.find((el) => el.hash === hash);
+      if (!cpClaim) {
+        throw new TRPCError({
+          message: "No CP claim found",
+          code: "BAD_REQUEST",
+        });
+      }
+      await db.claim.update({
+        where: {
+          tradeReference: tradeRef,
+        },
+        data: {
+          matched: true,
+          hash: cpClaim.hash,
+          amount: cpClaim.amount,
+        },
+      });
+      return true;
+    }),
+  settleClaim: protectedProcedure
+    .input(
+      z.object({
+        tradeRef: z.string(),
+        workspace: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { tradeRef, workspace } = input;
+      const { session } = ctx;
+      const claimResp = db.claim.findUniqueOrThrow({
+        where: {
+          tradeReference: tradeRef,
+          type: "Payable",
+          team: {
+            slug: workspace,
+          },
+        },
+        include: {
+          creator: true,
+          settler: true,
+          settlementError: true,
+        },
+      });
+      const contractsResp = getCachedContracts();
+      const [claim, contracts] = await Promise.all([claimResp, contractsResp]);
+      const { settled, matched, counterparty, owner, market, hash } = claim;
+      if (settled) {
+        throw new TRPCError({
+          message: "Claim already settled",
+          code: "BAD_REQUEST",
+        });
+      }
+      const cpContract = contracts.find(
+        (contract) =>
+          `${counterparty}${market}` ===
+          `${contract.account}${contract.market}`,
+      );
+      if (!cpContract) {
+        throw new TRPCError({
+          message: "Counterparty not registered",
+          code: "BAD_REQUEST",
+        });
+      }
+      let usedHash: string | null | undefined = hash;
+      if (!hash) {
+        const cpClaims = await getCachedCPClaims(
+          workspace,
+          market,
+          Number(owner),
+          true,
+        );
+        const cpClaim = cpClaims.find((el) => el.hash === hash);
+        usedHash = cpClaim?.hash;
+      }
+      if (!usedHash) {
+        throw new TRPCError({
+          message: "No matching claim found",
+          code: "BAD_REQUEST",
+        });
+      }
+      let latestNonce = (await kv.get<number>("latestNonce")) as number;
+      const transaction = settleClaims({
+        claimIdentifiers: [usedHash] as `0x${string}`[],
+        contract: bankContract(cpContract.contractAddress),
+        nonce: latestNonce + 1,
+      });
+      await sendTransaction({
+        transaction,
+        account: wallet,
+      });
+      latestNonce++;
+      await kv.set<number>(`latestNonce`, latestNonce);
+      const response = await processSpecifiContractEvents({
+        claimHash: usedHash,
+        claimId: claim.id,
+        contractAddress: cpContract.contractAddress,
+        tradeRef,
+        userId: session.user.id,
+        type: "settle",
+      });
+      return response;
+    }),
+  uploadClaim: protectedProcedure
+    .input(
+      z.object({
+        tradeRef: z.string(),
+        workspace: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { session } = ctx;
+      const { tradeRef, workspace } = input;
+      const claimResp = db.claim.findUniqueOrThrow({
+        where: {
+          tradeReference: tradeRef,
+          type: "Receivable",
+          team: {
+            slug: workspace,
+          },
+        },
+        include: {
+          creator: true,
+          settler: true,
+          settlementError: true,
+          team: true,
+        },
+      });
+      const contractsResp = getCachedContracts();
+      const [claim, contracts] = await Promise.all([claimResp, contractsResp]);
+      const {
+        settled,
+        counterparty,
+        owner,
+        market,
+        encryptedClaimData,
+        hash,
+        uploaded,
+        currency,
+      } = claim;
+
+      if (settled) {
+        throw new TRPCError({
+          message: "Claim already settled",
+          code: "BAD_REQUEST",
+        });
+      }
+      if (uploaded) {
+        throw new TRPCError({
+          message: "Claim already uploaded",
+          code: "BAD_REQUEST",
+        });
+      }
+      const cp = contracts.find(
+        (contract) =>
+          `${counterparty}${market}` ===
+          `${contract.account}${contract.market}`,
+      );
+      if (!cp) {
+        throw new TRPCError({
+          message: "CP not registered",
+          code: "BAD_REQUEST",
+        });
+      }
+      let latestNonce = (await kv.get<number>("latestNonce")) as number;
+      const transaction = addClaims({
+        amountsOwed: [BigInt(claim.amount)],
+        claimIdentifiers: [hash] as `0x${string}`[],
+        counterpartyAddresses: [cp.deployerAddress],
+        encryptedClaimDatas: [encryptedClaimData],
+        tokenNames: [currency],
+        contract: bankContract(claim.team.contractAddress),
+        nonce: latestNonce + 1,
+      });
+      await sendTransaction({
+        transaction,
+        account: wallet,
+      });
+      latestNonce++;
+      await kv.set<number>(`latestNonce`, latestNonce);
+      const response = await processSpecifiContractEvents({
+        claimHash: hash!,
+        claimId: claim.id,
+        contractAddress: claim.team.contractAddress,
+        tradeRef,
+        userId: session.user.id,
+        type: "upload",
+      });
+      return response;
+    }),
+  createClaim: protectedProcedure
+    .input(z.object({ claim: newClaimSchema, workspace: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const { claim, workspace } = input;
+      const { session } = ctx;
+      const createdClaim = await createClaim({
+        data: claim,
+        workspace,
+        userId: session.user.id,
+      });
+      return createdClaim.id;
     }),
 });

@@ -165,8 +165,8 @@ export const columns: ColumnDef<Claim>[] = [
       return value.includes(row.getValue(id));
     },
   },
-  {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => <DataTableRowActions row={row} />,
+  // },
 ];

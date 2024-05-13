@@ -13,7 +13,13 @@ export default async function IndividualClaimPage({
   const { claimID: tradeRef, workspace } = params;
   try {
     const claim = await api.workspace.claims.getClaim({ tradeRef, workspace });
-    return <IndividualClaim claim={claim}/>;
+    return (
+      <IndividualClaim
+        claim={claim}
+        tradeRef={tradeRef}
+        workspace={workspace}
+      />
+    );
   } catch (err) {
     notFound();
   }

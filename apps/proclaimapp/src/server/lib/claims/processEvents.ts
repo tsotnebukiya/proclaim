@@ -3,10 +3,8 @@ import { GetBankDetails, bankContract, depositoryContract } from "proclaim";
 import { kv } from "@vercel/kv";
 
 import { getContractEvents } from "thirdweb";
-import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import { env } from "@/env";
 import { Claim } from "@prisma/client";
-import { warsawTime } from "../utils";
 
 type Error = {
   claimIdentifier: `0x${string}`;
@@ -35,7 +33,7 @@ async function processSettledEvents(
         settledBy: "SYSTEM",
         transaction: event.transactionHash,
         transactionLog: event.transactionLog,
-        settledDate: warsawTime.startOf("d").toDate(),
+        settledDate: new Date(),
       },
     });
   });
@@ -47,7 +45,6 @@ async function processSettlementErrors(cpEvents: any, claims: Claim[]) {
   const errors = cpEvents
     .filter((ev: any) => ev.eventName === "SettlementError")
     .map((ev: any) => {
-      console.log(ev);
       const { address: contractAddress, eventName, transactionHash } = ev;
       const { claimIdentifier, reason } = ev.args as Error;
       const claimId = claims.find(
@@ -122,5 +119,88 @@ export const processEvents = async ({ banks }: { banks: GetBankDetails[] }) => {
   } catch (err) {
     console.log(err);
     return false;
+  }
+};
+
+export const processSpecifiContractEvents = async ({
+  claimHash,
+  claimId,
+  contractAddress,
+  tradeRef,
+  userId,
+  type,
+}: {
+  contractAddress: string;
+  tradeRef: string;
+  claimId: number;
+  claimHash: string;
+  userId: string;
+  type: "upload" | "settle";
+}) => {
+  try {
+    const events = await getContractEvents({
+      contract: bankContract(contractAddress),
+      fromBlock: BigInt(1 + 1),
+      toBlock: "latest",
+    });
+
+    const allEvents = events
+      .flatMap((event) => event)
+      .filter((ev: any) => ev.args.claimIdentifier === claimHash);
+    console.log(allEvents);
+    if (!allEvents || !allEvents[0]) {
+      return type === "settle"
+        ? "Settlement in Progress"
+        : "Uploading in Progress";
+    }
+    const settledEvent = allEvents.find(
+      (el) => el.eventName === "ClaimSettled",
+    );
+    if (settledEvent) {
+      await db.claim.update({
+        where: {
+          tradeReference: tradeRef,
+        },
+        data: {
+          hash: settledEvent.args.claimIdentifier,
+          transaction: settledEvent.transactionHash,
+          transactionLog: settledEvent.logIndex,
+          matched: true,
+          settledDate: new Date(),
+          settledBy: "USER",
+          settlerId: userId,
+          settled: true,
+        },
+      });
+      return type === "settle" ? "Transaction Settled" : "Claim Uploaded";
+    }
+    const uploadEvent = allEvents.find((el) => el.eventName === "ClaimAdded");
+    if (uploadEvent) {
+      await processUploadedEvents([claimHash]);
+      return type === "settle" ? "Settlement Error" : "Uploading Error";
+    }
+    const errorEvent = allEvents.find(
+      (el) => el.eventName === "SettlementError",
+    );
+    if (errorEvent) {
+      const { reason } = errorEvent.args as Error;
+      await db.blockchainError.create({
+        data: {
+          reason,
+          eventName: errorEvent.eventName,
+          contractAddress,
+          transactionHash: errorEvent.transactionHash,
+          claimId: claimId,
+        },
+      });
+      return type === "settle" ? "Settlement Error" : "Uploading Error";
+    }
+
+    return type === "settle"
+      ? "Settlement in Progress"
+      : "Uploading in Progress";
+  } catch (err) {
+    console.log(err);
+    return "Settlement Error";
   }
 };

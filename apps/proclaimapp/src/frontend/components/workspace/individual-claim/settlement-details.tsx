@@ -3,7 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { Separator } from "../../ui/separator";
 import { statuses } from "../shared-table/data";
 import { cn, shortenAddress } from "@/frontend/lib/utils";
-import { MinusCircledIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import {
+  DownloadIcon,
+  MinusCircledIcon,
+  PlusCircledIcon,
+  UploadIcon,
+} from "@radix-ui/react-icons";
 import { RouterOutput } from "@/server/api/root";
 import Link from "next/link";
 import { Button, buttonVariants } from "../../ui/button";
@@ -11,8 +16,10 @@ import { toast } from "sonner";
 
 export default function SettlementDetails({
   details,
+  type,
 }: {
   details: RouterOutput["workspace"]["claims"]["getClaim"]["settlementInfo"];
+  type: "Receivable" | "Payable";
 }) {
   const {
     claimHash,
@@ -20,6 +27,7 @@ export default function SettlementDetails({
     status: statusRaw,
     txHash,
     settledDate,
+    uploaded,
   } = details;
   const status = statuses.find((status) => status.value === statusRaw)!;
   const copyClick = () => {
@@ -49,22 +57,49 @@ export default function SettlementDetails({
                 </div>
               </span>
             </li>
-            <li className="flex items-center justify-between">
-              <span className="text-muted-foreground">Match Status</span>
-              <span>
-                {matched ? (
-                  <div className="flex w-fit items-center">
-                    <PlusCircledIcon className={"mr-2 h-4 w-4 text-cyan-500"} />
-                    <span>Matched</span>
-                  </div>
-                ) : (
-                  <div className="flex w-fit items-center">
-                    <MinusCircledIcon className={"mr-2 h-4 w-4 text-red-500"} />
-                    <span>Not matched</span>
-                  </div>
-                )}
-              </span>
-            </li>
+            {type === "Payable" && (
+              <li className="flex items-center justify-between">
+                <span className="text-muted-foreground">Match Status</span>
+                <span>
+                  {matched ? (
+                    <div className="flex w-fit items-center">
+                      <PlusCircledIcon
+                        className={"mr-2 h-4 w-4 text-cyan-500"}
+                      />
+                      <span>Matched</span>
+                    </div>
+                  ) : (
+                    <div className="flex w-fit items-center">
+                      <MinusCircledIcon
+                        className={"mr-2 h-4 w-4 text-red-500"}
+                      />
+                      <span>Not matched</span>
+                    </div>
+                  )}
+                </span>
+              </li>
+            )}
+
+            {type === "Receivable" && (
+              <li className="flex items-center justify-between">
+                <span className="text-muted-foreground">
+                  Uploaded to Contract
+                </span>
+                <span>
+                  {uploaded ? (
+                    <div className="flex w-fit items-center">
+                      <UploadIcon className={"mr-2 h-4 w-4 text-cyan-500"} />
+                      <span>Uploaded</span>
+                    </div>
+                  ) : (
+                    <div className="flex w-fit items-center">
+                      <DownloadIcon className={"mr-2 h-4 w-4 text-red-500"} />
+                      <span>Not uploaded</span>
+                    </div>
+                  )}
+                </span>
+              </li>
+            )}
           </ul>
         </div>
 

@@ -36,7 +36,7 @@ function Block({
       });
     },
     onSuccess: async (data) => {
-      await refetchHandler();
+      refetchHandler();
       toast.success("Success", {
         description: `Token transfer ${data ? "" : "un"}approved`,
       });

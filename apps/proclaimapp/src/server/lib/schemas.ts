@@ -1,6 +1,29 @@
 import { z } from "zod";
 
-const DummyClaimSchema = z.object({
+export const newClaimSchema = z.object({
+  tradeReference: z
+    .string()
+    .regex(/^\d+$/, "Trade reference must be numeric")
+    .min(10, "Trade reference must be 10 digits long")
+    .max(10, "Trade reference must be 10 digits long"),
+  corporateAction: z.string().min(1, "You must choose event type"),
+  corporateActionID: z
+    .string()
+    .min(5, "Event ID must be at least 5 characters long"),
+  eventRate: z.number().min(0.001, "Event must have rate"),
+  payDate: z.date(),
+  quantity: z.number().min(0.001, "Trade must have quantity"),
+  contractualSettlementDate: z.date(),
+  actualSettlementDate: z.date(),
+  amount: z.number().min(0.001, "Trade must have quantity"),
+  counterparty: z.string().min(1, "Trade must have cp account"),
+  currency: z.string(),
+  type: z.union([z.literal("Payable"), z.literal("Receivable")]),
+});
+
+export type NewClaim = z.infer<typeof newClaimSchema>;
+
+export const dummyClaimSchema = z.object({
   tradeReference: z.string(),
   corporateAction: z.string(),
   corporateActionID: z.string(),
@@ -11,15 +34,15 @@ const DummyClaimSchema = z.object({
   actualSettlementDate: z.string(),
   amount: z.number(),
   counterparty: z.string(),
-  owner: z.string(),
-  market: z.string(),
   currency: z.string(),
   type: z.union([z.literal("Payable"), z.literal("Receivable")]),
+  owner: z.string(),
+  market: z.string(),
 });
 
-export const DummyClaimsArraySchema = z.array(DummyClaimSchema);
+export const DummyClaimsArraySchema = z.array(dummyClaimSchema);
 
-export type DummyClaim = z.infer<typeof DummyClaimSchema>;
+export type DummyClaim = z.infer<typeof dummyClaimSchema>;
 
 export const createTeamSchema = z.object({
   teamName: z.string().min(5, {

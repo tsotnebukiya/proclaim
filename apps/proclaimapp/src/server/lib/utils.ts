@@ -108,7 +108,9 @@ export function claimStatus(paydate: Date, settled: boolean) {
   }
   return status;
 }
-
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 export const warsawTime = moment.utc();
 
 export function convertContractUnsettled(

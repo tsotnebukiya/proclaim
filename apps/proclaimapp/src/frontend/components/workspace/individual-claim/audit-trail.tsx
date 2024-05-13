@@ -17,39 +17,44 @@ import {
   RiSoundModuleLine,
 } from "@remixicon/react";
 import { cn } from "@/frontend/lib/utils";
+import { RouterOutput } from "@/server/api/root";
+import moment from "moment-timezone";
 
-const steps = [
-  {
-    id: 1,
-    type: "done",
-    title: "Created Workspace",
-    description:
-      "You successfully created your first workspace in privacy mode",
-    activityTime: "3d ago",
-  },
-  {
-    id: 2,
-    type: "done",
-    title: "Connected database",
-    description: "Database connected to MySQL test database",
-    activityTime: "2d ago",
-  },
-  {
-    id: 3,
-    type: "done",
-    title: "Add payment method",
-    description: "Payment method for monthly billing added",
-    activityTime: "31min ago",
-  },
-];
-
-const details = [
-  { name: "Name", value: "test_workspace" },
-  { name: "Storage used", value: "0.25/10GB" },
-  { name: "Payment cycle", value: "1st day of month" },
-];
-
-export default function AuditTrail() {
+export default function AuditTrail({
+  details,
+}: {
+  details: RouterOutput["workspace"]["claims"]["getClaim"]["auditTrail"];
+}) {
+  const { audit, errors } = details;
+  const {
+    createdDate,
+    createdBy,
+    settledBy,
+    creatorName,
+    settled,
+    settledDate,
+    settlerName,
+  } = audit;
+  const systemCreated = createdBy === "SYSTEM";
+  const systemSettled = settledBy === "SYSTEM";
+  const steps = [
+    {
+      id: 1,
+      type: "done",
+      title: "Creation",
+      description: `Claim created by ${systemCreated ? "SYSTEM" : creatorName}`,
+      activityTime: moment(createdDate).fromNow(),
+    },
+    {
+      id: 2,
+      type: settled ? "done" : "",
+      title: "Settlement",
+      description: settled
+        ? `Claim settled by ${systemSettled ? "SYSTEM" : settlerName}`
+        : "Pending settlement",
+      activityTime: settled ? moment(settledDate).fromNow() : "",
+    },
+  ];
   return (
     <Card className="">
       <TabGroup>
@@ -102,7 +107,7 @@ export default function AuditTrail() {
                       <p className="mt-0.5 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
                         {step.title}{" "}
                         <span className="font-normal text-tremor-content-subtle dark:text-dark-tremor-content-subtle">
-                          &#8729; {step.activityTime}
+                          &#8729; {step.activityTime!}
                         </span>
                       </p>
                       <p className="mt-0.5 text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
@@ -115,16 +120,22 @@ export default function AuditTrail() {
             </ul>
           </TabPanel>
           <TabPanel>
-            <List className="rounded-tremor-small bg-tremor-background-muted dark:divide-tremor-content-emphasis dark:bg-dark-tremor-background-subtle">
-              <ListItem className="h-10 px-4">
-                <span className="text-tremor-content dark:text-dark-tremor-content">
-                  Error Type
-                </span>
-                <span className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                  Bank Contract not approved
-                </span>
-              </ListItem>
-            </List>
+            {errors[0] ? (
+              <List className="">
+                {errors.map((el, i) => (
+                  <ListItem key={i} className="">
+                    <span className="text-tremor-content dark:text-dark-tremor-content">
+                      Error Type
+                    </span>
+                    <span className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                      {el.reason}
+                    </span>
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <span className="text-tremor-content">No Errors</span>
+            )}
           </TabPanel>
         </TabPanels>
       </TabGroup>
