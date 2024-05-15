@@ -13,7 +13,6 @@ export default async function CounterpartyClaims({
   const uniqueCpValues = [...new Set(cpValues)];
   const CPs = uniqueCpValues.map((el) => ({ value: el, label: el }));
   return (
-    // <div></div>
     <CPClaimsTable
       data={cpClaims}
       columns={columns}
