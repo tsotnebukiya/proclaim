@@ -12,7 +12,13 @@ import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import { db } from "@/server/db";
 import { warsawTime } from "../utils";
 
-export const uploadClaims = async ({ banks }: { banks: GetBankDetails[] }) => {
+export const uploadClaims = async ({
+  banks,
+  teamId,
+}: {
+  banks: GetBankDetails[];
+  teamId?: number;
+}) => {
   const payDate = warsawTime.startOf("d").toDate();
   const claims = await db.claim.findMany({
     where: {
@@ -22,9 +28,10 @@ export const uploadClaims = async ({ banks }: { banks: GetBankDetails[] }) => {
       payDate: {
         lte: payDate,
       },
-      team:{
-        stp:true
-      }
+      teamId,
+      team: {
+        stp: true,
+      },
     },
     include: {
       team: true,
@@ -85,5 +92,12 @@ export const uploadClaims = async ({ banks }: { banks: GetBankDetails[] }) => {
       transaction: settledTransaction.transactionHash,
     });
   }
+  await db.globalEvents.create({
+    data: {
+      type: "UPLOAD",
+      claimsCount: claims.length,
+      teamId,
+    },
+  });
   return transactionsResults;
 };

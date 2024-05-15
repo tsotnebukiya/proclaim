@@ -77,15 +77,22 @@ enum SysUser {
     USER
 }
 
+enum GlobalEvent {
+    UPDATE
+    SETTLE
+    UPLOAD
+}
+
 model Team {
-    id              Int     @id @default(autoincrement())
+    id              Int            @id @default(autoincrement())
     market          String
     account         Int
     contractAddress String
     name            String
-    stp             Boolean @default(true)
+    stp             Boolean        @default(true)
     slug            String
     Claim           Claim[]
+    GlobalEvents    GlobalEvents[]
 
     @@map("teams")
 }
@@ -149,4 +156,13 @@ model TokenRequest {
     token       String
     transaction String
     createdAt   DateTime @default(now())
+}
+
+model GlobalEvents {
+    id          Int         @id @default(autoincrement())
+    type        GlobalEvent
+    triggeredAt DateTime    @default(now())
+    claimsCount Int?
+    teamId      Int?
+    team        Team?       @relation(fields: [teamId], references: [id]) // Establish the relationship
 }

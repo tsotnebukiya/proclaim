@@ -58,13 +58,19 @@ async function processSettlementErrors(cpEvents: any, claims: Claim[]) {
   await db.blockchainError.createMany({ data: errors.filter((e: any) => e) });
 }
 
-export const processEvents = async ({ banks }: { banks: GetBankDetails[] }) => {
+export const processEvents = async ({
+  banks,
+  teamId,
+}: {
+  banks: GetBankDetails[];
+  teamId?: number;
+}) => {
   try {
     const teams = await db.team.findMany();
-
     const claims = await db.claim.findMany({
       where: {
         settled: false,
+        teamId,
       },
     });
     const contracts = banks.map((el) => el.contractAddress);
@@ -115,6 +121,13 @@ export const processEvents = async ({ banks }: { banks: GetBankDetails[] }) => {
           transactionLog: el.logIndex,
         })),
     );
+    await db.globalEvents.create({
+      data: {
+        type: "UPDATE",
+        claimsCount: claims.length,
+        teamId,
+      },
+    });
     return true;
   } catch (err) {
     return false;

@@ -91,7 +91,7 @@ async function matchCPClaims(
     updates.map((update) =>
       db.claim.update({
         where: { id: update.id },
-        data: { hash: update.hash,matched:true },
+        data: { hash: update.hash, matched: true },
       }),
     ),
   );
@@ -140,7 +140,13 @@ async function sendTransactions(
   return transactionsResults;
 }
 
-export const settleClaims = async ({ banks }: { banks: GetBankDetails[] }) => {
+export const settleClaims = async ({
+  banks,
+  teamId,
+}: {
+  banks: GetBankDetails[];
+  teamId?: number;
+}) => {
   const payDate = warsawTime.startOf("d").toDate();
   const claims = await db.claim.findMany({
     where: {
@@ -149,6 +155,7 @@ export const settleClaims = async ({ banks }: { banks: GetBankDetails[] }) => {
       payDate: {
         lte: payDate,
       },
+      teamId,
       team: {
         stp: true,
       },
@@ -163,6 +170,12 @@ export const settleClaims = async ({ banks }: { banks: GetBankDetails[] }) => {
   const claimsToSettle = await matchCPClaims(cpClaims, claims);
   if (claimsToSettle.length === 0) return null;
   const transactionsResults = await sendTransactions(claimsToSettle);
-
+  await db.globalEvents.create({
+    data: {
+      type: "SETTLE",
+      claimsCount: claimsToSettle.length,
+      teamId,
+    },
+  });
   return transactionsResults;
 };
