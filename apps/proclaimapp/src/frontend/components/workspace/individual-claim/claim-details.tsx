@@ -47,7 +47,7 @@ export default function ClaimsDetails({
             </li>
             <li className="flex items-center justify-between px-6 py-3">
               <span className="">Account</span>
-              <span>14232</span>
+              <span>{account}</span>
             </li>
             <li className="flex items-center justify-between bg-accent px-6 py-3">
               <span className="">Counterparty</span>

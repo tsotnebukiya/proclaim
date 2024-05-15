@@ -33,35 +33,67 @@ export default function ClaimActions({
   const closeModal = () => setModalOpen(false);
   const claimUtils = api.useUtils().workspace.claims;
   const { mutate: settleClaim } = api.workspace.claims.settleClaim.useMutation({
+    onMutate: () => {
+      toast.loading("Interacting with Blockchain", { id: "settleToast" });
+    },
     onSuccess: (data) => {
       claimUtils.invalidate();
       closeModal();
       toast.success("Success", {
         description: data,
+        id: "settleToast",
       });
     },
     onError: (err) => {
       toast.error("Error", {
         description: err.message,
+        id: "settleToast",
       });
     },
   });
+  const { mutate: updateStatus } =
+    api.workspace.claims.updateStatus.useMutation({
+      onMutate: () => {
+        toast.loading("Interacting with Blockchain", { id: "updateToast" });
+      },
+      onSuccess: (data) => {
+        claimUtils.invalidate();
+        toast.success("Success", {
+          description: data,
+          id: "updateToast",
+        });
+      },
+      onError: (err) => {
+        toast.error("Error", {
+          description: err.message,
+          id: "updateToast",
+        });
+      },
+    });
   const { mutate: uploadClaim } = api.workspace.claims.uploadClaim.useMutation({
+    onMutate: () => {
+      toast.loading("Interacting with Blockchain", { id: "uploadToast" });
+    },
     onSuccess: (data) => {
       claimUtils.invalidate();
       closeModal();
       toast.success("Success", {
         description: data,
+        id: "uploadToast",
       });
     },
     onError: (err) => {
       toast.error("Error", {
         description: err.message,
+        id: "uploadToast",
       });
     },
   });
   const handleSettle = () => {
     settleClaim({ tradeRef, workspace });
+  };
+  const handleUpdate = () => {
+    updateStatus({ tradeRef, workspace });
   };
   const handleUpload = () => {
     uploadClaim({ tradeRef, workspace });
@@ -82,6 +114,12 @@ export default function ClaimActions({
             <DropdownMenuItem onClick={handleSettle}>
               <Settings2 className="mr-2 h-4 w-4" />
               <span>Settle Claim</span>
+            </DropdownMenuItem>
+          ) : null}
+          {!settled ? (
+            <DropdownMenuItem onClick={handleUpdate}>
+              <Settings2 className="mr-2 h-4 w-4" />
+              <span>Update Status</span>
             </DropdownMenuItem>
           ) : null}
           {!matched && payable ? (

@@ -5,10 +5,14 @@ import {
 } from "@/server/api/trpc";
 import { db } from "@/server/db";
 import { getCachedCPClaims } from "@/server/lib/claims/contractClaims";
-import { createClaim } from "@/server/lib/claims/createClaims";
+import { createClaim, createMany } from "@/server/lib/claims/createClaims";
 import { processSpecifiContractEvents } from "@/server/lib/claims/processEvents";
 import { getCachedContracts } from "@/server/lib/contracts/fetch-contracts";
-import { dummyClaimSchema, newClaimSchema } from "@/server/lib/schemas";
+import {
+  ReceivedClaimSchema,
+  dummyClaimSchema,
+  newClaimSchema,
+} from "@/server/lib/schemas";
 import {
   claimStatus,
   dummyDecrypt,
@@ -285,15 +289,24 @@ export const claimRouter = createTRPCRouter({
           Number(owner),
           true,
         );
-        console.log(dummyDecrypt(claim.encryptedClaimData));
         const cpClaim = cpClaims.find((el) => {
-          console.log(invertDecryptedData(el.decryptedString));
           return (
             invertDecryptedData(el.decryptedString) ===
             dummyDecrypt(claim.encryptedClaimData)
           );
         });
         usedHash = cpClaim?.hash;
+        if (usedHash) {
+          await db.claim.update({
+            where: {
+              tradeReference: tradeRef,
+            },
+            data: {
+              hash: usedHash,
+              matched: true,
+            },
+          });
+        }
       }
       if (!usedHash) {
         throw new TRPCError({
@@ -301,6 +314,7 @@ export const claimRouter = createTRPCRouter({
           code: "BAD_REQUEST",
         });
       }
+
       let latestNonce = (await kv.get<number>("latestNonce")) as number;
       const transaction = settleClaims({
         claimIdentifiers: [usedHash] as `0x${string}`[],
@@ -319,9 +333,73 @@ export const claimRouter = createTRPCRouter({
         contractAddress: cpContract.contractAddress,
         tradeRef,
         userId: session.user.id,
-        type: "settle",
+        receivable: false,
       });
-      return response;
+      let returnValue = "";
+      if (response === "settled") {
+        returnValue = "Claim Settled";
+      } else if (response === "pending") {
+        returnValue = "Settlement Pending";
+      } else if (response === "error") {
+        returnValue = "Settlement Error";
+      }
+      return returnValue;
+    }),
+  updateStatus: protectedProcedure
+    .input(
+      z.object({
+        tradeRef: z.string(),
+        workspace: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { tradeRef, workspace } = input;
+      const { session } = ctx;
+      console.log(tradeRef, "CHECKTHIS");
+      const claimResp = db.claim.findUniqueOrThrow({
+        where: {
+          tradeReference: tradeRef,
+          team: {
+            slug: workspace,
+          },
+        },
+        include: {
+          team: true,
+        },
+      });
+      const contractsResp = getCachedContracts();
+      const [claim, contracts] = await Promise.all([claimResp, contractsResp]);
+      const { settled, matched, counterparty, owner, market, hash, type } =
+        claim;
+      if (settled) {
+        throw new TRPCError({
+          message: "Claim already settled",
+          code: "BAD_REQUEST",
+        });
+      }
+      const cpContract = contracts.find(
+        (contract) =>
+          `${counterparty}${market}` ===
+          `${contract.account}${contract.market}`,
+      );
+      if (!cpContract) {
+        throw new TRPCError({
+          message: "Counterparty not registered",
+          code: "BAD_REQUEST",
+        });
+      }
+      await processSpecifiContractEvents({
+        claimHash: hash!,
+        claimId: claim.id,
+        contractAddress:
+          type === "Receivable"
+            ? claim.team.contractAddress
+            : cpContract.contractAddress,
+        tradeRef,
+        userId: session.user.id,
+        receivable: type === "Receivable",
+      });
+      return "Status Updated";
     }),
   uploadClaim: protectedProcedure
     .input(
@@ -331,7 +409,6 @@ export const claimRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const { session } = ctx;
       const { tradeRef, workspace } = input;
       const claimResp = db.claim.findUniqueOrThrow({
         where: {
@@ -400,7 +477,7 @@ export const claimRouter = createTRPCRouter({
       });
       latestNonce++;
       await kv.set<number>(`latestNonce`, latestNonce);
-      db.claim.update({
+      await db.claim.update({
         where: {
           tradeReference: tradeRef,
         },
@@ -421,5 +498,19 @@ export const claimRouter = createTRPCRouter({
         userId: session.user.id,
       });
       return createdClaim.id;
+    }),
+  createMany: protectedProcedure
+    .input(
+      z.object({ claims: z.array(ReceivedClaimSchema), workspace: z.string() }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { claims, workspace } = input;
+      const { session } = ctx;
+      const createdClaims = await createMany({
+        data: claims,
+        workspace,
+        userId: session.user.id,
+      });
+      return createdClaims;
     }),
 });

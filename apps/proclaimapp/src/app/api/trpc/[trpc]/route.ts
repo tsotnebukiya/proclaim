@@ -1,5 +1,7 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { type NextRequest } from "next/server";
+import { nodeHTTPFormDataContentTypeHandler } from "@trpc/server/adapters/node-http/content-type/form-data";
+import { nodeHTTPJSONContentTypeHandler } from "@trpc/server/adapters/node-http/content-type/json";
 
 import { env } from "@/env";
 import { appRouter } from "@/server/api/root";
@@ -21,6 +23,7 @@ const handler = (req: NextRequest) =>
     req,
     router: appRouter,
     createContext: () => createContext(req),
+
     onError:
       env.NODE_ENV === "development"
         ? ({ path, error }) => {

@@ -57,12 +57,27 @@ export function dummyDecrypt(encryptedMessage: string): string {
 
 export function invertDecryptedData(data: string) {
   const parts = data.split(";");
+  if (parts[11] === "Receivable" || parts[11] === "Payable") {
+    console.log("heyhere");
+    const temp = parts[9]!;
+    parts[9] = parts[12]!;
+    parts[12] = temp;
+    parts[11] = parts[11] === "Receivable" ? "Payable" : "Receivable";
+    return parts.join(";");
+  }
   const temp = parts[9]!;
   parts[9] = parts[10]!;
   parts[10] = temp;
   parts[parts.length - 1] =
     parts[parts.length - 1] === "Receivable" ? "Payable" : "Receivable";
   return parts.join(";");
+}
+
+export function excelDateToJSDate(serial: number): Date {
+  // Excel date origin is January 1, 1900
+  const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+  const jsDate = new Date(excelEpoch.getTime() + serial * 24 * 60 * 60 * 1000);
+  return jsDate;
 }
 
 export function stringToClaim(dataString: string): DummyClaim | null {

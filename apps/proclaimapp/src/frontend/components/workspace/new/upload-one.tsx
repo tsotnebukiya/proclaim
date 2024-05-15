@@ -64,15 +64,20 @@ export default function UploadOne({ workspace }: { workspace: string }) {
     },
   });
   const { mutate, isPending } = api.workspace.claims.createClaim.useMutation({
+    onMutate: () => {
+      toast.loading("Creating Claims", { id: "uploadClaim" });
+    },
     onSuccess: (res) => {
       toast.success("Success", {
         description: `Claim ${form.getValues("tradeReference")} created`,
+        id: "uploadClaim",
       });
       router.push(`claims/${form.getValues("tradeReference")}`);
     },
     onError: (err) => {
       toast.error("Error", {
         description: err.message,
+        id: "uploadClaim",
       });
     },
   });

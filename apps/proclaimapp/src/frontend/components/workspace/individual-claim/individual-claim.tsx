@@ -54,7 +54,7 @@ export default function IndividualClaim({
 
         <div className="flex items-center space-x-4">
           <ClaimActions
-            claim={claim}
+            claim={data}
             tradeRef={tradeRef}
             workspace={workspace}
           />
@@ -66,7 +66,10 @@ export default function IndividualClaim({
           <ClaimsDetails details={data.claimInfo} />
         </div>
         <div className="col-span-2 flex flex-col gap-4">
-          <SettlementDetails details={data.settlementInfo} type={claim.claimInfo.type}/>
+          <SettlementDetails
+            details={data.settlementInfo}
+            type={data.claimInfo.type}
+          />
           <AuditTrail details={data.auditTrail} />
         </div>
       </div>

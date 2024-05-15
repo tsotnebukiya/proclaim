@@ -5,6 +5,7 @@ import {
   TabsTrigger,
 } from "@/frontend/components/ui/tabs";
 import UploadOne from "./upload-one";
+import UploadMany from "./upload-many";
 
 export default function NewClaims({ workspace }: { workspace: string }) {
   return (
@@ -16,7 +17,9 @@ export default function NewClaims({ workspace }: { workspace: string }) {
       <TabsContent value="one" className="flex-1">
         <UploadOne workspace={workspace} />
       </TabsContent>
-      <TabsContent value="many">Change your password here.</TabsContent>
+      <TabsContent value="many">
+        <UploadMany workspace={workspace} />
+      </TabsContent>
     </Tabs>
   );
 }

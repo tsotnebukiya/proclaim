@@ -108,3 +108,4 @@ export type ScoutTokenBalance = {
   token_instance: string | null;
   value: string;
 };
+

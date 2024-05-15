@@ -127,29 +127,40 @@ export const processSpecifiContractEvents = async ({
   contractAddress,
   tradeRef,
   userId,
-  type,
+  receivable,
 }: {
   contractAddress: string;
   tradeRef: string;
   claimId: number;
   claimHash: string;
   userId: string;
-  type: "upload" | "settle";
-}) => {
+  receivable: boolean;
+}): Promise<"error" | "pending" | "settled" | "uploaded"> => {
   try {
+    const lastCheckedBlock = (await kv.get<number>(
+      "lastCheckedBlock",
+    )) as number;
     const events = await getContractEvents({
       contract: bankContract(contractAddress),
-      fromBlock: BigInt(1 + 1),
+      fromBlock: BigInt(lastCheckedBlock + 1),
       toBlock: "latest",
     });
 
     const allEvents = events
       .flatMap((event) => event)
       .filter((ev: any) => ev.args.claimIdentifier === claimHash);
+    console.log(
+      events
+        .flatMap((event) => event)
+        .filter(
+          (ev) =>
+            ev.args.claimIdentifier ===
+            "0x8c61f619b05b1cc154a84a711eb89115b6139c95427463cb57f0b889b8736630",
+        ),
+      "HERRR",
+    );
     if (!allEvents || !allEvents[0]) {
-      return type === "settle"
-        ? "Settlement in Progress"
-        : "Uploading in Progress";
+      return "pending";
     }
     const settledEvent = allEvents.find(
       (el) => el.eventName === "ClaimSettled",
@@ -170,13 +181,16 @@ export const processSpecifiContractEvents = async ({
           settled: true,
         },
       });
-      return "Transaction Settled";
+      return "settled";
     }
-    const uploadEvent = allEvents.find((el) => el.eventName === "ClaimAdded");
-    if (uploadEvent) {
-      await processUploadedEvents([claimHash]);
-      return "Claim Uploaded";
+    if (receivable) {
+      const uploadEvent = allEvents.find((el) => el.eventName === "ClaimAdded");
+      if (uploadEvent) {
+        await processUploadedEvents([claimHash]);
+        return "uploaded";
+      }
     }
+
     const errorEvent = allEvents.find(
       (el) => el.eventName === "SettlementError",
     );
@@ -191,14 +205,11 @@ export const processSpecifiContractEvents = async ({
           claimId: claimId,
         },
       });
-      return type === "settle" ? "Settlement Error" : "Uploading Error";
+      return "error";
     }
 
-    return type === "settle"
-      ? "Settlement in Progress"
-      : "Uploading in Progress";
+    return "pending";
   } catch (err) {
-    console.log(err);
-    return "Settlement Error";
+    return "error";
   }
 };

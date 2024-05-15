@@ -35,7 +35,7 @@ export const columns: ColumnDef<Claim>[] = [
             href={"claims/" + tradeRef}
             className={cn(
               buttonVariants({ variant: "link" }),
-              "h-fit p-0 text-foreground",
+              "h-[30px] p-0 text-foreground",
             )}
           >
             {tradeRef}

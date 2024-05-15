@@ -44,6 +44,23 @@ export const DummyClaimsArraySchema = z.array(dummyClaimSchema);
 
 export type DummyClaim = z.infer<typeof dummyClaimSchema>;
 
+export const ReceivedClaimSchema = z.object({
+  actualSettlementDate: z.number(),
+  amount: z.number(),
+  contractualSettlementDate: z.number(),
+  corporateAction: z.string(),
+  corporateActionID: z.string(),
+  counterparty: z.number(),
+  currency: z.string(),
+  eventRate: z.number(),
+  payDate: z.number(),
+  quantity: z.number(),
+  tradeReference: z.number(),
+  type: z.string(),
+});
+
+export type ReceivedClaimType = z.infer<typeof ReceivedClaimSchema>;
+
 export const createTeamSchema = z.object({
   teamName: z.string().min(5, {
     message: "Team Name must be at least 5 characters.",
