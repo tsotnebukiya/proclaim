@@ -355,7 +355,6 @@ export const claimRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const { tradeRef, workspace } = input;
       const { session } = ctx;
-      console.log(tradeRef, "CHECKTHIS");
       const claimResp = db.claim.findUniqueOrThrow({
         where: {
           tradeReference: tradeRef,

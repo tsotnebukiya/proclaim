@@ -156,6 +156,7 @@ export async function createMany({
       tradeReference,
       type,
     } = data;
+    const ccy = currency === "USD" ? "USDt" : "EURt";
     const tradeRef = String(tradeReference);
     const cp = String(counterparty);
     const payDate = moment(excelDateToJSDate(data.payDate))
@@ -189,7 +190,7 @@ export async function createMany({
       cp,
       owner: String(team.account),
       market: team.market,
-      currency,
+      ccy,
       type,
     }).join(";");
     const encryptedClaimData = dummyEncrypt(string);
@@ -217,6 +218,7 @@ export async function createMany({
       creatorId: userId,
       owner: String(team.account),
       market: team.market,
+      currency: ccy,
     };
     return uploadClaim;
   });
