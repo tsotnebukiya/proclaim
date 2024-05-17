@@ -128,7 +128,7 @@ export const processEvents = async ({
         teamId,
       },
     });
-    return true;
+    return claims.length;
   } catch (err) {
     return false;
   }

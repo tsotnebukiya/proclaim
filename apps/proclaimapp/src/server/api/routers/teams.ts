@@ -70,4 +70,15 @@ export const teamsRouter = createTRPCRouter({
       });
       return !currentTeam?.stp;
     }),
+  getTeamSlugs: publicProcedure.query(async () => {
+    const teamsRes = await db.team.findMany();
+    return teamsRes.map((el) => {
+      const slug = el.slug;
+      const name = el.name;
+      return {
+        value: slug,
+        label: name,
+      };
+    });
+  }),
 });

@@ -1,9 +1,5 @@
 import { db } from "@/server/db";
-import { processEvents } from "@/server/lib/claims/processEvents";
-import { settleClaims } from "@/server/lib/claims/settleClaims";
 import { NextResponse } from "next/server";
-import { GetBankDetails, depositoryContract } from "proclaim";
-import { getAllBankDetails } from "proclaim/depositoryFunctions";
 
 export const dynamic = "force-dynamic";
 

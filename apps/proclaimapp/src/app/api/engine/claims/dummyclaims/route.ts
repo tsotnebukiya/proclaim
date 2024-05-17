@@ -7,9 +7,17 @@ export async function POST(req: Request) {
   try {
     const validatedData = DummyClaimsArraySchema.parse(object);
     const processedData = await processDummy(validatedData);
-    await db.claim.createMany({
-      data: processedData,
-    });
+    await Promise.all([
+      db.claim.createMany({
+        data: processedData,
+      }),
+      db.globalEvents.create({
+        data: {
+          type: "CREATE",
+          claimsCount: processedData.length,
+        },
+      }),
+    ]);
     return new Response(JSON.stringify({ message: "Success" }), {
       status: 200,
     });

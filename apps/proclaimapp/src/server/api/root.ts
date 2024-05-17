@@ -4,8 +4,10 @@ import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { contractsRouter } from "./routers/contracts";
 import { fundingRouter } from "./routers/funding";
 import { workspaceRouter } from "./routers/workspace";
+import { overviewRouter } from "./routers/overview";
 
 export const appRouter = createTRPCRouter({
+  overview:overviewRouter,
   teams: teamsRouter,
   contract: contractsRouter,
   funding: fundingRouter,

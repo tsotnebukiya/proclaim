@@ -40,12 +40,7 @@ function generateClaims(
       corporateAction === "Interest Payment"
         ? Math.floor(Math.random() * 50) + 1
         : 1;
-    let payDate = startDate.clone();
-    if (i >= 2 && i < 4) {
-      payDate = payDate.add(1, "d");
-    } else if (i >= 4) {
-      payDate = payDate.add(2, "d");
-    }
+    const payDate = startDate.clone().add(i + 1, "d");
     const payDateTimestamp = payDate.valueOf();
     const quantity = Math.floor(Math.random() * 1000000) + 10000; // 10,000 to 99,999 shares
     const contractualSettlementDate = payDate

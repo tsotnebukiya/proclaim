@@ -8,5 +8,5 @@ export default async function TeamDashboard({
 }) {
   const { workspace } = params;
   const data = await api.workspace.dashboard.getData({ workspace });
-  return <DashboardComponent data={data} />;
+  return <DashboardComponent data={data} workspace={workspace} />;
 }

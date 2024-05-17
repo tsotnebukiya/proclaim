@@ -7,10 +7,10 @@ export function generateHash(claimString: string): string {
   return keccak256(string);
 }
 
-const currencyRates: Record<string, number> = { EURt: 1.07 };
+const currencyRates: Record<string, number> = { EURt: 1.07, EUR: 1.07 };
 
 export function convertToUSD(amount: number, currency: string) {
-  if (currency === "USDt") return amount; // No conversion needed for USD
+  if (currency === "USDt" || currency === "USD") return amount; // No conversion needed for USD
 
   const rate = currencyRates[currency];
   if (!rate) throw new Error(`Exchange rate for ${currency} not found`);
@@ -154,12 +154,15 @@ export function stringToClaim(dataString: string): DummyClaim | null {
   return null;
 }
 
-export function claimStatus(paydate: Date, settled: boolean) {
+export function claimStatus(
+  paydate: Date,
+  settled: boolean,
+): "upcoming" | "settled" | "pending" {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const payDateObj = new Date(paydate);
   payDateObj.setHours(0, 0, 0, 0);
-  let status;
+  let status: "upcoming" | "settled" | "pending";
   if (payDateObj > today) {
     status = "upcoming";
   } else if (settled) {
@@ -172,7 +175,6 @@ export function claimStatus(paydate: Date, settled: boolean) {
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-export const warsawTime = moment.utc();
 
 export function convertContractUnsettled(
   data: [string[], string[], bigint[], string[], string[]],

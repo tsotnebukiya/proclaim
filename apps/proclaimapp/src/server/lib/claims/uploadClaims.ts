@@ -10,15 +10,18 @@ import { sendTransaction } from "thirdweb";
 import { kv } from "@vercel/kv";
 import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import { db } from "@/server/db";
-import { warsawTime } from "../utils";
+import moment from "moment-timezone";
 
 export const uploadClaims = async ({
   banks,
   teamId,
+  manual,
 }: {
   banks: GetBankDetails[];
   teamId?: number;
+  manual?: boolean;
 }) => {
+  const warsawTime = moment.utc();
   const payDate = warsawTime.startOf("d").toDate();
   const claims = await db.claim.findMany({
     where: {
@@ -29,9 +32,7 @@ export const uploadClaims = async ({
         lte: payDate,
       },
       teamId,
-      team: {
-        stp: true,
-      },
+      ...(manual ? {} : { team: { stp: true } }),
     },
     include: {
       team: true,
@@ -99,5 +100,5 @@ export const uploadClaims = async ({
       teamId,
     },
   });
-  return transactionsResults;
+  return { transactionsResults, count: claims.length };
 };

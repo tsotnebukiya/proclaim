@@ -44,24 +44,7 @@ import {
 } from "@/frontend/components/ui/select";
 import { usePathname, useRouter } from "next/navigation";
 import NewTeamModal from "../components/teams/new-team";
-
-const groups = [
-  {
-    label: "Teams",
-    teams: [
-      {
-        label: "ICSD Lending",
-        value: "icsd-le",
-      },
-      {
-        label: "US Lending",
-        value: "us-le",
-      },
-    ],
-  },
-];
-
-type Team = (typeof groups)[number]["teams"][number];
+import { api } from "@/trpc/react";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
@@ -70,12 +53,14 @@ type PopoverTriggerProps = React.ComponentPropsWithoutRef<
 interface TeamSwitcherProps extends PopoverTriggerProps {}
 
 export default function TeamSwitcher({}: TeamSwitcherProps) {
+  const { data: teams } = api.teams.getTeamSlugs.useQuery();
+  const groups = [{ label: "Teams", teams }];
   const pathname = usePathname();
   const parts = pathname.split("/");
   const teamPath = `/${parts[1]}/${parts[2]}`;
   const { push } = useRouter();
   const selectedTeam =
-    groups[0]?.teams.find((el) => `/portal/${el.value}` === teamPath) || null;
+    groups[0]?.teams?.find((el) => `/portal/${el.value}` === teamPath) || null;
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
@@ -113,33 +98,34 @@ export default function TeamSwitcher({}: TeamSwitcherProps) {
               <CommandEmpty>No team found.</CommandEmpty>
               {groups.map((group) => (
                 <CommandGroup key={group.label} heading={group.label}>
-                  {group.teams.map((team) => (
-                    <CommandItem
-                      key={team.value}
-                      onSelect={() => {
-                        push(`/portal/${team.value}`);
-                        setOpen(false);
-                      }}
-                      className="text-sm"
-                    >
-                      <Avatar className="mr-2 h-5 w-5">
-                        <AvatarImage
-                          src={`https://avatar.vercel.sh/${team.value}.png`}
-                          alt={team.label}
-                          className="grayscale"
+                  {group.teams &&
+                    group.teams.map((team) => (
+                      <CommandItem
+                        key={team.value}
+                        onSelect={() => {
+                          push(`/portal/${team.value}`);
+                          setOpen(false);
+                        }}
+                        className="text-sm"
+                      >
+                        <Avatar className="mr-2 h-5 w-5">
+                          <AvatarImage
+                            src={`https://avatar.vercel.sh/${team.value}.png`}
+                            alt={team.label}
+                            className="grayscale"
+                          />
+                        </Avatar>
+                        {team.label}
+                        <CheckIcon
+                          className={cn(
+                            "ml-auto h-4 w-4",
+                            selectedTeam?.value === team.value
+                              ? "opacity-100"
+                              : "opacity-0",
+                          )}
                         />
-                      </Avatar>
-                      {team.label}
-                      <CheckIcon
-                        className={cn(
-                          "ml-auto h-4 w-4",
-                          selectedTeam?.value === team.value
-                            ? "opacity-100"
-                            : "opacity-0",
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
+                      </CommandItem>
+                    ))}
                 </CommandGroup>
               ))}
             </CommandList>

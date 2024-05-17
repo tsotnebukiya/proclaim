@@ -5,10 +5,17 @@ import {
   getCPClaims,
   getCachedCPClaims,
 } from "@/server/lib/claims/contractClaims";
-import { convertToUSD, warsawTime } from "@/server/lib/utils";
+import { processEvents } from "@/server/lib/claims/processEvents";
+import { settleClaims } from "@/server/lib/claims/settleClaims";
+import { uploadClaims } from "@/server/lib/claims/uploadClaims";
+import { getCachedContracts } from "@/server/lib/contracts/fetch-contracts";
+import { claimStatus, convertToUSD } from "@/server/lib/utils";
 import { Claim } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { kv } from "@vercel/kv";
+import moment from "moment-timezone";
+import { GetBankDetails, depositoryContract } from "proclaim";
+import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import { z } from "zod";
 
 type GroupStats = {
@@ -25,6 +32,7 @@ export const dashboardRouter = createTRPCRouter({
     .input(z.object({ workspace: z.string() }))
     .query(async ({ input }) => {
       const { workspace } = input;
+      const warsawTime = moment.utc();
       const thisTeam = await db.team.findFirst({
         where: {
           slug: workspace,
@@ -33,9 +41,6 @@ export const dashboardRouter = createTRPCRouter({
           GlobalEvents: true,
           Claim: {
             where: {
-              payDate: {
-                gte: warsawTime.startOf("d").toDate(),
-              },
               settled: false,
             },
           },
@@ -48,9 +53,15 @@ export const dashboardRouter = createTRPCRouter({
           message: "No such team found",
         });
       }
-
-      const { GlobalEvents, Claim } = thisTeam;
-
+      const GlobalEvents = await db.globalEvents.findMany({
+        where: {
+          OR: [{ teamId: thisTeam.id }, { teamId: null }],
+        },
+        orderBy: {
+          triggeredAt: "desc",
+        },
+      });
+      const { Claim } = thisTeam;
       const tomorrow = warsawTime.add(1, "day").startOf("day").toDate();
       const sixDaysLater = warsawTime.add(6, "day").endOf("day").toDate();
       const tomorrowMs = tomorrow.getTime();
@@ -80,18 +91,27 @@ export const dashboardRouter = createTRPCRouter({
 
       let totalAmountTomorrow = 0;
       let totalAmountWholeWeek = 0;
+
       Claim.forEach((claim) => {
-        const payDateMs = claim.payDate.getTime();
+        const payDateMs = moment(claim.payDate)
+          .utc()
+          .startOf("day")
+          .toDate()
+          .getTime();
         const amount =
           claim.currency === "USDt"
             ? claim.amount
             : convertToUSD(claim.amount, "EURt");
 
-        // const isToday =
         const isTomorrow = payDateMs == tomorrowMs;
         const isWholeWeek =
           payDateMs >= tomorrowMs && payDateMs <= sixDaysLaterMs;
-
+        console.log(
+          "CHECKTHIS",
+          claim.payDate,
+          payDateMs,
+          claim.tradeReference,
+        );
         if (isTomorrow) {
           addToGroup(claimsByCounterparty.tomorrow, claim.counterparty, amount);
           addToGroup(
@@ -116,7 +136,6 @@ export const dashboardRouter = createTRPCRouter({
           totalAmountWholeWeek += amount;
         }
       });
-
       const calculateShares = (group: Group, totalAmount: number) => {
         for (const key in group) {
           group[key]!.share = group[key]!.totalAmount / totalAmount;
@@ -137,5 +156,73 @@ export const dashboardRouter = createTRPCRouter({
       };
 
       return returnObject;
+    }),
+  settleClaims: publicProcedure
+    .input(z.object({ workspace: z.string() }))
+    .mutation(async ({ input }) => {
+      const { workspace } = input;
+      const thisTeam = await db.team.findFirst({
+        where: {
+          slug: workspace,
+        },
+      });
+
+      if (!thisTeam) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No such team found",
+        });
+      }
+      const banksRes = (await getAllBankDetails({
+        contract: depositoryContract,
+      })) as unknown;
+      const banks = banksRes as GetBankDetails[];
+      await settleClaims({ banks, manual: true, teamId: thisTeam.id });
+      return true;
+    }),
+  uploadClaims: publicProcedure
+    .input(z.object({ workspace: z.string() }))
+    .mutation(async ({ input }) => {
+      const { workspace } = input;
+      const thisTeam = await db.team.findFirst({
+        where: {
+          slug: workspace,
+        },
+      });
+      if (!thisTeam) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No such team found",
+        });
+      }
+      const banksRes = (await getAllBankDetails({
+        contract: depositoryContract,
+      })) as unknown;
+      const banks = banksRes as GetBankDetails[];
+      await uploadClaims({ banks, manual: true, teamId: thisTeam.id });
+      return true;
+    }),
+  updateClaims: publicProcedure
+    .input(z.object({ workspace: z.string() }))
+    .mutation(async ({ input }) => {
+      const { workspace } = input;
+      const thisTeam = await db.team.findFirst({
+        where: {
+          slug: workspace,
+        },
+      });
+
+      if (!thisTeam) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No such team found",
+        });
+      }
+      const banksRes = (await getAllBankDetails({
+        contract: depositoryContract,
+      })) as unknown;
+      const banks = banksRes as GetBankDetails[];
+      await processEvents({ banks, teamId: thisTeam.id });
+      return true;
     }),
 });

@@ -1,13 +1,6 @@
 import { db } from "@/server/db";
 import { NewClaim, ReceivedClaimType, type DummyClaim } from "../schemas";
-import {
-  dummyDecrypt,
-  dummyEncrypt,
-  excelDateToJSDate,
-  generateHash,
-  stringToClaim,
-  warsawTime,
-} from "../utils";
+import { dummyEncrypt, excelDateToJSDate, generateHash } from "../utils";
 import moment from "moment-timezone";
 import { ClaimType, SysUser } from "@prisma/client";
 
@@ -18,6 +11,7 @@ export async function processDummy(data: DummyClaim[]) {
     const encryptedClaimData = dummyEncrypt(string);
     const hash =
       el.type === "Receivable" ? generateHash(encryptedClaimData) : undefined;
+    const warsawTime = moment.utc();
     const createdDate = warsawTime.toDate();
     const payDate = new Date(parseInt(el.payDate));
     const contractualSettlementDate = new Date(
@@ -102,6 +96,7 @@ export async function createClaim({
   const encryptedClaimData = dummyEncrypt(string);
   const hash =
     data.type === "Receivable" ? generateHash(encryptedClaimData) : undefined;
+  const warsawTime = moment.utc();
   const createdDate = warsawTime.toDate();
   const teamId = team.id;
   const uploadClaim = {
@@ -196,6 +191,7 @@ export async function createMany({
     const encryptedClaimData = dummyEncrypt(string);
     const hash =
       data.type === "Receivable" ? generateHash(encryptedClaimData) : undefined;
+    const warsawTime = moment.utc();
     const createdDate = warsawTime.toDate();
     const teamId = team.id;
     const uploadClaim = {
@@ -222,8 +218,18 @@ export async function createMany({
     };
     return uploadClaim;
   });
-  const { count } = await db.claim.createMany({
-    data: claims,
-  });
+  const [createdClaims] = await Promise.all([
+    db.claim.createMany({
+      data: claims,
+    }),
+    db.globalEvents.create({
+      data: {
+        type: "CREATE",
+        teamId: team.id,
+        claimsCount: claims.length,
+      },
+    }),
+  ]);
+  const { count } = createdClaims;
   return count;
 }

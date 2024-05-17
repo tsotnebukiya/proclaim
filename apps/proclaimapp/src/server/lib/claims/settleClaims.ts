@@ -10,17 +10,16 @@ import {
   getUnsettledClaims,
   settleClaims as settleClaimsCall,
 } from "proclaim/contractFunctions";
-import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import {
   convertContractUnsettled,
   dummyDecrypt,
   invertDecryptedData,
-  warsawTime,
 } from "../utils";
 import { Claim } from "@prisma/client";
 import { kv } from "@vercel/kv";
 import { sendTransaction } from "thirdweb";
 import { env } from "@/env";
+import moment from "moment-timezone";
 
 async function sortCPClaims(claims: Claim[], banks: GetBankDetails[]) {
   const bankMap = new Map(
@@ -143,10 +142,13 @@ async function sendTransactions(
 export const settleClaims = async ({
   banks,
   teamId,
+  manual,
 }: {
   banks: GetBankDetails[];
   teamId?: number;
+  manual?: boolean;
 }) => {
+  const warsawTime = moment.utc();
   const payDate = warsawTime.startOf("d").toDate();
   const claims = await db.claim.findMany({
     where: {
@@ -156,9 +158,7 @@ export const settleClaims = async ({
         lte: payDate,
       },
       teamId,
-      team: {
-        stp: true,
-      },
+      ...(manual ? {} : { team: { stp: true } }),
     },
     include: {
       team: true,
@@ -177,5 +177,5 @@ export const settleClaims = async ({
       teamId,
     },
   });
-  return transactionsResults;
+  return { transactionsResults, count: claimsToSettle.length };
 };

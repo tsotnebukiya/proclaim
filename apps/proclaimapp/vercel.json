@@ -2,15 +2,15 @@
   "crons": [
     {
       "path": "/api/engine/claims/uploadclaims",
-      "schedule": "02 08,20 * * *"
+      "schedule": "02 01,13 * * *"
     },
     {
       "path": "/api/engine/claims/settleclaims",
-      "schedule": "04 08,20 * * *"
+      "schedule": "04 01,13 * * *"
     },
     {
       "path": "/api/engine/events",
-      "schedule": "06 08,20 * * *"
+      "schedule": "06 01,13 * * *"
     }
   ]
 }

@@ -12,5 +12,12 @@ export default async function Settled({
   const cpValues = claims.map((claim) => claim.cp);
   const uniqueCpValues = [...new Set(cpValues)];
   const CPs = uniqueCpValues.map((el) => ({ value: el, label: el }));
-  return <ClaimsTable columns={columns} data={claims} uniqueCpValues={CPs} workspace={workspace} />;
+  return (
+    <ClaimsTable
+      columns={columns}
+      data={claims}
+      uniqueCpValues={CPs}
+      workspace={workspace}
+    />
+  );
 }
