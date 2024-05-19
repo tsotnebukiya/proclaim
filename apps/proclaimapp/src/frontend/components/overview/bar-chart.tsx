@@ -104,7 +104,7 @@ export default function BarChartComponent({
   const { barChartData, totalValues, topCounterpartyNames } = data;
   return (
     <>
-      <Card className="sm:mx-auto sm:max-w-2xl">
+      <Card className="sm:mx-auto">
         <h3 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
           Claims breakdown by counterparties
         </h3>

@@ -28,7 +28,7 @@ function generateClaims(
   const claims: Claim[] = [];
   const startDate = moment.utc().startOf("day");
   // Generate matching claims for the specified owner and counterparty
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 15; i++) {
     const tradeReference = lastRef;
     lastRef++;
     const corporateAction =

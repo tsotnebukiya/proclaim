@@ -9,11 +9,11 @@ export default function KPI({
 }) {
   return (
     <>
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-4 gap-6">
         <Card>
-          <CardHeader className="text-center">
-            <span className="text-tremor-metric font-bold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-              {customNumberFormatter(data.totalVolume)}
+          <CardHeader className="px-2 text-center">
+            <span className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              {customNumberFormatter(data.totalVolume, 0)}
             </span>
 
             <p className="mt-1 text-tremor-default text-tremor-content dark:text-dark-tremor-content">
@@ -22,7 +22,7 @@ export default function KPI({
           </CardHeader>
         </Card>
         <Card>
-          <CardHeader className="text-center">
+          <CardHeader className="px-2 text-center">
             <span className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
               {data.totalCount}
             </span>
@@ -32,8 +32,8 @@ export default function KPI({
             </p>
           </CardHeader>
         </Card>
-        {/* <Card>
-          <CardHeader className="text-center">
+        <Card>
+          <CardHeader className="px-2 text-center">
             <span className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
               {data.outstandingCount}
             </span>
@@ -44,7 +44,7 @@ export default function KPI({
           </CardHeader>
         </Card>
         <Card>
-          <CardHeader className="text-center">
+          <CardHeader className="px-2 text-center">
             <span className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
               {data.upcomingCount}
             </span>
@@ -53,7 +53,7 @@ export default function KPI({
               Upcoming
             </p>
           </CardHeader>
-        </Card> */}
+        </Card>
       </div>
     </>
   );

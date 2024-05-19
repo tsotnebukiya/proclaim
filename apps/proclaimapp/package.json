@@ -63,6 +63,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "cobe": "^0.6.3",
     "date-fns": "^3.6.0",
     "env-cmd": "^10.1.0",
     "ethers": "^5.7.2",

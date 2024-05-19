@@ -17,7 +17,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../ui/select";
+} from "../ui/select";
 import { RouterOutput } from "@/server/api/root";
 import { useState } from "react";
 
@@ -102,11 +102,11 @@ const currencyFormatter = (number: number) => {
   return "$" + Intl.NumberFormat("us").format(number).toString();
 };
 
-type ClaimsData = RouterOutput["workspace"]["dashboard"]["getData"]["claims"];
+type ClaimsData = RouterOutput["overview"]["getData"]["claims"];
 
 const prepareData = (
   claims: ClaimsData,
-  period: "tomorrow" | "wholeWeek",
+  period: "tomorrow" | "wholeWeek" | "wholeMonth",
   category: "byCounterparty" | "byCorporateAction",
 ) => {
   const cat = claims[category]!;
@@ -129,15 +129,14 @@ const prepareData = (
     };
   });
 };
-
+const colors = ["cyan", "blue", "indigo", "violet", "fuchsia"];
 export default function UpcomingClaims({
   data,
 }: {
-  data: RouterOutput["workspace"]["dashboard"]["getData"]["claims"];
+  data: RouterOutput["overview"]["getData"]["claims"];
 }) {
-  console.log(data);
   const [selectedPeriod, setSelectedPeriod] = useState<
-    "tomorrow" | "wholeWeek"
+    "tomorrow" | "wholeWeek" | "wholeMonth"
   >("tomorrow");
   const [selectedCategory, setSelectedCategory] = useState("byCounterparty");
   const summary = [
@@ -150,12 +149,14 @@ export default function UpcomingClaims({
       key: "byCorporateAction",
     },
   ];
-  const handlePeriodChange = (value: "tomorrow" | "wholeWeek") => {
+  const handlePeriodChange = (
+    value: "tomorrow" | "wholeWeek" | "wholeMonth",
+  ) => {
     setSelectedPeriod(value);
   };
   return (
     <>
-      <Card className="p-0 sm:mx-auto sm:max-w-lg">
+      <Card className="p-0 sm:mx-auto">
         <div className="flex items-center justify-between px-6 pt-6">
           <h3 className=" text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
             Upcoming Claims
@@ -170,6 +171,7 @@ export default function UpcomingClaims({
             <SelectContent>
               <SelectItem value={"tomorrow"}>Tomorrow</SelectItem>
               <SelectItem value={"wholeWeek"}>Week</SelectItem>
+              <SelectItem value={"wholeMonth"}>Month</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -198,7 +200,7 @@ export default function UpcomingClaims({
                   index="name"
                   valueFormatter={currencyFormatter}
                   showTooltip={false}
-                  colors={["cyan", "blue", "indigo", "violet", "fuchsia"]} // Assign colors as needed
+                  colors={colors} // Assign colors as needed
                 />
                 <p className="mt-8 flex items-center justify-between text-tremor-label text-tremor-content dark:text-dark-tremor-content">
                   <span>{category.name}</span>
@@ -209,12 +211,12 @@ export default function UpcomingClaims({
                     data,
                     selectedPeriod,
                     category.key as "byCounterparty" | "byCorporateAction",
-                  ).map((item) => (
+                  ).map((item, i) => (
                     <ListItem key={item.name} className="space-x-6">
                       <div className="flex items-center space-x-2.5 truncate">
                         <span
                           className={cn(
-                            item.color,
+                            `bg-${colors[i]}-500`,
                             "h-2.5 w-2.5 shrink-0 rounded-sm",
                           )}
                           aria-hidden={true}

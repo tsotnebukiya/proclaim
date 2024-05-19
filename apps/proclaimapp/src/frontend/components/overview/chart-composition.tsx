@@ -19,7 +19,7 @@ function Chart({
   data: RouterOutput["overview"]["getData"]["groupedType"]["payable"];
 }) {
   return (
-    <Card className="py-9">
+    <div>
       <h4 className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
         Volume
       </h4>
@@ -82,7 +82,7 @@ function Chart({
           </span>
         </li>
       </ul>
-    </Card>
+    </div>
   );
 }
 
@@ -92,7 +92,7 @@ export default function ChartComposition({
   data: RouterOutput["overview"]["getData"]["groupedType"];
 }) {
   return (
-    <>
+    <Card>
       <TabGroup defaultIndex={0}>
         <TabList className="mb-10">
           <Tab>Receivable</Tab>
@@ -107,6 +107,6 @@ export default function ChartComposition({
           </TabPanel>
         </TabPanels>
       </TabGroup>
-    </>
+    </Card>
   );
 }
