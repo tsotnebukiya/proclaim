@@ -4,7 +4,7 @@ export default function AboutComp() {
   return (
     <div>
       <Navigation />
-      <main className="flex flex-col overflow-hidden">ger</main>
+      <main className="flex flex-col overflow-hidden"></main>
     </div>
   );
 }
