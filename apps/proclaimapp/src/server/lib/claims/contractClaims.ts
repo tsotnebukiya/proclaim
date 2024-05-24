@@ -107,9 +107,11 @@ export async function getCachedCPClaims(
       `${workspace}-cp-claims`,
     );
     if (cachedClaims) {
+      console.log("HERE3");
       return cachedClaims;
     }
   }
+
   const result = await getCPClaims({ account, market });
   await kv.set<CachedCPClaim[]>(`${workspace}-cp-claims`, result, { ex: 3600 });
   return result;

@@ -58,8 +58,15 @@ export const claimRouter = createTRPCRouter({
           counterparty,
           market,
           corporateAction: label,
+          corporateActionID,
         } = claim;
-
+        let eventType: string;
+        console.log(label);
+        if (label === "Redemption") {
+          eventType = type === "Payable" ? "MCAL" : "REDM";
+        } else {
+          eventType = type === "Receivable" ? "INTR" : "DVCA";
+        }
         const status = claimStatus(paydate, settled);
         const cp =
           contracts.find(
@@ -77,6 +84,8 @@ export const claimRouter = createTRPCRouter({
           amount,
           cp,
           type,
+          corporateActionID,
+          eventType,
         };
       });
       return formattedClaims;
@@ -119,7 +128,7 @@ export const claimRouter = createTRPCRouter({
         counterparty: cpAcc,
         type,
         quantity,
-        corporateAction: eventType,
+        corporateAction,
         corporateActionID: eventID,
         eventRate,
         amount,
@@ -136,6 +145,12 @@ export const claimRouter = createTRPCRouter({
             `${cpAcc}${market}` === `${contract.account}${contract.market}`,
         )?.name || "N/A";
       const status = claimStatus(pd, settled);
+      let eventType;
+      if (corporateAction === "Redemption") {
+        eventType = type === "Payable" ? "MCAL" : "REDM";
+      } else {
+        eventType = type === "Receivable" ? "INTR" : "DVCA";
+      }
       return {
         claimInfo: {
           tradeRef,

@@ -11,7 +11,7 @@ import {
 export const labels = [
   {
     value: "Interest Payment",
-    label: "CA Claim",
+    label: "CA",
   },
   {
     value: "Redemption",

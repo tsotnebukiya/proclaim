@@ -40,7 +40,11 @@ export const columns: ColumnDef<Claim>[] = [
           >
             {tradeRef}
           </Link>
-          {label && <Badge variant="outline">{label.label}</Badge>}
+          {label && (
+            <Badge variant="outline" className="w-fit">
+              {label.label}
+            </Badge>
+          )}
         </div>
       );
     },
@@ -80,10 +84,15 @@ export const columns: ColumnDef<Claim>[] = [
     ),
     cell: ({ row }) => {
       const date = row.getValue("paydate") as Date;
+      const formatter = new Intl.DateTimeFormat("en", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      });
 
       return (
         <div className="flex w-fit items-center">
-          <span>{date.toDateString()}</span>
+          <span>{formatter.format(date)}</span>
         </div>
       );
     },
@@ -91,6 +100,42 @@ export const columns: ColumnDef<Claim>[] = [
       const rowDate = new Date(row.getValue(id)).setHours(0, 0, 0, 0);
       const filterDate = new Date(value).setHours(0, 0, 0, 0);
       return rowDate === filterDate;
+    },
+  },
+  {
+    accessorKey: "eventType",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Event" />
+    ),
+    cell: ({ row }) => {
+      const eventType = row.getValue("eventType") as string;
+
+      return (
+        <div className="w-min">
+          <span>{eventType}</span>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
+    accessorKey: "corporateActionID",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="20C CORP" />
+    ),
+    cell: ({ row }) => {
+      const corporateActionID = row.getValue("corporateActionID") as string;
+
+      return (
+        <div className="flex w-fit items-center">
+          <span>{corporateActionID}</span>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
     },
   },
   {
