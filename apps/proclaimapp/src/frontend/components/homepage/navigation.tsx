@@ -16,7 +16,7 @@ export function Navigation() {
       <div className="w-full md:my-auto">
         <div className="relative flex items-center justify-between">
           <Link href="/" aria-label="Home" className="flex">
-            <Image alt="logo" src={"/logo.png"} width={50} height={43} />
+            <Image alt="logo" src={"/logo.png"} width={42} height={36} />
             <span className="inline-block bg-clip-text px-2 text-center text-3xl font-semibold tracking-tighter text-gray-900">
               proClaim
             </span>

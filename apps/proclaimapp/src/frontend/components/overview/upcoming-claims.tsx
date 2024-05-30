@@ -157,7 +157,7 @@ export default function UpcomingClaims({
   return (
     <>
       <Card className="p-0 sm:mx-auto">
-        <div className="flex items-center justify-between px-6 pt-6">
+        <div className="flex items-center justify-between px-6 pt-4">
           <h3 className=" text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
             Upcoming Claims
           </h3>

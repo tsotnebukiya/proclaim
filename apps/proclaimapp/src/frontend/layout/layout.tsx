@@ -5,13 +5,14 @@ import Search from "./search";
 import UserNav from "./user-nav";
 import NavMenu from "./nav";
 import { Session } from "next-auth";
+import Image from "next/image";
 
 export default function PortalLayout({
   children,
-  session
+  session,
 }: {
   children: React.ReactNode;
-  session:Session
+  session: Session;
 }) {
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -20,13 +21,13 @@ export default function PortalLayout({
           <div className="flex items-center">
             <div className="flex items-center gap-6">
               <Link href={"/"}>
-                <Pyramid size={36} />
+                <Image alt="logo" src={"/logo.png"} width={42} height={36} />
               </Link>
               <TeamSwitcher />
             </div>
             <div className="ml-auto flex items-center space-x-4">
               <Search />
-              <UserNav session={session}/>
+              <UserNav session={session} />
             </div>
           </div>
           <div>

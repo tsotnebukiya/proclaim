@@ -23,7 +23,7 @@ export default function OverviewMain({
           </div>
           <BarChartComponent data={data.barStats} />
         </div>
-        <div className="col-span-2 flex flex-col gap-8">
+        <div className="col-span-2 flex flex-col gap-4">
           <ChartComposition data={data.groupedType} />
           <UpcomingClaims data={data.claims} />
         </div>
