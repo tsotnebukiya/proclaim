@@ -41,17 +41,18 @@ export const GlobalProclaim: FunctionComponent = () => {
 
   const features = [
     {
-      name: "Global Clusters",
-      description: "Enable low-latency global access, enhancing performance.",
-    },
-    {
-      name: "Serverless Triggers",
-      description: "Trigger functions automatically for dynamic app behavior.",
-    },
-    {
-      name: "Monitoring & Alerts",
+      name: "Network",
       description:
-        "Monitor health with key metrics or integrate third-party tools.",
+        "Permission blockchain, where participants share and validate data",
+    },
+    {
+      name: "Smart Contracts",
+      description: `Ethereum smart contracts establishing logic for STP settlement`,
+    },
+    {
+      name: "Native Tokens",
+      description:
+        "Stablecoins representing fiat and facilitating transfer of value",
     },
   ];
 
@@ -61,14 +62,10 @@ export const GlobalProclaim: FunctionComponent = () => {
       className="relative mx-auto mt-28 flex w-full max-w-7xl flex-col items-center justify-center overflow-hidden rounded-3xl bg-gray-950 pt-24 shadow-xl shadow-black/30 md:mt-40"
     >
       <div className="absolute top-[17rem] size-[40rem] rounded-full bg-indigo-800 blur-3xl md:top-[20rem]" />
-      <div className="z-10 inline-block rounded-lg border border-indigo-400/20 bg-indigo-800/20 px-3 py-1.5 font-semibold uppercase leading-4 tracking-tight sm:text-sm">
-        <span className="bg-gradient-to-b from-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-          Made for custodians
-        </span>
-      </div>
+
       <h2
         id="global-database-title"
-        className="z-10 mt-6 inline-block bg-gradient-to-b from-white to-indigo-100 bg-clip-text px-2 text-center text-5xl font-bold tracking-tighter text-transparent md:text-8xl"
+        className="z-10 mt-16 inline-block bg-gradient-to-b from-white to-indigo-100 bg-clip-text px-2 text-center text-5xl font-bold tracking-tighter text-transparent md:text-8xl"
       >
         proClaim <br />
       </h2>
