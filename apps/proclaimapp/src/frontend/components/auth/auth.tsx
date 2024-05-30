@@ -32,12 +32,11 @@ export function Auth() {
           </div>
         </div>
       </div>
-      <div className="hidden bg-muted lg:block">
+      <div className="relative bg-muted">
         <Image
-          src="/banner.jpg"
+          src="/banner.png"
           alt="Image"
-          width="1920"
-          height="1080"
+          fill
           className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>
