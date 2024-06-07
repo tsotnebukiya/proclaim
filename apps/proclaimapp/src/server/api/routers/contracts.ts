@@ -15,7 +15,7 @@ export const contractsRouter = createTRPCRouter({
   }),
   refetchContracts: publicProcedure.mutation(async () => {
     const result = await fetchContracts();
-    await kv.set("contracts", JSON.stringify(result), { ex: 3600 });
+    await kv.set("contracts", JSON.stringify(result));
     return true;
   }),
   approveContractToken: publicProcedure
