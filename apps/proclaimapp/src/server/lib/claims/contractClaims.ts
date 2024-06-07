@@ -113,6 +113,8 @@ export async function getCachedCPClaims(
   }
 
   const result = await getCPClaims({ account, market });
-  await kv.set<CachedCPClaim[]>(`${workspace}-cp-claims`, result, { ex: 3600 });
+  await kv.set<CachedCPClaim[]>(`${workspace}-cp-claims`, result, {
+    ex: 86400,
+  });
   return result;
 }
