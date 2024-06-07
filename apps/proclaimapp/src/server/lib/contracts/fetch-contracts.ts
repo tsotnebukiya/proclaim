@@ -44,23 +44,23 @@ export async function fetchContracts() {
   })) as unknown;
   const banks = banksRes as GetBankDetails[];
   const tokenAddresses = [env.USD_CONTRACT, env.EUR_CONTRACT];
-  const namesPromises = Promise.all(
-    banks.map(async (el): Promise<Contract> => {
-      const returnedName = await name({
-        contract: bankContract(el.contractAddress),
-      });
-      return {
-        name: returnedName,
-        contractAddress: el.contractAddress,
-        deployerAddress: el.ethAddress,
-        account: Number(el.accountNumber),
-        market: el.market,
-        deployer: deployers[el.ethAddress] || "",
-        type: "claim",
-      };
-    }),
-  );
-  const tokenPromises = Promise.all(
+  const namesResponses: Contract[] = [];
+
+  for (const el of banks) {
+    const returnedName = await name({
+      contract: bankContract(el.contractAddress),
+    });
+    namesResponses.push({
+      name: returnedName,
+      contractAddress: el.contractAddress,
+      deployerAddress: el.ethAddress,
+      account: Number(el.accountNumber),
+      market: el.market,
+      deployer: deployers[el.ethAddress] || "",
+      type: "claim",
+    });
+  }
+  const tokenResponses = await Promise.all(
     tokenAddresses.map(async (el): Promise<Contract> => {
       const { data } = await axios.get<ScoutAddress>(
         `${BLOCKSCOUT_API}/addresses/${el}`,
@@ -76,10 +76,6 @@ export async function fetchContracts() {
       };
     }),
   );
-  const [tokenResponses, namesResponses] = await Promise.all([
-    tokenPromises,
-    namesPromises,
-  ]);
   const tokenApprovalPromises = namesResponses
     .filter((contract) => contract.deployerAddress !== env.ETH_ADDRESS)
     .map(async (contract) => {
