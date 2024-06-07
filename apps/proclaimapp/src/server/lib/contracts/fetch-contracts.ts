@@ -123,6 +123,6 @@ export async function getCachedContracts() {
     return cachedContracts;
   }
   const result = await fetchContracts();
-  await kv.set("contracts", result, { ex: 3600 });
+  await kv.set("contracts", result);
   return result;
 }
