@@ -479,7 +479,7 @@ export const claimRouter = createTRPCRouter({
       const transaction = addClaims({
         amountsOwed: [BigInt(claim.amount)],
         claimIdentifiers: [hash] as `0x${string}`[],
-        counterpartyAddresses: [cp.deployerAddress],
+        counterpartyAddresses: [cp.deployerAddress as `0x${string}`],
         encryptedClaimDatas: [encryptedClaimData],
         tokenNames: [currency],
         contract: bankContract(claim.team.contractAddress),

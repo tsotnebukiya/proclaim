@@ -1,6 +1,7 @@
 import {
   createThirdwebClient,
   defineChain,
+  eth_getTransactionCount,
   getRpcClient,
   isHex,
   prepareTransaction,
@@ -33,6 +34,13 @@ export const wallet = privateKeyAccount({
   client,
   privateKey: process.env.PROCHAIN_PRIVATE_KEY!,
 });
+
+export const getLatestNonce = async () => {
+  return await eth_getTransactionCount(rpc, {
+    address: wallet.address,
+    blockTag: 'pending',
+  });
+};
 
 type DeployProps = {
   market: string;
