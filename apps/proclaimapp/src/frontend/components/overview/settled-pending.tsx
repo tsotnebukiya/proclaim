@@ -128,7 +128,7 @@ export default function SettledPending({ data }: { data: ReceivedData }) {
           {displayedData.map((item) => (
             <li
               key={item.name}
-              className="flex flex-col items-center justify-center bg-tremor-brand-inverted p-3 dark:bg-dark-tremor-background"
+              className="flex flex-col items-center justify-center bg-tremor-background p-3 dark:bg-tremor-background"
             >
               <div className="flex items-center space-x-1">
                 <item.icon

@@ -8,7 +8,10 @@
     -webkit-appearance: none;
     margin: 0;
   }
+
+  /* Default theme (Citi - Light) */
   :root {
+    /* Shadcn/UI Variables */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -21,25 +24,106 @@
     --primary: 217 91% 60%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 217 91% 60%;
 
     --radius: 0.5rem;
+
+    /* Tremor-specific Variables for Light Mode */
+    --tremor-background: 0 0% 100%;
+    --tremor-background-muted: 210 40% 98%;
+    --tremor-background-subtle: 220 14.3% 95.9%;
+    --tremor-brand-inverted: 0 0% 100%;
+
+    --tremor-content: 215.4 16.3% 46.9%;
+    --tremor-content-strong: 222.2 84% 4.9%;
+    --tremor-content-emphasis: 220 8.9% 46.1%;
+    --tremor-content-subtle: 220 8.9% 46.1%;
+
+    --tremor-border: 214.3 31.8% 91.4%;
+    --tremor-border-muted: 220 13% 91%;
+
+    --tremor-brand-faint: 217 91% 60%;
+    --tremor-brand-muted: 217 91% 60%;
+
+    /* Chart Colors for Light Mode */
+    --chart-1: 217 91% 60%; /* Primary Blue */
+    --chart-2: 198 93% 60%; /* Cyan */
+    --chart-3: 239 85% 67%; /* Indigo */
+    --chart-4: 262 83% 58%; /* Violet */
+    --chart-5: 300 89% 63%; /* Fuchsia */
   }
 
+  /* JP Theme (Dark) */
+  [data-theme="jp-theme"] {
+    /* Shadcn/UI Variables */
+    --background: 220 13% 18%;
+    --foreground: 210 40% 98%;
+
+    --card: 220 13% 16%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 220 13% 16%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 220 13% 25%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 220 13% 25%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 220 13% 25%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 13% 30%;
+    --input: 220 13% 25%;
+    --ring: 217 91% 60%;
+
+    /* Tremor-specific Variables */
+    --tremor-background: 220 13% 18%;
+    --tremor-background-muted: 220 13% 22%;
+    --tremor-background-subtle: 220 13% 25%;
+    --tremor-brand-inverted: 220 13% 16%;
+
+    --tremor-content: 215 20.2% 65.1%;
+    --tremor-content-strong: 210 40% 98%;
+    --tremor-content-emphasis: 210 40% 98%;
+    --tremor-content-subtle: 215 16.3% 46.9%;
+
+    --tremor-border: 220 13% 30%;
+    --tremor-border-muted: 220 13% 25%;
+
+    --tremor-brand-faint: 217 91% 60%;
+    --tremor-brand-muted: 217 91% 60%;
+
+    /* Chart Colors for Dark Mode */
+    --chart-1: 217 91% 60%; /* Primary Blue */
+    --chart-2: 198 93% 60%; /* Cyan */
+    --chart-3: 239 85% 67%; /* Indigo */
+    --chart-4: 262 83% 58%; /* Violet */
+    --chart-5: 300 89% 63%; /* Fuchsia */
+  }
+
+  /* Standard dark mode support (for future use) */
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -78,4 +162,71 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Tremor Dark Theme Overrides */
+[data-theme="jp-theme"] .tremor-background {
+  background-color: hsl(var(--tremor-background));
+}
+
+[data-theme="jp-theme"] .tremor-border {
+  border-color: hsl(var(--tremor-border));
+}
+
+/* Ensure Tremor cards respect our theme variables */
+[data-theme="jp-theme"] .tremor-Card-root {
+  background-color: hsl(var(--card));
+  border-color: hsl(var(--border));
+}
+
+/* Ensure Tremor chart backgrounds are transparent or themed */
+[data-theme="jp-theme"] .tremor-Chart {
+  color: hsl(var(--tremor-content));
+}
+
+[data-theme="jp-theme"] .tremor-Chart .recharts-surface {
+  background-color: transparent;
+}
+
+/* CategoryBar styling for dark theme */
+[data-theme="jp-theme"] .tremor-CategoryBar-root {
+  background-color: hsl(var(--tremor-background-muted));
+}
+
+/* Ensure tabs and selects use proper colors */
+[data-theme="jp-theme"] .tremor-Tab-trigger[data-state="active"] {
+  background-color: hsl(var(--tremor-background-subtle));
+  color: hsl(var(--tremor-content-strong));
+}
+
+/* Sidebar navigation text brightness for JP theme */
+[data-theme="jp-theme"] .text-muted-foreground {
+  color: rgb(229, 231, 235) !important; /* gray-200 */
+}
+
+/* Code block styling for dark theme */
+[data-theme="jp-theme"] pre[class*="language-"],
+[data-theme="jp-theme"] code[class*="language-"] {
+  background-color: hsl(var(--tremor-background-muted)) !important;
+}
+
+[data-theme="jp-theme"] pre[class*="language-"] {
+  border: 1px solid hsl(var(--tremor-border));
+}
+
+/* Force CSS custom properties to work with bg-[hsl(var(...))] syntax */
+.bg-\[hsl\(var\(--chart-1\)\)\] {
+  background-color: hsl(var(--chart-1)) !important;
+}
+.bg-\[hsl\(var\(--chart-2\)\)\] {
+  background-color: hsl(var(--chart-2)) !important;
+}
+.bg-\[hsl\(var\(--chart-3\)\)\] {
+  background-color: hsl(var(--chart-3)) !important;
+}
+.bg-\[hsl\(var\(--chart-4\)\)\] {
+  background-color: hsl(var(--chart-4)) !important;
+}
+.bg-\[hsl\(var\(--chart-5\)\)\] {
+  background-color: hsl(var(--chart-5)) !important;
 }

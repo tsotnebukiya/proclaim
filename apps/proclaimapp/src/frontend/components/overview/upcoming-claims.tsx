@@ -26,64 +26,64 @@ const dataByCategory = [
     name: "Travel",
     amount: 6730,
     share: "32.1%",
-    color: "bg-cyan-500",
+    color: "bg-[hsl(var(--chart-2))]",
   },
   {
     name: "IT & equipment",
     amount: 4120,
     share: "19.6%",
-    color: "bg-blue-500",
+    color: "bg-[hsl(var(--chart-1))]",
   },
   {
     name: "Training & development",
     amount: 3920,
     share: "18.6%",
-    color: "bg-indigo-500",
+    color: "bg-[hsl(var(--chart-3))]",
   },
   {
     name: "Office supplies",
     amount: 3210,
     share: "15.3%",
-    color: "bg-violet-500",
+    color: "bg-[hsl(var(--chart-4))]",
   },
   {
     name: "Communication",
-    amount: 3010,
-    share: "14.3%",
-    color: "bg-fuchsia-500",
+    amount: 2510,
+    share: "12.0%",
+    color: "bg-[hsl(var(--chart-5))]",
   },
 ];
 
 const dataByEmployee = [
   {
-    name: "Max Down",
-    amount: 5710,
-    share: "27.2%",
-    color: "bg-cyan-500",
+    name: "Emma Thompson",
+    amount: 6390,
+    share: "30.4%",
+    color: "bg-[hsl(var(--chart-2))]",
   },
   {
-    name: "Lena Smith",
-    amount: 4940,
-    share: "23.5%",
-    color: "bg-blue-500",
+    name: "Liam Johnson",
+    amount: 4560,
+    share: "21.7%",
+    color: "bg-[hsl(var(--chart-1))]",
   },
   {
-    name: "Joe Doe",
-    amount: 4523,
-    share: "21.5%",
-    color: "bg-indigo-500",
+    name: "Olivia Davis",
+    amount: 3980,
+    share: "18.9%",
+    color: "bg-[hsl(var(--chart-3))]",
   },
   {
-    name: "Kathy Miller",
-    amount: 3240,
-    share: "15.4%",
-    color: "bg-violet-500",
+    name: "Noah Wilson",
+    amount: 3210,
+    share: "15.3%",
+    color: "bg-[hsl(var(--chart-4))]",
   },
   {
-    name: "Nelly Wave",
-    amount: 2577,
-    share: "12.3%",
-    color: "bg-fuchsia-500",
+    name: "Ava Brown",
+    amount: 2860,
+    share: "13.6%",
+    color: "bg-[hsl(var(--chart-5))]",
   },
 ];
 
@@ -102,6 +102,17 @@ const currencyFormatter = (number: number) => {
   return "$" + Intl.NumberFormat("us").format(number).toString();
 };
 
+// Chart color classes that work with our CSS variables
+const chartColorClasses = [
+  "bg-[hsl(var(--chart-2))]", // cyan
+  "bg-[hsl(var(--chart-1))]", // blue
+  "bg-[hsl(var(--chart-3))]", // indigo
+  "bg-[hsl(var(--chart-4))]", // violet
+  "bg-[hsl(var(--chart-5))]", // fuchsia
+];
+
+const chartColors = ["cyan", "blue", "indigo", "violet", "fuchsia"];
+
 type ClaimsData = RouterOutput["overview"]["getData"]["claims"];
 
 const prepareData = (
@@ -111,21 +122,21 @@ const prepareData = (
 ) => {
   const cat = claims[category]!;
   const data = cat[period];
-  return Object.keys(data).map((key) => {
+  return Object.keys(data).map((key, index) => {
     const groupData = data[key];
     if (!groupData) {
       return {
         name: key,
         amount: 0,
         share: "0%",
-        color: "bg-gray-500", // Assign a default color for undefined data
+        color: chartColorClasses[0], // Default color
       };
     }
     return {
       name: key,
       amount: groupData.totalAmount,
       share: (groupData.share * 100).toFixed(2) + "%",
-      color: "bg-cyan-500", // Assign a default color; you may want to handle colors dynamically
+      color: chartColorClasses[index % chartColorClasses.length],
     };
   });
 };

@@ -192,7 +192,7 @@ export default function ContractBlocks({
         {depoItems.length > 0 && (
           <div className="flex flex-col gap-6">
             <div>
-              <h4 className="mb-4 w-fit items-center rounded bg-blue-100 px-1.5 py-0.5 text-tremor-title font-medium text-blue-800 ">
+              <h4 className="mb-4 w-fit items-center rounded bg-blue-100 px-1.5 py-0.5 text-tremor-title font-medium text-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
                 Depository
               </h4>
               <div className="grid grid-cols-2 gap-2">
@@ -212,7 +212,7 @@ export default function ContractBlocks({
         )}
         {tokenItems.length > 0 && (
           <div>
-            <h4 className=" mb-4 w-fit items-center rounded bg-emerald-100 px-1.5 py-0.5 text-tremor-title font-medium text-emerald-800 ">
+            <h4 className=" mb-4 w-fit items-center rounded bg-emerald-100 px-1.5 py-0.5 text-tremor-title font-medium text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300">
               Tokens
             </h4>
             <div className="grid grid-cols-2 gap-2">
@@ -232,7 +232,7 @@ export default function ContractBlocks({
 
         {ourClaimItems.length > 0 && (
           <div>
-            <h4 className=" text-title mb-4 w-fit items-center rounded bg-amber-100 px-1.5 py-0.5 font-medium text-amber-800 ">
+            <h4 className=" text-title mb-4 w-fit items-center rounded bg-amber-100 px-1.5 py-0.5 font-medium text-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
               Our Claims
             </h4>
             <div className="grid grid-cols-2 gap-2">
@@ -253,7 +253,7 @@ export default function ContractBlocks({
         )}
         {cpClaimItems.length > 0 && (
           <div>
-            <h4 className=" text-title mb-4 w-fit items-center rounded bg-indigo-100 px-1.5 py-0.5 font-medium text-indigo-800 ">
+            <h4 className=" text-title mb-4 w-fit items-center rounded bg-indigo-100 px-1.5 py-0.5 font-medium text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300">
               Counterparty Claims
             </h4>
             <div className="grid grid-cols-2 gap-2">

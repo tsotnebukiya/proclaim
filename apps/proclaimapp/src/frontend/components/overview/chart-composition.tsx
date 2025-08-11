@@ -47,7 +47,8 @@ function Chart({
       >
         <li className="flex items-center space-x-2">
           <span
-            className="h-3 w-3 shrink-0 rounded-sm bg-blue-500"
+            className="h-3 w-3 shrink-0 rounded-sm"
+            style={{ backgroundColor: "hsl(var(--chart-1))" }}
             aria-hidden={true}
           />
           <span className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
@@ -59,7 +60,8 @@ function Chart({
         </li>
         <li className="flex items-center space-x-2">
           <span
-            className="h-3 w-3 shrink-0 rounded-sm bg-cyan-500"
+            className="h-3 w-3 shrink-0 rounded-sm"
+            style={{ backgroundColor: "hsl(var(--chart-2))" }}
             aria-hidden={true}
           />
           <span className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
@@ -71,7 +73,8 @@ function Chart({
         </li>
         <li className="flex items-center space-x-2">
           <span
-            className="h-3 w-3 shrink-0 rounded-sm bg-fuchsia-500"
+            className="h-3 w-3 shrink-0 rounded-sm"
+            style={{ backgroundColor: "hsl(var(--chart-5))" }}
             aria-hidden={true}
           />
           <span className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">

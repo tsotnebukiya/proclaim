@@ -52,15 +52,17 @@ export default function RequestToken({
   };
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center justify-center bg-white text-gray-900">
-        <div className="rounded-lg  p-6 shadow-lg">
+      <div className="flex flex-col items-center justify-center bg-card text-card-foreground">
+        <div className="rounded-lg border p-6 shadow-lg">
           <div className="mb-4 text-center">
-            <h1 className="text-4xl font-bold">Request Tokens</h1>
-            <p className="text-gray-600">Enter the amount</p>
+            <h1 className="text-4xl font-bold text-foreground">
+              Request Tokens
+            </h1>
+            <p className="text-muted-foreground">Enter the amount</p>
           </div>
           <div className="flex items-center justify-center">
             <input
-              className="w-full bg-transparent text-center text-5xl font-bold focus:outline-none"
+              className="w-full bg-transparent text-center text-5xl font-bold text-foreground focus:outline-none"
               placeholder="$0"
               type="text"
               value={displayValue} // Display value with dollar sign
@@ -69,14 +71,14 @@ export default function RequestToken({
           </div>
           <div className="mt-6 rounded-lg bg-muted/50 p-4">
             <div className="flex items-center justify-between border-b pb-4">
-              <span className="text-gray-600">Request: {ccy}t</span>
-              <span className="flex items-center gap-2 font-bold">
+              <span className="text-muted-foreground">Request: {ccy}t</span>
+              <span className="flex items-center gap-2 font-bold text-foreground">
                 <Coins size={20} /> {displayNumber}
               </span>
             </div>
             <div className="flex items-center justify-between pt-4">
-              <span className="text-gray-600">Transfer: {ccy}</span>
-              <span className="flex items-center gap-2 font-bold">
+              <span className="text-muted-foreground">Transfer: {ccy}</span>
+              <span className="flex items-center gap-2 font-bold text-foreground">
                 <DollarSign size={20} /> {displayNumber}
               </span>
             </div>

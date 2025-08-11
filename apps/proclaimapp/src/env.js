@@ -41,6 +41,7 @@ export const env = createEnv({
     HUB_API: z.string(),
     USD_CONTRACT: z.string(),
     EUR_CONTRACT: z.string(),
+    BANK: z.string(),
   },
 
   /**
@@ -57,6 +58,7 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
+    BANK: process.env.BANK,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,

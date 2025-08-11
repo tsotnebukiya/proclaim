@@ -75,9 +75,9 @@ export function DashboardNav({ setOpen, isCollapsed }: DashboardNavProps) {
           <Link key={index} href={href} onClick={() => setOpen?.(false)}>
             <span
               className={cn(
-                "group flex items-center rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-primary/10",
+                "group flex items-center rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-primary/10 dark:text-white",
                 isHome || isActive
-                  ? "justify-start rounded-md bg-primary text-secondary hover:bg-primary"
+                  ? "justify-start rounded-md bg-primary text-secondary hover:bg-primary dark:text-white"
                   : "transparent",
                 item.disabled && "cursor-not-allowed opacity-80",
               )}

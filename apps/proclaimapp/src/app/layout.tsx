@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "@/frontend/components/ui/sonner";
+import { ThemeProvider } from "@/frontend/components/ThemeProvider";
+import { env } from "@/env";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,8 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className={`font-sans ${inter.variable} h-full`}>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
-        <Toaster position="top-right" />
+        <ThemeProvider bankTheme={env.BANK}>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <Toaster position="top-right" />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -16,8 +16,8 @@ export default function TokenStats({
   ccy,
 }: {
   ccy: string;
-  generalData:FundingData['generalData'],
-  transfers:FundingData['transfers']
+  generalData: FundingData["generalData"];
+  transfers: FundingData["transfers"];
 }) {
   const { todayBalance, yesterdayBalance, todayVolume, yesterdayVolume } =
     generalData;
@@ -32,9 +32,11 @@ export default function TokenStats({
           <div className="flex flex-col gap-2">
             <div className="flex gap-2">
               <CreditCard />
-              <span className=" text-dark-tremor-content-subtle">BALANCE</span>
+              <span className="text-tremor-content-subtle dark:text-dark-tremor-content-subtle">
+                BALANCE
+              </span>
             </div>
-            <span className="text-tremor-metric font-bold text-dark-tremor-brand-muted">
+            <span className="text-tremor-metric font-bold text-tremor-brand-muted dark:text-dark-tremor-brand-muted">
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
                 minimumFractionDigits: 0,
@@ -54,9 +56,11 @@ export default function TokenStats({
           <div className="flex flex-col gap-2">
             <div className="flex gap-2">
               <CandlestickChart />
-              <span className=" text-dark-tremor-content-subtle">VOLUME</span>
+              <span className="text-tremor-content-subtle dark:text-dark-tremor-content-subtle">
+                VOLUME
+              </span>
             </div>
-            <span className="text-tremor-metric font-bold text-dark-tremor-brand-muted">
+            <span className="text-tremor-metric font-bold text-tremor-brand-muted dark:text-dark-tremor-brand-muted">
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
                 minimumFractionDigits: 0,

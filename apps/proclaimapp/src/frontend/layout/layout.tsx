@@ -6,6 +6,8 @@ import UserNav from "./user-nav";
 import NavMenu from "./nav";
 import { Session } from "next-auth";
 import Image from "next/image";
+import { BankLogo } from "../components/bank-logo";
+import { env } from "@/env";
 
 export default function PortalLayout({
   children,
@@ -21,9 +23,10 @@ export default function PortalLayout({
           <div className="flex items-center">
             <div className="flex items-center gap-6">
               <Link href={"/"}>
-                <Image alt="logo" src={"/logo.png"} width={42} height={36} />
+                <BankLogo bank={env.BANK} />
               </Link>
               <TeamSwitcher />
+              {/* <BankLogo bank={env.BANK} className="h-6 w-auto" /> */}
             </div>
             <div className="ml-auto flex items-center space-x-4">
               <Search />

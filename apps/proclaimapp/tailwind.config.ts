@@ -24,64 +24,64 @@ module.exports = {
         main: "calc(100vh - 147px)",
       },
       colors: {
-        // light mode
+        // tremor colors (responsive to CSS variables)
         tremor: {
           brand: {
-            faint: "#eff6ff", // blue-50
-            muted: "#bfdbfe", // blue-200
-            subtle: "#60a5fa", // blue-400
-            DEFAULT: "#3b82f6", // blue-500
-            emphasis: "#1d4ed8", // blue-700
-            inverted: "#ffffff", // white
+            faint: "hsl(var(--tremor-brand-faint))",
+            muted: "hsl(var(--tremor-brand-muted))",
+            subtle: "hsl(var(--tremor-brand-muted))",
+            DEFAULT: "hsl(var(--tremor-brand-faint))",
+            emphasis: "hsl(var(--tremor-brand-faint))",
+            inverted: "hsl(var(--tremor-brand-inverted))",
           },
           background: {
-            muted: "#f9fafb", // gray-50
-            subtle: "#f3f4f6", // gray-100
-            DEFAULT: "#ffffff", // white
-            emphasis: "#374151", // gray-700
+            muted: "hsl(var(--tremor-background-muted))",
+            subtle: "hsl(var(--tremor-background-subtle))",
+            DEFAULT: "hsl(var(--tremor-background))",
+            emphasis: "hsl(var(--tremor-content-strong))",
           },
           border: {
-            DEFAULT: "#e5e7eb", // gray-200
+            DEFAULT: "hsl(var(--tremor-border))",
           },
           ring: {
-            DEFAULT: "#e5e7eb", // gray-200
+            DEFAULT: "hsl(var(--tremor-border))",
           },
           content: {
-            subtle: "#9ca3af", // gray-400
-            DEFAULT: "#6b7280", // gray-500
-            emphasis: "#374151", // gray-700
-            strong: "#111827", // gray-900
-            inverted: "#ffffff", // white
+            subtle: "hsl(var(--tremor-content-subtle))",
+            DEFAULT: "hsl(var(--tremor-content))",
+            emphasis: "hsl(var(--tremor-content-emphasis))",
+            strong: "hsl(var(--tremor-content-strong))",
+            inverted: "hsl(var(--tremor-brand-inverted))",
           },
         },
-        // dark mode
+        // dark mode tremor colors (same as above but for legacy support)
         "dark-tremor": {
           brand: {
-            faint: "#0B1229", // custom
-            muted: "#172554", // blue-950
-            subtle: "#1e40af", // blue-800
-            DEFAULT: "#3b82f6", // blue-500
-            emphasis: "#60a5fa", // blue-400
-            inverted: "#030712", // gray-950
+            faint: "hsl(var(--tremor-brand-faint))",
+            muted: "hsl(var(--tremor-brand-muted))",
+            subtle: "hsl(var(--tremor-brand-muted))",
+            DEFAULT: "hsl(var(--tremor-brand-faint))",
+            emphasis: "hsl(var(--tremor-brand-faint))",
+            inverted: "hsl(var(--tremor-brand-inverted))",
           },
           background: {
-            muted: "#131A2B", // custom
-            subtle: "#1f2937", // gray-800
-            DEFAULT: "#111827", // gray-900
-            emphasis: "#d1d5db", // gray-300
+            muted: "hsl(var(--tremor-background-muted))",
+            subtle: "hsl(var(--tremor-background-subtle))",
+            DEFAULT: "hsl(var(--tremor-background))",
+            emphasis: "hsl(var(--tremor-content-strong))",
           },
           border: {
-            DEFAULT: "#1f2937", // gray-800
+            DEFAULT: "hsl(var(--tremor-border))",
           },
           ring: {
-            DEFAULT: "#1f2937", // gray-800
+            DEFAULT: "hsl(var(--tremor-border))",
           },
           content: {
-            subtle: "#4b5563", // gray-600
-            DEFAULT: "#6b7280", // gray-500
-            emphasis: "#e5e7eb", // gray-200
-            strong: "#f9fafb", // gray-50
-            inverted: "#000000", // black
+            subtle: "hsl(var(--tremor-content-subtle))",
+            DEFAULT: "hsl(var(--tremor-content))",
+            emphasis: "hsl(var(--tremor-content-emphasis))",
+            strong: "hsl(var(--tremor-content-strong))",
+            inverted: "hsl(var(--tremor-brand-inverted))",
           },
         },
         // shadcn

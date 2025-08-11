@@ -34,9 +34,7 @@ export default async function getTokenData({ token }: { token: string }) {
   const tokenTransfers = tokenTransfersObject.items.filter((el) =>
     claims.some((claim) => claim.transaction === el.transaction_hash),
   );
-  console.log(tokenTransfersObject, "tokenTransfersObject");
-  // console.log(tokenTransfers, "tokenTransfers");
-  // console.log(claimsPromise, "claimsPromise");
+
   const tokenBalance = tokensBalances.filter(
     (el) => el.token.address === designatedContract.contractAddress,
   )[0];
