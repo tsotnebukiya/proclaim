@@ -6,13 +6,16 @@ export const sendPromises = (groupedClaims: Record<string, Claim[]>) =>
     const claims = groupedClaims[el.name];
     if (claims && claims.length > 0) {
       try {
-        const response = await fetch(`${el.api}/engine/claims/dummyclaims`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          `${el.api}/api/engine/claims/dummyclaims`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(claims),
           },
-          body: JSON.stringify(claims),
-        });
+        );
         if (!response.ok) {
           console.error(
             `Failed to send claims for owner ${el.name}: ${response.statusText}`,

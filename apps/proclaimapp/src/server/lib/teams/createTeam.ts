@@ -8,7 +8,6 @@ import {
 } from "proclaim";
 import { name } from "proclaim/depositoryFunctions";
 import { sendAndConfirmTransaction } from "thirdweb";
-import { kv } from "@vercel/kv";
 
 import { slugify } from "@/server/lib/utils";
 import { CreateTeamType } from "../schemas";
@@ -28,8 +27,6 @@ export default async function createTeam(object: CreateTeamType) {
       transaction: transaction,
       account: wallet,
     });
-    const latestNonce = (await kv.get<number>("latestNonce"))!;
-    await kv.set<number>("latestNonce", latestNonce + 1);
     const response = await db.team.create({
       data: {
         account: Number(account),

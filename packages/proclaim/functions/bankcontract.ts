@@ -6,8 +6,9 @@ import {
   type AbiParameterToPrimitiveType,
 } from 'thirdweb';
 
-type TransactionOptionsWithNonce<T extends object = object> =
+type TransactionOptionsWithNonceAndGas<T extends object = object> =
   BaseTransactionOptions<T> & {
+    gasPrice: bigint;
     nonce?: number;
   };
 
@@ -171,9 +172,12 @@ export function settlementErrorEvent(
  *
  * ```
  */
-export async function bankDepository(options: TransactionOptionsWithNonce) {
+export async function bankDepository(
+  options: TransactionOptionsWithNonceAndGas
+) {
   return readContract({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     method: [
       '0x8df0c22a',
       [],
@@ -215,10 +219,11 @@ export type CheckIfSettledParams = {
  * ```
  */
 export async function checkIfSettled(
-  options: TransactionOptionsWithNonce<CheckIfSettledParams>
+  options: TransactionOptionsWithNonceAndGas<CheckIfSettledParams>
 ) {
   return readContract({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     method: [
       '0x6abd1ade',
       [
@@ -266,10 +271,11 @@ export type ClaimHashesParams = {
  * ```
  */
 export async function claimHashes(
-  options: TransactionOptionsWithNonce<ClaimHashesParams>
+  options: TransactionOptionsWithNonceAndGas<ClaimHashesParams>
 ) {
   return readContract({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     method: [
       '0x2639c060',
       [
@@ -317,10 +323,11 @@ export type ClaimsParams = {
  * ```
  */
 export async function claims(
-  options: TransactionOptionsWithNonce<ClaimsParams>
+  options: TransactionOptionsWithNonceAndGas<ClaimsParams>
 ) {
   return readContract({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     method: [
       '0xeff0f592',
       [
@@ -388,10 +395,11 @@ export type GetClaimParams = {
  * ```
  */
 export async function getClaim(
-  options: TransactionOptionsWithNonce<GetClaimParams>
+  options: TransactionOptionsWithNonceAndGas<GetClaimParams>
 ) {
   return readContract({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     method: [
       '0xc9100bcb',
       [
@@ -445,9 +453,10 @@ export async function getClaim(
  *
  * ```
  */
-export async function getClaims(options: TransactionOptionsWithNonce) {
+export async function getClaims(options: TransactionOptionsWithNonceAndGas) {
   return readContract({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     method: [
       '0xc52822f8',
       [],
@@ -500,9 +509,12 @@ export async function getClaims(options: TransactionOptionsWithNonce) {
  *
  * ```
  */
-export async function getSettledClaims(options: TransactionOptionsWithNonce) {
+export async function getSettledClaims(
+  options: TransactionOptionsWithNonceAndGas
+) {
   return readContract({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     method: [
       '0x0ed847a5',
       [],
@@ -550,9 +562,12 @@ export async function getSettledClaims(options: TransactionOptionsWithNonce) {
  *
  * ```
  */
-export async function getUnsettledClaims(options: TransactionOptionsWithNonce) {
+export async function getUnsettledClaims(
+  options: TransactionOptionsWithNonceAndGas
+) {
   return readContract({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     method: [
       '0x7b145e53',
       [],
@@ -600,9 +615,10 @@ export async function getUnsettledClaims(options: TransactionOptionsWithNonce) {
  *
  * ```
  */
-export async function name(options: TransactionOptionsWithNonce) {
+export async function name(options: TransactionOptionsWithNonceAndGas) {
   return readContract({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     method: [
       '0x06fdde03',
       [],
@@ -630,9 +646,10 @@ export async function name(options: TransactionOptionsWithNonce) {
  *
  * ```
  */
-export async function owner(options: TransactionOptionsWithNonce) {
+export async function owner(options: TransactionOptionsWithNonceAndGas) {
   return readContract({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     method: [
       '0x8da5cb5b',
       [],
@@ -704,10 +721,13 @@ export type AddClaimParams = {
  *
  * ```
  */
-export function addClaim(options: TransactionOptionsWithNonce<AddClaimParams>) {
+export function addClaim(
+  options: TransactionOptionsWithNonceAndGas<AddClaimParams>
+) {
   return prepareContractCall({
     contract: options.contract,
     nonce: options.nonce,
+    gasPrice: options.gasPrice,
     method: [
       '0xbdc2c6e1',
       [
@@ -802,10 +822,11 @@ export type AddClaimsParams = {
  * ```
  */
 export function addClaims(
-  options: TransactionOptionsWithNonce<AddClaimsParams>
+  options: TransactionOptionsWithNonceAndGas<AddClaimsParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
+    gasPrice: options.gasPrice,
     nonce: options.nonce,
     method: [
       '0x210d5e55',
@@ -877,11 +898,12 @@ export type SettleClaimParams = {
  * ```
  */
 export function settleClaim(
-  options: TransactionOptionsWithNonce<SettleClaimParams>
+  options: TransactionOptionsWithNonceAndGas<SettleClaimParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
     nonce: options.nonce,
+    gasPrice: options.gasPrice,
     method: [
       '0xbdf80435',
       [
@@ -923,14 +945,15 @@ export type SettleClaimsParams = {
  * // Send the transaction
  * ...
  *
- * ```
+ * ```e
  */
 export function settleClaims(
-  options: TransactionOptionsWithNonce<SettleClaimsParams>
+  options: TransactionOptionsWithNonceAndGas<SettleClaimsParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
     nonce: options.nonce,
+    gasPrice: options.gasPrice,
     method: [
       '0xd7f8fb9f',
       [

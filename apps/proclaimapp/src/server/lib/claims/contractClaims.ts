@@ -1,5 +1,5 @@
 import { db } from "@/server/db";
-import { bankContract } from "proclaim";
+import { bankContract, getGasPrice } from "proclaim";
 import { getClaims, getUnsettledClaims } from "proclaim/contractFunctions";
 import {
   convertContractAll,
@@ -27,6 +27,7 @@ export async function getContractClaims() {
   for (const team of teams) {
     const claimsRes = (await getClaims({
       contract: bankContract(team.contractAddress),
+      gasPrice: await getGasPrice(),
     })) as unknown;
     const claims = convertContractAll(
       claimsRes as [string[], string[], bigint[], string[], string[], string[]],
@@ -43,13 +44,14 @@ export async function getCPClaims({
   market: string;
   account: number;
 }) {
+  const gasPrice = await getGasPrice();
   const contracts = await getCachedContracts();
   const cpContracts = contracts.filter(
     (el) => el.type === "claim" && el.deployerAddress !== env.ETH_ADDRESS,
   );
   const cpPromises = cpContracts.map((el) => {
     const contract = bankContract(el.contractAddress);
-    return getUnsettledClaims({ contract });
+    return getUnsettledClaims({ contract, gasPrice });
   });
   const data = await Promise.all(cpPromises);
   const formattedClaims = data.map((el) => {

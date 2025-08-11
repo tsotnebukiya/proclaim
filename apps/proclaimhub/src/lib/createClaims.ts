@@ -26,7 +26,30 @@ function generateClaims(
 ): { claims: Claim[]; lastRef: number } {
   let lastRef = lastTradeRef++;
   const claims: Claim[] = [];
-  const startDate = moment.utc().startOf("day");
+
+  // BATCH DATE VARIATIONS - Comment/uncomment the desired batch
+
+  // Batch 1: 1 day ago (August 10, 2025)
+  // const startDate = moment.utc().startOf("day").subtract(1, "days");
+
+  // Batch 2: 2 days ago (August 9, 2025)
+  // const startDate = moment.utc().startOf("day").subtract(2, "days");
+
+  // Batch 3: 3 days ago (August 8, 2025)
+  const startDate = moment.utc().startOf("day").subtract(3, "days");
+
+  // Batch 4: 4 days ago (August 7, 2025)
+  // const startDate = moment.utc().startOf("day").subtract(4, "days");
+
+  // Batch 5: 5 days ago (August 6, 2025)
+  // const startDate = moment.utc().startOf("day").subtract(5, "days");
+
+  // Batch 6: 6 days ago (August 5, 2025)
+  // const startDate = moment.utc().startOf("day").subtract(6, "days");
+
+  // Batch 7: 7 days ago (August 4, 2025)
+  // const startDate = moment.utc().startOf("day").subtract(7, "days");
+
   // Generate matching claims for the specified owner and counterparty
   for (let i = 0; i < 15; i++) {
     const tradeReference = lastRef;

@@ -2,13 +2,14 @@ import {
   GetBankDetails,
   bankContract,
   depositoryContract,
+  getGasPrice,
+  getLatestNonce,
   wallet,
 } from "proclaim";
 import { addClaims } from "proclaim/contractFunctions";
 import { type Claim } from "@prisma/client";
 import { sendTransaction } from "thirdweb";
 import { kv } from "@vercel/kv";
-import { getAllBankDetails } from "proclaim/depositoryFunctions";
 import { db } from "@/server/db";
 import moment from "moment-timezone";
 
@@ -22,7 +23,13 @@ export const uploadClaims = async ({
   manual?: boolean;
 }) => {
   const warsawTime = moment.utc();
+  const gasPrice = await getGasPrice();
   const payDate = warsawTime.startOf("d").toDate();
+  console.log("🔍 Starting database query for claims with filters:", {
+    teamId,
+    manual,
+    payDate,
+  });
   const claims = await db.claim.findMany({
     where: {
       settled: false,
@@ -38,6 +45,7 @@ export const uploadClaims = async ({
       team: true,
     },
   });
+  console.log("✅ Claims query completed. Found claims:", claims.length);
   if (claims.length === 0) {
     return null;
   }
@@ -69,30 +77,47 @@ export const uploadClaims = async ({
       (el) => el.accountNumber === BigInt(owner),
     )?.contractAddress!;
     const contract = bankContract(contractAddress);
-    const latestNonce = (await kv.get<number>("latestNonce")) as number;
-    const newNonce = latestNonce + 1;
+    console.log("🔢 Getting latest nonce for owner:", owner);
+    const latestNonce = await getLatestNonce();
+    console.log("✅ Latest nonce retrieved:", latestNonce);
     const transaction = addClaims({
       amountsOwed: transactionData.map((data) => data.amountOwed),
       claimIdentifiers: transactionData.map((data) => data.claimIdentifier),
       contract: contract,
       counterpartyAddresses: transactionData.map(
-        (data) => data.counterpartyAddress,
+        (data) => data.counterpartyAddress as `0x${string}`,
       ),
       encryptedClaimDatas: transactionData.map(
         (data) => data.encryptedClaimData,
       ),
       tokenNames: transactionData.map((data) => data.tokenName),
-      nonce: newNonce,
+      nonce: latestNonce,
+      gasPrice,
     });
+    console.log(
+      "📤 Sending transaction to blockchain for owner:",
+      owner,
+      "with",
+      claims.length,
+      "claims",
+    );
     const settledTransaction = await sendTransaction({
       transaction: transaction,
       account: wallet,
     });
-    await kv.set<number>("latestNonce", newNonce);
+    console.log(
+      "✅ Transaction sent successfully. Hash:",
+      settledTransaction.transactionHash,
+    );
     transactionsResults.push({
       transaction: settledTransaction.transactionHash,
     });
   }
+  console.log(
+    "📝 Creating global event for UPLOAD with",
+    claims.length,
+    "claims",
+  );
   await db.globalEvents.create({
     data: {
       type: "UPLOAD",
@@ -100,5 +125,6 @@ export const uploadClaims = async ({
       teamId,
     },
   });
+  console.log("✅ Global event created successfully");
   return { transactionsResults, count: claims.length };
 };

@@ -21,7 +21,7 @@ import {
 import { TRPCError } from "@trpc/server";
 import { kv } from "@vercel/kv";
 import moment from "moment-timezone";
-import { bankContract, wallet } from "proclaim";
+import { bankContract, getGasPrice, getLatestNonce, wallet } from "proclaim";
 import { addClaims, settleClaims } from "proclaim/contractFunctions";
 import { sendTransaction } from "thirdweb";
 import { z } from "zod";
@@ -261,6 +261,7 @@ export const claimRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       const { tradeRef, workspace } = input;
+      const gasPrice = await getGasPrice();
       const { session } = ctx;
       const claimResp = db.claim.findUniqueOrThrow({
         where: {
@@ -330,18 +331,17 @@ export const claimRouter = createTRPCRouter({
         });
       }
 
-      let latestNonce = (await kv.get<number>("latestNonce")) as number;
+      const latestNonce = await getLatestNonce();
       const transaction = settleClaims({
         claimIdentifiers: [usedHash] as `0x${string}`[],
         contract: bankContract(cpContract.contractAddress),
-        nonce: latestNonce + 1,
+        nonce: latestNonce,
+        gasPrice,
       });
       await sendTransaction({
         transaction,
         account: wallet,
       });
-      latestNonce++;
-      await kv.set<number>(`latestNonce`, latestNonce);
       const response = await processSpecifiContractEvents({
         claimHash: usedHash,
         claimId: claim.id,
@@ -451,7 +451,7 @@ export const claimRouter = createTRPCRouter({
         uploaded,
         currency,
       } = claim;
-
+      const gasPrice = await getGasPrice();
       if (settled) {
         throw new TRPCError({
           message: "Claim already settled",
@@ -484,6 +484,7 @@ export const claimRouter = createTRPCRouter({
         tokenNames: [currency],
         contract: bankContract(claim.team.contractAddress),
         nonce: latestNonce + 1,
+        gasPrice,
       });
       await sendTransaction({
         transaction,

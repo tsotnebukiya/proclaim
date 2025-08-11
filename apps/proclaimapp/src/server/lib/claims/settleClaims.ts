@@ -4,6 +4,8 @@ import {
   GetContractClaims,
   bankContract,
   depositoryContract,
+  getGasPrice,
+  getLatestNonce,
   wallet,
 } from "proclaim";
 import {
@@ -31,7 +33,7 @@ async function sortCPClaims(claims: Claim[], banks: GetBankDetails[]) {
   const counterparties = Array.from(
     new Set(claims.map((claim) => `${claim.counterparty}${claim.market}`)),
   );
-
+  const gasPrice = await getGasPrice();
   const cpUnsettledClaims = [];
   for (const cp of counterparties) {
     const contractAddress = bankMap.get(cp);
@@ -41,6 +43,7 @@ async function sortCPClaims(claims: Claim[], banks: GetBankDetails[]) {
     const contract = bankContract(contractAddress);
     const unsettledClaims = (await getUnsettledClaims({
       contract,
+      gasPrice,
     })) as GetContractClaims;
     const converted = convertContractUnsettled(unsettledClaims);
     const arrayWithAddress = converted.map((el) => ({
@@ -116,19 +119,19 @@ async function sendTransactions(
   const transactionsResults = [];
   for (const [key, identifiers] of Object.entries(groupedClaims)) {
     const contract = bankContract(key);
-    let latestNonce = (await kv.get<number>("latestNonce")) as number;
+    const latestNonce = await getLatestNonce();
+    const gasPrice = await getGasPrice();
     try {
       const transaction = settleClaimsCall({
         contract,
         claimIdentifiers: identifiers as `0x${string}`[],
-        nonce: latestNonce + 1,
+        nonce: latestNonce,
+        gasPrice,
       });
       const settledTransaction = await sendTransaction({
         transaction,
         account: wallet,
       });
-      latestNonce++;
-      await kv.set<number>(`latestNonce`, latestNonce);
       transactionsResults.push({
         transaction: settledTransaction.transactionHash,
       });
