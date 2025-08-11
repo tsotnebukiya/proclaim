@@ -52,7 +52,7 @@ export const getColumns = ({ ccy }: { ccy: string }) => {
         return (
           <Link
             target="_blank"
-            href={`https://sn2-stavanger-blockscout.eu-north-2.gateway.fm/tx/${transaction}`}
+            href={`https://explorer.stavanger.gateway.fm/tx/${transaction}`}
             className={buttonVariants({ variant: "link" })}
           >
             {formatted}

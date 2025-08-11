@@ -73,7 +73,7 @@ function Block({
           <span>Deployer:</span>
           <Link
             target="_blank"
-            href={`https://sn2-stavanger-blockscout.eu-north-2.gateway.fm/address/${item.deployerAddress}`}
+            href={`https://explorer.stavanger.gateway.fm/address/${item.deployerAddress}`}
             className={cn(
               buttonVariants({ variant: "link" }),
               "h-fit p-0 text-foreground",
@@ -86,7 +86,7 @@ function Block({
           <span>Contract Address:</span>
           <Link
             target="_blank"
-            href={`https://sn2-stavanger-blockscout.eu-north-2.gateway.fm/address/${item.contractAddress}`}
+            href={`https://explorer.stavanger.gateway.fm/address/${item.contractAddress}`}
             className={cn(
               buttonVariants({ variant: "link" }),
               "h-fit p-0 text-foreground",

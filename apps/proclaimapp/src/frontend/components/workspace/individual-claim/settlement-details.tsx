@@ -125,7 +125,7 @@ export default function SettlementDetails({
                 <dt className="text-muted-foreground">Transaction Hash</dt>
                 <dd>
                   <Link
-                    href={`https://sn2-stavanger-blockscout.eu-north-2.gateway.fm/tx/${txHash}`}
+                    href={`https://explorer.stavanger.gateway.fm/tx/${txHash}`}
                     target="_blank"
                     className={cn(
                       buttonVariants({

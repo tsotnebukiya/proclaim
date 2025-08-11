@@ -152,7 +152,7 @@ export default function TeamGrid({ data: initialData }: { data: TeamsData }) {
                           <span>Contract Address</span>
 
                           <Link
-                            href={`https://sn2-stavanger-blockscout.eu-north-2.gateway.fm/address/${team.details.contractAddress}`}
+                            href={`https://explorer.stavanger.gateway.fm/address/${team.details.contractAddress}`}
                             target="_blank"
                             className={cn(
                               buttonVariants({
@@ -234,7 +234,7 @@ export default function TeamGrid({ data: initialData }: { data: TeamsData }) {
                       </TableCell>
                       <TableCell>
                         <Link
-                          href={`https://sn2-stavanger-blockscout.eu-north-2.gateway.fm/address/${team.details.contractAddress}`}
+                          href={`https://explorer.stavanger.gateway.fm/address/${team.details.contractAddress}`}
                           target="_blank"
                           className={cn(
                             buttonVariants({

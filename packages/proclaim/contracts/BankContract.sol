@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+pragma solidity 0.8.19;
 
 interface IBankDepository {
     function getTokenAddress(string memory tokenName) external view returns (address);

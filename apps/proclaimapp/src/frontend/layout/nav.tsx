@@ -12,7 +12,7 @@ const dummyArray = [
   { title: "Funding", url: "/portal/funding/usd" },
   {
     title: "Block Explorer",
-    url: "https://sn2-stavanger-blockscout.eu-north-2.gateway.fm/",
+    url: "https://explorer.stavanger.gateway.fm/",
   },
   // { title: "Settings", url: "/portal/settings" },
 ];

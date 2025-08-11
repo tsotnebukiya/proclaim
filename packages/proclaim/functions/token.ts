@@ -10,9 +10,10 @@ import {
  * Contract events
  */
 
-type TransactionOptionsWithNonce<T extends object = object> =
+type TransactionOptionsWithNonceAndGasPrice<T extends object = object> =
   BaseTransactionOptions<T> & {
     nonce?: number;
+    gasPrice: bigint;
   };
 
 /**
@@ -406,10 +407,13 @@ export type ApproveParams = {
  *
  * ```
  */
-export function approve(options: TransactionOptionsWithNonce<ApproveParams>) {
+export function approve(
+  options: TransactionOptionsWithNonceAndGasPrice<ApproveParams>
+) {
   return prepareContractCall({
     contract: options.contract,
     nonce: options.nonce,
+    gasPrice: options.gasPrice,
     method: [
       '0xdaea85c5',
       [
@@ -460,11 +464,12 @@ export type DisapproveParams = {
  * ```
  */
 export function disapprove(
-  options: TransactionOptionsWithNonce<DisapproveParams>
+  options: TransactionOptionsWithNonceAndGasPrice<DisapproveParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
     nonce: options.nonce,
+    gasPrice: options.gasPrice,
     method: [
       '0x15770d99',
       [
@@ -520,10 +525,13 @@ export type MintParams = {
  *
  * ```
  */
-export function mint(options: TransactionOptionsWithNonce<MintParams>) {
+export function mint(
+  options: TransactionOptionsWithNonceAndGasPrice<MintParams>
+) {
   return prepareContractCall({
     contract: options.contract,
     nonce: options.nonce,
+    gasPrice: options.gasPrice,
     method: [
       '0x40c10f19',
       [
@@ -578,10 +586,13 @@ export type TransferParams = {
  *
  * ```
  */
-export function transfer(options: TransactionOptionsWithNonce<TransferParams>) {
+export function transfer(
+  options: TransactionOptionsWithNonceAndGasPrice<TransferParams>
+) {
   return prepareContractCall({
     contract: options.contract,
     nonce: options.nonce,
+    gasPrice: options.gasPrice,
     method: [
       '0xa9059cbb',
       [
@@ -649,11 +660,12 @@ export type TransferFromParams = {
  * ```
  */
 export function transferFrom(
-  options: TransactionOptionsWithNonce<TransferFromParams>
+  options: TransactionOptionsWithNonceAndGasPrice<TransferFromParams>
 ) {
   return prepareContractCall({
     contract: options.contract,
     nonce: options.nonce,
+    gasPrice: options.gasPrice,
     method: [
       '0x23b872dd',
       [

@@ -65,10 +65,11 @@ export async function fetchContracts() {
       const { data } = await axios.get<ScoutAddress>(
         `${BLOCKSCOUT_API}/addresses/${el}`,
       );
+      const name = data.hash === env.EUR_CONTRACT ? "USDt" : "EURt";
       return {
-        name: data.token.name,
-        totalSupply: data.token.total_supply,
-        holders: data.token.holders,
+        name: name,
+        totalSupply: data.token?.total_supply || "0",
+        holders: data.token?.holders || "0",
         contractAddress: data.hash,
         deployer: "Proclaim",
         deployerAddress: PROCLAIM_ADDRESS,
@@ -81,13 +82,13 @@ export async function fetchContracts() {
     .map(async (contract) => {
       const usdPromise = isApproved({
         contract: tokenContract("USD"),
-        owner: env.ETH_ADDRESS,
-        spender: contract.contractAddress,
+        owner: env.ETH_ADDRESS as `0x${string}`,
+        spender: contract.contractAddress as `0x${string}`,
       });
       const eurPromise = isApproved({
         contract: tokenContract("EUR"),
-        owner: env.ETH_ADDRESS,
-        spender: contract.contractAddress,
+        owner: env.ETH_ADDRESS as `0x${string}`,
+        spender: contract.contractAddress as `0x${string}`,
       });
       return Promise.all([usdPromise, eurPromise]).then(
         ([usdApproved, eurApproved]) => ({
@@ -115,9 +116,9 @@ export async function fetchContracts() {
 
 export async function getCachedContracts() {
   const cachedContracts = await kv.get<Contract[]>("contracts");
-  if (cachedContracts) {
-    return cachedContracts;
-  }
+  // if (cachedContracts) {
+  //   return cachedContracts;
+  // }
   const result = await fetchContracts();
   await kv.set("contracts", result);
   return result;

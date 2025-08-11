@@ -19,15 +19,14 @@ export function convertToUSD(amount: number, currency: string) {
 }
 
 export const deployers: Record<string, string> = {
-  "0xa1DE3190196739c5c21C6fAb50b3FaAB4dCEDF5C": "Citibank",
-  "0x2D827566cf97A2e20D26799ca2c1d64E0028c92F": "JP Morgan",
-  "0x25356c8F6812a7c756A74763B3096Da6e09f8e90": "Goldman",
+  "0xF1A5e0BEA638CDb098fc99D26f23b396b50606b1": "Citibank",
+  "0xCCd4180FaF274614b936A7A4b8Af365eC82F789A": "JP Morgan",
+  "0x06a6AA834a000204877BaB44F69eBd62c9F67cBd": "Goldman",
 };
 
-export const PROCLAIM_ADDRESS = "0x874392305B2fe9783bc0A26e79DdEfF4f0083687";
+export const PROCLAIM_ADDRESS = "0x562bfa75a7D133F35dd4AF89A13574C412c5Cc55";
 
-export const BLOCKSCOUT_API =
-  "https://sn2-stavanger-blockscout.eu-north-2.gateway.fm/api/v2";
+export const BLOCKSCOUT_API = "https://explorer.stavanger.gateway.fm/api/v2";
 
 export function slugify(text: string) {
   return text
