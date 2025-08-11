@@ -17,7 +17,6 @@
     "deploy": "cd packages/proclaim && npx thirdweb@latest deploy"
   },
   "devDependencies": {
-    "@repo/tsconfig": "*",
     "concurrently": "^8.2.2",
     "dotenv-cli": "latest",
     "prettier": "^3.2.5",

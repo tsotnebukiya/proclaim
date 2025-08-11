@@ -7,11 +7,13 @@ import { db } from "@/server/db";
 
 export default async function getTokenData({ token }: { token: string }) {
   const contracts = await getCachedContracts();
+
   const tokenContracts = contracts.filter((el) => el.type === "token");
   const tokenCount = tokenContracts.length;
   const designatedContract = tokenContracts.filter((el) =>
     el.name.toLocaleLowerCase().includes(token),
   )[0]!;
+
   const balancesPromise = axios.get<ScoutTokenBalance[]>(
     `${BLOCKSCOUT_API}/addresses/${env.ETH_ADDRESS}/token-balances`,
   );
@@ -34,7 +36,7 @@ export default async function getTokenData({ token }: { token: string }) {
   );
   const tokenBalance = tokensBalances.filter(
     (el) => el.token.address === designatedContract.contractAddress,
-  )[0]!;
+  )[0];
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
@@ -56,19 +58,22 @@ export default async function getTokenData({ token }: { token: string }) {
       const value = parseInt(transfer.total.value, 10); // Ensuring the value is an integer
       return total + value;
     }, 0) / 100;
-
-  const todayBalance = Number(tokenBalance.value) / 100;
-  const yesterdayBalance =
-    todayBalance -
-    yesterdayTransfers.reduce((total, transfer) => {
-      const value = parseInt(transfer.total.value, 10); // Ensuring the value is an integer
-      if (transfer.from.hash === env.ETH_ADDRESS) {
-        return total - value; // Subtract if 'from' is null
-      } else {
-        return total + value; // Add otherwise
-      }
-    }, 0) /
-      100;
+  let todayBalance = 0;
+  let yesterdayBalance;
+  if (tokenBalance) {
+    todayBalance = Number(tokenBalance.value) / 100;
+    yesterdayBalance =
+      todayBalance -
+      yesterdayTransfers.reduce((total, transfer) => {
+        const value = parseInt(transfer.total.value, 10); // Ensuring the value is an integer
+        if (transfer.from.hash === env.ETH_ADDRESS) {
+          return total - value; // Subtract if 'from' is null
+        } else {
+          return total + value; // Add otherwise
+        }
+      }, 0) /
+        100;
+  }
 
   const transfers = tokenTransfers.map((el) => {
     const amountVal = Number(el.total.value) / 100;

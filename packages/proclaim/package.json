@@ -13,7 +13,8 @@
   },
   "tsconfig": "*",
   "dependencies": {
-    "thirdweb": "^5.2.0"
+    "thirdweb": "^5.2.0",
+    "viem": "^2.33.3"
   },
   "devDependencies": {
     "typescript": "^5.4.2"

@@ -1,4 +1,4 @@
-import { tokenContract, wallet } from "proclaim";
+import { getGasPrice, tokenContract, wallet } from "proclaim";
 import { approve, disapprove } from "proclaim/tokenFunctions";
 import { sendTransaction } from "thirdweb";
 import { kv } from "@vercel/kv";
@@ -12,8 +12,9 @@ export const approveToken = async (
   const newNonce = latestNonce + 1;
   const parameter = {
     contract: tokenContract(currency),
-    spender,
+    spender: spender as `0x${string}`,
     nonce: newNonce,
+    gasPrice: await getGasPrice(),
   };
   const transaction = approved ? approve(parameter) : disapprove(parameter);
   const { transactionHash } = await sendTransaction({

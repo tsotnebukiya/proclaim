@@ -65,7 +65,7 @@ export async function fetchContracts() {
       const { data } = await axios.get<ScoutAddress>(
         `${BLOCKSCOUT_API}/addresses/${el}`,
       );
-      const name = data.hash === env.EUR_CONTRACT ? "USDt" : "EURt";
+      const name = data.hash === env.EUR_CONTRACT ? "EURt" : "USDt";
       return {
         name: name,
         totalSupply: data.token?.total_supply || "0",
@@ -116,9 +116,9 @@ export async function fetchContracts() {
 
 export async function getCachedContracts() {
   const cachedContracts = await kv.get<Contract[]>("contracts");
-  // if (cachedContracts) {
-  //   return cachedContracts;
-  // }
+  if (cachedContracts) {
+    return cachedContracts;
+  }
   const result = await fetchContracts();
   await kv.set("contracts", result);
   return result;

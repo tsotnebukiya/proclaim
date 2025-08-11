@@ -1,6 +1,11 @@
 import { env } from "@/env";
 import { db } from "@/server/db";
-import { deployContract, depositoryContract, wallet } from "proclaim";
+import {
+  deployContract,
+  depositoryContract,
+  getGasPrice,
+  wallet,
+} from "proclaim";
 import { name } from "proclaim/depositoryFunctions";
 import { sendAndConfirmTransaction } from "thirdweb";
 import { kv } from "@vercel/kv";
@@ -17,6 +22,7 @@ export default async function createTeam(object: CreateTeamType) {
       market,
       publicKey: env.PROCHAIN_PUBLIC_KEY,
       teamName,
+      gasPrice: await getGasPrice(),
     });
     const { contractAddress } = await sendAndConfirmTransaction({
       transaction: transaction,
