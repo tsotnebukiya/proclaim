@@ -32,8 +32,11 @@ export default async function getTokenData({ token }: { token: string }) {
   const [{ data: tokensBalances }, { data: tokenTransfersObject }, claims] =
     await Promise.all([balancesPromise, transfersPromise, claimsPromise]);
   const tokenTransfers = tokenTransfersObject.items.filter((el) =>
-    claims.some((claim) => claim.transaction === el.tx_hash),
+    claims.some((claim) => claim.transaction === el.transaction_hash),
   );
+  console.log(tokenTransfersObject, "tokenTransfersObject");
+  // console.log(tokenTransfers, "tokenTransfers");
+  // console.log(claimsPromise, "claimsPromise");
   const tokenBalance = tokensBalances.filter(
     (el) => el.token.address === designatedContract.contractAddress,
   )[0];
@@ -78,7 +81,7 @@ export default async function getTokenData({ token }: { token: string }) {
   const transfers = tokenTransfers.map((el) => {
     const amountVal = Number(el.total.value) / 100;
     const amount = el.from.hash === env.ETH_ADDRESS ? -amountVal : amountVal;
-    const transaction = el.tx_hash;
+    const transaction = el.transaction_hash;
     const log = el.log_index;
     const tofromAddress =
       el.from.hash === env.ETH_ADDRESS ? el.to.hash : el.from.hash;

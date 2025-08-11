@@ -86,7 +86,7 @@ export type ScoutTokenTransfer = {
     decimals: string;
     value: string;
   };
-  tx_hash: string;
+  transaction_hash: string;
   type: string;
 };
 
@@ -108,4 +108,3 @@ export type ScoutTokenBalance = {
   token_instance: string | null;
   value: string;
 };
-
