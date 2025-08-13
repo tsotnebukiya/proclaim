@@ -9,7 +9,8 @@
   "version": "0.0.1",
   "scripts": {
     "generateContracts": "npx thirdweb generate",
-    "deployContracts": "npx thirdweb deploy"
+    "deployContracts": "npx thirdweb deploy",
+    "type-check": "tsc --noEmit"
   },
   "tsconfig": "*",
   "dependencies": {

@@ -21,8 +21,11 @@ export default function TokenStats({
 }) {
   const { todayBalance, yesterdayBalance, todayVolume, yesterdayVolume } =
     generalData;
-  const balanceChange =
-    ((todayBalance - yesterdayBalance) / yesterdayBalance) * 100;
+  let balanceChange = 0;
+  if (yesterdayBalance) {
+    balanceChange =
+      ((todayBalance - yesterdayBalance) / yesterdayBalance) * 100;
+  }
   const volumeChange =
     ((todayVolume - yesterdayVolume) / yesterdayVolume) * 100;
   return (

@@ -8,6 +8,7 @@
     "devCiti": "dotenv -- turbo dev:citi",
     "startCiti": "dotenv -- turbo start:citi",
     "lint": "dotenv -- turbo lint",
+    "type-check": "dotenv -- turbo type-check",
     "dbGenerate": "cd apps/proclaimapp && npx prisma generate",
     "dbPush": "cd apps/proclaimapp && pnpm run db:push",
     "dbReset": "cd apps/proclaimapp && pnpm run db:reset",

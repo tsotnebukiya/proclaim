@@ -8,6 +8,7 @@ import {
   GetBankDetails,
   bankContract,
   depositoryContract,
+  getGasPrice,
   tokenContract,
 } from "proclaim";
 import { getAllBankDetails } from "proclaim/depositoryFunctions";
@@ -42,6 +43,7 @@ export async function fetchContracts() {
   const banksRes = (await getAllBankDetails({
     contract: depositoryContract,
   })) as unknown;
+  const gasPrice = await getGasPrice();
   const banks = banksRes as GetBankDetails[];
   const tokenAddresses = [env.USD_CONTRACT, env.EUR_CONTRACT];
   const namesResponses: Contract[] = [];
@@ -49,6 +51,7 @@ export async function fetchContracts() {
   for (const el of banks) {
     const returnedName = await name({
       contract: bankContract(el.contractAddress),
+      gasPrice: gasPrice,
     });
     namesResponses.push({
       name: returnedName,
