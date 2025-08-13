@@ -152,13 +152,13 @@ export const settleClaims = async ({
   manual?: boolean;
 }) => {
   const warsawTime = moment.utc();
-  const payDate = warsawTime.startOf("d").toDate();
+  const endOfToday = warsawTime.endOf("d").toDate();
   const claims = await db.claim.findMany({
     where: {
       settled: false,
       type: "Payable",
       payDate: {
-        lte: payDate,
+        lte: endOfToday,
       },
       teamId,
       ...(manual ? {} : { team: { stp: true } }),

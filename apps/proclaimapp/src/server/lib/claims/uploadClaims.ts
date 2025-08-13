@@ -25,18 +25,15 @@ export const uploadClaims = async ({
   const warsawTime = moment.utc();
   const gasPrice = await getGasPrice();
   const payDate = warsawTime.startOf("d").toDate();
-  console.log("🔍 Starting database query for claims with filters:", {
-    teamId,
-    manual,
-    payDate,
-  });
+  const endOfToday = warsawTime.endOf("d").toDate();
+
   const claims = await db.claim.findMany({
     where: {
       settled: false,
       uploaded: false,
       type: "Receivable",
       payDate: {
-        lte: payDate,
+        lte: endOfToday,
       },
       teamId,
       ...(manual ? {} : { team: { stp: true } }),
@@ -45,7 +42,6 @@ export const uploadClaims = async ({
       team: true,
     },
   });
-  console.log("✅ Claims query completed. Found claims:", claims.length);
   if (claims.length === 0) {
     return null;
   }
@@ -77,9 +73,7 @@ export const uploadClaims = async ({
       (el) => el.accountNumber === BigInt(owner),
     )?.contractAddress!;
     const contract = bankContract(contractAddress);
-    console.log("🔢 Getting latest nonce for owner:", owner);
     const latestNonce = await getLatestNonce();
-    console.log("✅ Latest nonce retrieved:", latestNonce);
     const transaction = addClaims({
       amountsOwed: transactionData.map((data) => data.amountOwed),
       claimIdentifiers: transactionData.map((data) => data.claimIdentifier),

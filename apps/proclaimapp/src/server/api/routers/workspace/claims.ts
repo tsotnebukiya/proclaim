@@ -8,19 +8,14 @@ import { getCachedCPClaims } from "@/server/lib/claims/contractClaims";
 import { createClaim, createMany } from "@/server/lib/claims/createClaims";
 import { processSpecifiContractEvents } from "@/server/lib/claims/processEvents";
 import { getCachedContracts } from "@/server/lib/contracts/fetch-contracts";
-import {
-  ReceivedClaimSchema,
-  dummyClaimSchema,
-  newClaimSchema,
-} from "@/server/lib/schemas";
+import { ReceivedClaimSchema, newClaimSchema } from "@/server/lib/schemas";
 import {
   claimStatus,
   dummyDecrypt,
   invertDecryptedData,
 } from "@/server/lib/utils";
 import { TRPCError } from "@trpc/server";
-import { kv } from "@vercel/kv";
-import moment from "moment-timezone";
+
 import { bankContract, getGasPrice, getLatestNonce, wallet } from "proclaim";
 import { addClaims, settleClaims } from "proclaim/contractFunctions";
 import { sendTransaction } from "thirdweb";
@@ -61,7 +56,6 @@ export const claimRouter = createTRPCRouter({
           corporateActionID,
         } = claim;
         let eventType: string;
-        console.log(label);
         if (label === "Redemption") {
           eventType = type === "Payable" ? "MCAL" : "REDM";
         } else {
@@ -475,23 +469,23 @@ export const claimRouter = createTRPCRouter({
           code: "BAD_REQUEST",
         });
       }
-      let latestNonce = (await kv.get<number>("latestNonce")) as number;
+      // let latestNonce = (await kv.get<number>("latestNonce")) as number;
+      const nonce = await getLatestNonce();
       const transaction = addClaims({
-        amountsOwed: [BigInt(claim.amount)],
+        amountsOwed: [BigInt(claim.amount * 100)],
         claimIdentifiers: [hash] as `0x${string}`[],
         counterpartyAddresses: [cp.deployerAddress as `0x${string}`],
         encryptedClaimDatas: [encryptedClaimData],
         tokenNames: [currency],
         contract: bankContract(claim.team.contractAddress),
-        nonce: latestNonce + 1,
+        nonce,
         gasPrice,
       });
       await sendTransaction({
         transaction,
         account: wallet,
       });
-      latestNonce++;
-      await kv.set<number>(`latestNonce`, latestNonce);
+
       await db.claim.update({
         where: {
           tradeReference: tradeRef,

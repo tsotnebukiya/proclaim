@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "@/frontend/components/ui/sonner";
-import { ThemeProvider } from "@/frontend/components/ThemeProvider";
 import { env } from "@/env";
 
 const inter = Inter({
@@ -22,13 +21,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Set theme on server side to prevent flash
+  const theme = env.BANK === "JP" ? "jp-theme" : "citi-theme";
+
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" data-theme={theme}>
       <body className={`font-sans ${inter.variable} h-full`}>
-        <ThemeProvider bankTheme={env.BANK}>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-          <Toaster position="top-right" />
-        </ThemeProvider>
+        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

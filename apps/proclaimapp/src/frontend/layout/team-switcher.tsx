@@ -53,7 +53,13 @@ type PopoverTriggerProps = React.ComponentPropsWithoutRef<
 interface TeamSwitcherProps extends PopoverTriggerProps {}
 
 export default function TeamSwitcher({}: TeamSwitcherProps) {
-  const { data: teams } = api.teams.getTeamSlugs.useQuery();
+  const [open, setOpen] = React.useState(false);
+
+  // Only fetch teams when the popover is opened or when we need to find the selected team
+  const { data: teams, error } = api.teams.getTeamSlugs.useQuery(undefined, {
+    enabled: open, // Only run the query when popover is open
+  });
+
   const groups = [{ label: "Teams", teams }];
   const pathname = usePathname();
   const parts = pathname.split("/");
@@ -61,7 +67,6 @@ export default function TeamSwitcher({}: TeamSwitcherProps) {
   const { push } = useRouter();
   const selectedTeam =
     groups[0]?.teams?.find((el) => `/portal/${el.value}` === teamPath) || null;
-  const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
   return (

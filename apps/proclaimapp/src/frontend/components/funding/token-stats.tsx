@@ -26,8 +26,11 @@ export default function TokenStats({
     balanceChange =
       ((todayBalance - yesterdayBalance) / yesterdayBalance) * 100;
   }
-  const volumeChange =
-    ((todayVolume - yesterdayVolume) / yesterdayVolume) * 100;
+  let volumeChange = 0;
+  if (yesterdayVolume) {
+    volumeChange = ((todayVolume - yesterdayVolume) / yesterdayVolume) * 100;
+  }
+
   return (
     <div className="flex flex-col">
       <div className="grid grid-cols-[1fr,min-content,1fr]">

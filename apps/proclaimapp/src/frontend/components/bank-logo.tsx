@@ -7,7 +7,7 @@ interface BankLogoProps {
   className?: string;
 }
 
-export function BankLogo({ bank, className = "h-8 w-auto" }: BankLogoProps) {
+export function BankLogo({ bank, className = "" }: BankLogoProps) {
   const getBankLogo = (bankName: string) => {
     switch (bankName.toUpperCase()) {
       case "JP":
@@ -44,9 +44,9 @@ export function BankLogo({ bank, className = "h-8 w-auto" }: BankLogoProps) {
       <Image
         src={logoInfo.src}
         alt={logoInfo.alt}
-        width={80}
+        width={160}
         height={40}
-        // className={className}
+        className={`max-h-10 w-auto object-contain ${className}`}
       />
     </div>
   );

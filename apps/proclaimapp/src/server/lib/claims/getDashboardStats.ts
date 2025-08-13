@@ -417,22 +417,6 @@ export function groupOld(claims: Claim[], contracts: Contract[]) {
     .subtract(6, "day")
     .startOf("day")
     .toDate();
-  console.log(
-    endOfToday,
-    startOfToday,
-    endOfYesterday,
-    startOfYesterday,
-    endOfTwoDaysAgo,
-    startOfTwoDaysAgo,
-    endOfThreeDaysAgo,
-    startOfThreeDaysAgo,
-    endOfFourDaysAgo,
-    startOfFourDaysAgo,
-    endOfFiveDaysAgo,
-    startOfFiveDaysAgo,
-    endOfSixDaysAgo,
-    startOfSixDaysAgo,
-  );
 
   const claimsByCorporateAction: {
     today: GroupOld;
@@ -508,6 +492,5 @@ export function groupOld(claims: Claim[], contracts: Contract[]) {
       claimsByCorporateAction.sixDaysAgo[status][type]++;
     }
   });
-  console.log(claimsByCorporateAction);
   return claimsByCorporateAction;
 }
