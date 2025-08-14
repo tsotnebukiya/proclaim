@@ -3,7 +3,6 @@ import {
   RiDatabase2Fill,
   RiFlashlightFill,
   RiLock2Fill,
-  RiPieChartFill,
 } from "@remixicon/react"
 import Image from "next/image"
 import { Divider } from "../Divider"
