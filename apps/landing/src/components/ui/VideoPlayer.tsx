@@ -17,19 +17,22 @@ export default function VideoPlayer() {
           Claims to cash on‑chain in 90 seconds
         </p>
       </div>
-      {/* Video fills entire container */}
-      <ReactPlayer
-        src="https://c6bhzhkypxiy6niv.public.blob.vercel-storage.com/0813%281%29.mp4"
-        width="100%"
-        height="100%"
-        controls
-        playing={false}
-        light={false}
-        style={{
-          display: "block",
-          borderRadius: "0.75rem",
-        }}
-      />
+      {/* Responsive video container with 16:9 aspect ratio */}
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-100">
+        <ReactPlayer
+          src="https://www.youtube.com/watch?v=HRDKvPwNRW4"
+          width="100%"
+          height="100%"
+          controls
+          playing={false}
+          light={false}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
+        />
+      </div>
     </section>
   )
 }
